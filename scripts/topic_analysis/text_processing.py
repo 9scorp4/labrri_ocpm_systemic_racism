@@ -1,8 +1,5 @@
-from spacy.lang.fr import French
-from spacy.lang.en import English
 import logging
 import concurrent.futures
-import string
 from scripts.topic_analysis.tools import Tools
 
 class Process:
@@ -29,7 +26,7 @@ class Process:
             lang = lang or self.lang
             logging.debug(f"Processing sentence:\n{sentence}")
 
-            text = sentence.lower()
+            text = sentence.text
             if not text:
                 logging.warning("Skipping empty sentence")
                 return None
@@ -42,7 +39,7 @@ class Process:
                     en_doc = self.nlp['en'](text)
                     tokens = [token.text for token in fr_doc] + [token.text for token in en_doc]
                 else:
-                    doc = self.nlp[lang](text)
+                    doc = self.nlp(text)
                     tokens = [token.text for token in doc]
                 logging.debug(f"Tokens before lemmatization:\n{tokens}")
             except Exception as e:
@@ -103,9 +100,9 @@ class Process:
                         if isinstance(doc, dict):
                             filtered_sentences = [word for word in doc.get(lang, []) if word not in self.stopwords_lang]
                         elif isinstance(doc, list):
-                            filtered_sentences = [word for word in doc if isinstance(word, list) or (word not in set(self.stopwords_lang) and word not in self.stopwords_lang)]
+                            filtered_sentences = [word for word in doc if isinstance(word, list) or (word not in set(tuple(self.stopwords_lang)) and word not in self.stopwords_lang)]
                     else:
-                        filtered_sentences = [word for word in doc if word not in set(self.stopwords_lang) and word not in self.stopwords_lang]
+                        filtered_sentences = [word for word in doc if word not in set(tuple(self.stopwords_lang)) and word not in self.stopwords_lang]
 
                     postprocessed_docs.extend(filtered_sentences)
 

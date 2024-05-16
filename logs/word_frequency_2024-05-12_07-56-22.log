@@ -1,9 +1,0 @@
-2024-05-12 07:56:26,132:INFO:Initializing WordFrequencyChart
-2024-05-12 07:56:26,133:INFO:Database connection successful.
-2024-05-12 07:56:26,134:INFO:Retrieving document content from the database
-2024-05-12 07:56:26,134:INFO:Retrieving data from the database
-2024-05-12 07:56:26,144:INFO:Combining the content into a single string
-2024-05-12 07:56:26,145:INFO:Counting the frequency of each word
-2024-05-12 07:56:26,207:INFO:Creating a bar plot
-2024-05-12 07:56:26,391:INFO:Saving the results
-2024-05-12 07:56:26,394:INFO:Closing the database connection

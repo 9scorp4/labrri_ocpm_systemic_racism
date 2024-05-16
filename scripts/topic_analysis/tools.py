@@ -101,14 +101,14 @@ class Tools:
                     logging.error("NLP model not loaded")
                     return token
             elif lang == 'fr':
-                doc = self.nlp['fr'](token)
+                doc = self.nlp(token)
                 lemmatized_token = {
                     'fr': doc[0].lemma_,
                     'en': ''
                 }
                 return lemmatized_token
             elif lang == 'en':
-                doc = self.nlp['en'](token)
+                doc = self.nlp(token)
                 lemmatized_token = {
                     'fr': '',
                     'en': doc[0].lemma_

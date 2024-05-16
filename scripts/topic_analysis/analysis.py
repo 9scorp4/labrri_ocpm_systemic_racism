@@ -7,7 +7,7 @@ from scripts.topic_analysis.noise_remover import NoiseRemover
 from scripts.topic_analysis.documents import Documents
 
 class Analysis:
-    def __init__(self, db='data\database.db', lang=None):
+    def __init__(self, db=r'data\database.db', lang=None):
         self.db = db
         self.lang = lang
         self.tools = Tools(lang)

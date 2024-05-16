@@ -21,7 +21,7 @@ This repository is the result of the developper's master's degree research on mu
 
 The 'data' folder contains raw data (PDF documents from the Commission), the database to store the processed data, the list of PDF files to retrieve content from (pdf_list.csv and pdf_list.xlsx) and the database schema (db_schema.pdf).
 
-The 'scripts' folder contains all scripts used for general document and data operations. The scripts at the module folder execute their respective pipeline.
+The 'scripts' folder contains all scripts used for general document and data operations. The scripts at the root folder execute their respective pipeline.
 
 Results from all pipelines must be stored in the 'results' folder. For debugging, consult the 'logs' folder.
 

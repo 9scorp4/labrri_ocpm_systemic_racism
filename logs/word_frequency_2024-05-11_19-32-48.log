@@ -1,4 +1,0 @@
-2024-05-11 19:32:53,588:INFO:Initializing WordFrequencyChart
-2024-05-11 19:32:53,589:INFO:Database connection successful.
-2024-05-11 19:32:53,591:INFO:Tokenizing and removing stopwords
-2024-05-11 19:32:53,591:INFO:Retrieving data from the database
