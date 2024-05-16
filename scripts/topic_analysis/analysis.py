@@ -3,6 +3,8 @@ import sqlite3
 from langdetect import detect_langs
 from langdetect import LangDetectException
 from scripts.topic_analysis.tools import Tools
+from scripts.topic_analysis.noise_remover import NoiseRemover
+from scripts.topic_analysis.documents import Documents
 
 class Analysis:
     def __init__(self, db='data\database.db', lang=None):
@@ -69,4 +71,13 @@ class Analysis:
             logging.info(f"Sample document before noise removal:\n{documents_batch[0]}")
 
             # Remove noise
-            noise_remover = 
+            noise_remover = NoiseRemover(lang=self.lang)
+            cleaned_documents = noise_remover.clean(documents_batch, lang=self.lang)
+
+            logging.debug(f"Sample document after noise removal:\n{cleaned_documents[0]}")
+
+            # Analyze cleaned documents
+            doc_analyzer = Documents(topic_analysis=self, lang=self.lang)
+            doc_analyzer.analyze(cleaned_documents)
+        except Exception as e:
+            logging.error(f"Failed to analyze documents. Error: {e}", exc_info=True)
