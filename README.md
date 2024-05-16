@@ -21,7 +21,9 @@ This repository is the result of the developper's master's degree research on mu
 
 The 'data' folder contains raw data (PDF documents from the Commission), the database to store the processed data, the list of PDF files to retrieve content from (pdf_list.csv and pdf_list.xlsx) and the database schema (db_schema.pdf).
 
-The 'scripts' folder contains all scripts used for general document and data operations. These scripts can be executed by running 'update_database.py' pipeline or the Jupyter Notebook files made for the different types of data analysis.
+The 'scripts' folder contains all scripts used for general document and data operations. The scripts at the module folder execute their respective pipeline.
+
+Results from all pipelines must be stored in the 'results' folder. For debugging, consult the 'logs' folder.
 
 ## Features
 
@@ -38,8 +40,12 @@ Just download it as a ZIP file, extract and explore with your preferred IDE.
 
 ## Usage
 
-For database creation, population and/or update, run update_database.py
-For data analysis, use or create a Jupyter Notebook file.
+- 'update_database.py' pipeline: Populate database using fetched data.
+- 'general_analysis.ipynb' pipeline: Perform a general data analysis.
+- 'word_frequency.ipynb' pipeline: Analyze by word frequency.
+- 'language_distribution.ipynb' pipeline: Analyze by language distribution.
+- 'knowledge_type.ipynb' pipeline: Analyse by knowledge types
+- 'topic_analysis.ipynb' pipeline: Tokenize text and analyze by topics.
 
 ## Contributing
 
@@ -50,8 +56,8 @@ Contribution rules to be provided
 This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1).
 
 ### You are free to:
-- Share - copy and redistribute the material in any medium or format.
-- Adapt - remix, transform and build upon the material.
+- Share — copy and redistribute the material in any medium or format.
+- Adapt — remix, transform and build upon the material.
 
 The licensor cannot revoke these freedoms as long as you follow the license terms.
 
