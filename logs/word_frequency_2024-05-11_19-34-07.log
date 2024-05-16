@@ -1,0 +1,14 @@
+2024-05-11 19:34:11,587:INFO:Initializing WordFrequencyChart
+2024-05-11 19:34:11,588:INFO:Database connection successful.
+2024-05-11 19:34:11,589:INFO:Tokenizing and removing stopwords
+2024-05-11 19:34:11,589:INFO:Retrieving data from the database
+2024-05-11 19:34:13,300:INFO:Plotting the most frequent words in fr corpus
+2024-05-11 19:34:13,544:INFO:Saving the results
+2024-05-11 19:34:13,553:INFO:Closing the database connection
+2024-05-11 19:36:03,145:INFO:Initializing WordFrequencyChart
+2024-05-11 19:36:03,146:INFO:Database connection successful.
+2024-05-11 19:36:03,148:INFO:Tokenizing and removing stopwords
+2024-05-11 19:36:03,148:INFO:Retrieving data from the database
+2024-05-11 19:36:03,477:INFO:Plotting the most frequent words in en corpus
+2024-05-11 19:36:03,705:INFO:Saving the results
+2024-05-11 19:36:03,707:INFO:Closing the database connection

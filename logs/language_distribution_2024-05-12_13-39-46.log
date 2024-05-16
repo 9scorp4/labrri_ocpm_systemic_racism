@@ -1,0 +1,76 @@
+2024-05-12 13:39:47,894:INFO:Initializing LanguageDistributionChart
+2024-05-12 13:39:47,894:INFO:Database connection successful.
+2024-05-12 13:39:47,895:INFO:Retrieving data from the database
+2024-05-12 13:39:47,895:INFO:Generating graph for All categories
+2024-05-12 13:39:47,895:INFO:Executing query
+2024-05-12 13:39:47,895:INFO:Retrieving data from the database
+2024-05-12 13:39:47,896:INFO:Received data from the database
+2024-05-12 13:39:47,896:INFO:Extracting languages and counts
+2024-05-12 13:39:47,896:INFO:Creating figure
+2024-05-12 13:39:47,914:INFO:Plotting pie chart
+2024-05-12 13:39:47,919:INFO:Creating count table
+2024-05-12 13:39:47,920:INFO:Bolding first row of the table
+2024-05-12 13:39:47,920:INFO:Adjusting layout
+2024-05-12 13:39:47,920:INFO:Saving and showing plot
+2024-05-12 13:39:48,024:INFO:Saving results in a CSV file
+2024-05-12 13:39:48,033:INFO:Initializing LanguageDistributionChart
+2024-05-12 13:39:48,033:INFO:Database connection successful.
+2024-05-12 13:39:48,033:INFO:Retrieving data from the database
+2024-05-12 13:39:48,033:INFO:Generating graph for Organismes communautaires et à but non-lucratif
+2024-05-12 13:39:48,033:INFO:Executing query
+2024-05-12 13:39:48,033:INFO:Retrieving data from the database
+2024-05-12 13:39:48,034:INFO:Received data from the database
+2024-05-12 13:39:48,034:INFO:Extracting languages and counts
+2024-05-12 13:39:48,034:INFO:Creating figure
+2024-05-12 13:39:48,045:INFO:Plotting pie chart
+2024-05-12 13:39:48,050:INFO:Creating count table
+2024-05-12 13:39:48,051:INFO:Bolding first row of the table
+2024-05-12 13:39:48,051:INFO:Adjusting layout
+2024-05-12 13:39:48,051:INFO:Saving and showing plot
+2024-05-12 13:39:48,152:INFO:Saving results in a CSV file
+2024-05-12 13:39:48,158:INFO:Initializing LanguageDistributionChart
+2024-05-12 13:39:48,158:INFO:Database connection successful.
+2024-05-12 13:39:48,158:INFO:Retrieving data from the database
+2024-05-12 13:39:48,158:INFO:Retrieving data from the database
+2024-05-12 13:39:50,245:INFO:Saving results in a CSV file
+2024-05-12 13:39:50,246:INFO:Saving results in a CSV file
+2024-05-12 13:39:50,247:INFO:Saving results inb an Excel file
+2024-05-12 13:39:50,278:INFO:Showing results
+2024-05-12 14:15:45,573:INFO:Initializing LanguageDistributionChart
+2024-05-12 14:15:45,575:INFO:Database connection successful.
+2024-05-12 14:15:45,575:INFO:Retrieving data from the database
+2024-05-12 14:15:45,575:INFO:Generating graph for All categories
+2024-05-12 14:15:45,575:INFO:Executing query
+2024-05-12 14:15:45,575:INFO:Retrieving data from the database
+2024-05-12 14:15:45,594:INFO:Received data from the database
+2024-05-12 14:15:45,594:INFO:Extracting languages and counts
+2024-05-12 14:15:45,595:INFO:Creating figure
+2024-05-12 14:15:45,628:INFO:Plotting pie chart
+2024-05-12 14:15:45,634:INFO:Creating count table
+2024-05-12 14:15:45,636:INFO:Bolding first row of the table
+2024-05-12 14:15:45,636:INFO:Adjusting layout
+2024-05-12 14:15:45,636:INFO:Saving and showing plot
+2024-05-12 14:15:45,746:INFO:Saving results in a CSV file
+2024-05-12 14:15:45,757:INFO:Initializing LanguageDistributionChart
+2024-05-12 14:15:45,757:INFO:Database connection successful.
+2024-05-12 14:15:45,757:INFO:Retrieving data from the database
+2024-05-12 14:15:45,758:INFO:Generating graph for Organismes communautaires et à but non-lucratif
+2024-05-12 14:15:45,758:INFO:Executing query
+2024-05-12 14:15:45,758:INFO:Retrieving data from the database
+2024-05-12 14:15:45,770:INFO:Received data from the database
+2024-05-12 14:15:45,770:INFO:Extracting languages and counts
+2024-05-12 14:15:45,770:INFO:Creating figure
+2024-05-12 14:15:45,780:INFO:Plotting pie chart
+2024-05-12 14:15:45,785:INFO:Creating count table
+2024-05-12 14:15:45,786:INFO:Bolding first row of the table
+2024-05-12 14:15:45,786:INFO:Adjusting layout
+2024-05-12 14:15:45,787:INFO:Saving and showing plot
+2024-05-12 14:15:45,896:INFO:Saving results in a CSV file
+2024-05-12 14:15:45,905:INFO:Initializing LanguageDistributionChart
+2024-05-12 14:15:45,905:INFO:Database connection successful.
+2024-05-12 14:15:45,905:INFO:Retrieving data from the database
+2024-05-12 14:15:45,905:INFO:Retrieving data from the database
+2024-05-12 14:15:47,832:INFO:Saving results in a CSV file
+2024-05-12 14:15:47,833:INFO:Saving results in a CSV file
+2024-05-12 14:15:47,834:INFO:Saving results inb an Excel file
+2024-05-12 14:15:47,848:INFO:Showing results

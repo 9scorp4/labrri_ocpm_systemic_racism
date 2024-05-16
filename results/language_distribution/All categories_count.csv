@@ -1,0 +1,4 @@
+language,COUNT(d.id)
+bilingual,5
+en,14
+fr,90

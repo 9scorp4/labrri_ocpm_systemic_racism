@@ -1,0 +1,37 @@
+2024-05-12 16:22:35,292:INFO:Initializing LanguageDistributionChart
+2024-05-12 16:22:35,292:INFO:Database connection successful.
+2024-05-12 16:22:35,292:INFO:Retrieving data from the database
+2024-05-12 16:22:35,292:INFO:Generating graph for All categories
+2024-05-12 16:22:35,292:INFO:Executing query
+2024-05-12 16:22:35,292:INFO:Retrieving data from the database
+2024-05-12 16:22:35,293:INFO:Received data from the database
+2024-05-12 16:22:35,293:INFO:Extracting languages and counts
+2024-05-12 16:22:35,294:INFO:Creating figure
+2024-05-12 16:22:35,309:INFO:Plotting pie chart
+2024-05-12 16:22:35,314:INFO:Creating count table
+2024-05-12 16:22:35,315:INFO:Bolding first row of the table
+2024-05-12 16:22:35,315:INFO:Adjusting layout
+2024-05-12 16:22:35,315:INFO:Saving and showing plot
+2024-05-12 16:22:35,420:INFO:Saving results in a CSV file
+2024-05-12 16:22:35,432:INFO:Initializing LanguageDistributionChart
+2024-05-12 16:22:35,432:INFO:Database connection successful.
+2024-05-12 16:22:35,432:INFO:Retrieving data from the database
+2024-05-12 16:22:35,432:INFO:Generating graph for Organismes communautaires et à but non-lucratif
+2024-05-12 16:22:35,432:INFO:Executing query
+2024-05-12 16:22:35,433:INFO:Retrieving data from the database
+2024-05-12 16:22:35,434:INFO:Received data from the database
+2024-05-12 16:22:35,434:INFO:Extracting languages and counts
+2024-05-12 16:22:35,434:INFO:Creating figure
+2024-05-12 16:22:35,444:INFO:Plotting pie chart
+2024-05-12 16:22:35,449:INFO:Creating count table
+2024-05-12 16:22:35,449:INFO:Bolding first row of the table
+2024-05-12 16:22:35,450:INFO:Adjusting layout
+2024-05-12 16:22:35,450:INFO:Saving and showing plot
+2024-05-12 16:22:35,548:INFO:Saving results in a CSV file
+2024-05-12 16:22:35,556:INFO:Initializing LanguageDistributionChart
+2024-05-12 16:22:35,556:INFO:Database connection successful.
+2024-05-12 16:22:35,556:INFO:Retrieving data from the database
+2024-05-12 16:22:35,556:INFO:Retrieving data from the database
+2024-05-12 16:22:37,737:INFO:Saving results in a CSV file
+2024-05-12 16:22:37,739:INFO:Saving results inb an Excel file
+2024-05-12 16:22:37,765:INFO:Showing results

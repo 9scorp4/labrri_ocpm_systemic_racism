@@ -1,0 +1,7 @@
+2024-05-11 19:50:35,423:INFO:Initializing WordFrequencyChart
+2024-05-11 19:50:35,423:INFO:Database connection successful.
+2024-05-11 19:50:35,424:INFO:Tokenizing and removing stopwords
+2024-05-11 19:50:35,424:INFO:Retrieving data from the database
+2024-05-11 19:50:35,495:INFO:Plotting the most frequent words in bilingual corpus
+2024-05-11 19:50:35,744:INFO:Saving the results
+2024-05-11 19:50:35,747:INFO:Closing the database connection

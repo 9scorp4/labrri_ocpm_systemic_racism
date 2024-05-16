@@ -1,0 +1,37 @@
+2024-05-12 14:05:21,078:INFO:Initializing WordFrequencyChart
+2024-05-12 14:05:21,078:INFO:Database connection successful.
+2024-05-12 14:05:21,079:INFO:Tokenizing and removing stopwords
+2024-05-12 14:05:21,080:INFO:Retrieving data from the database
+2024-05-12 14:05:21,515:INFO:Plotting the most frequent words
+2024-05-12 14:05:21,730:INFO:Saving the results
+2024-05-12 14:05:21,737:INFO:Closing the database connection
+2024-05-12 14:05:21,746:INFO:Initializing WordFrequencyChart
+2024-05-12 14:05:21,747:INFO:Database connection successful.
+2024-05-12 14:05:21,748:INFO:Tokenizing and removing stopwords
+2024-05-12 14:05:21,748:INFO:Retrieving data from the database
+2024-05-12 14:05:23,421:INFO:Plotting the most frequent words in fr corpus
+2024-05-12 14:05:23,624:INFO:Saving the results
+2024-05-12 14:05:23,626:INFO:Closing the database connection
+2024-05-12 14:05:23,636:INFO:Initializing WordFrequencyChart
+2024-05-12 14:05:23,637:INFO:Database connection successful.
+2024-05-12 14:05:23,638:INFO:Tokenizing and removing stopwords
+2024-05-12 14:05:23,638:INFO:Retrieving data from the database
+2024-05-12 14:05:23,932:INFO:Plotting the most frequent words in en corpus
+2024-05-12 14:05:24,136:INFO:Saving the results
+2024-05-12 14:05:24,138:INFO:Closing the database connection
+2024-05-12 14:05:24,144:INFO:Initializing WordFrequencyChart
+2024-05-12 14:05:24,145:INFO:Database connection successful.
+2024-05-12 14:05:24,145:INFO:Tokenizing and removing stopwords
+2024-05-12 14:05:24,145:INFO:Retrieving data from the database
+2024-05-12 14:05:24,206:INFO:Plotting the most frequent words in bilingual corpus
+2024-05-12 14:05:24,395:INFO:Saving the results
+2024-05-12 14:05:24,397:INFO:Closing the database connection
+2024-05-12 14:05:24,404:INFO:Initializing WordFrequencyChart
+2024-05-12 14:05:24,405:INFO:Database connection successful.
+2024-05-12 14:05:24,405:INFO:Retrieving document content from the database
+2024-05-12 14:05:24,406:INFO:Retrieving data from the database
+2024-05-12 14:05:24,415:INFO:Combining the content into a single string
+2024-05-12 14:05:24,416:INFO:Counting the frequency of each word
+2024-05-12 14:05:24,480:INFO:Creating a bar plot
+2024-05-12 14:05:24,666:INFO:Saving the results
+2024-05-12 14:05:24,668:INFO:Closing the database connection
