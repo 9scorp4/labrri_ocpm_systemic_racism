@@ -86,7 +86,7 @@ Special thanks to the contributors to this repository as well:
 
 ## Contact
 
-Nicolas Arias Garcia
+### Nicolas Arias Garcia
 - Email: ariasg.nicolas@gmail.com  •  nicolas.arias.garcia@umontreal.ca
 - Web portfolio: IN CONSTRUCTION
 - GitHub: [9scorp4](https://github.com/9scorp4)
