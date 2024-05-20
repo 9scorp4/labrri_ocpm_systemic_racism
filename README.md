@@ -17,7 +17,7 @@ Welcome to Projet "OCPM: Racisme systémique", by Nicolas Arias Garcia (9scorp4)
 
 ## About
 
-This repository is the result of the developper's master's degree research on municipal knowledge concerning systemic discriminations in Montreal. It contains a series of scripts and tools used to process and analyze data from the Office de Consultation Publique de Montréal's Commission on Systemic Racism and Discrimination.
+This repository is the result of the author's master's degree research on municipal knowledge concerning systemic discriminations in Montreal. It contains a series of scripts and tools used to process and analyze data from the Office de Consultation Publique de Montréal's Commission on Systemic Racism and Discrimination.
 
 The 'data' folder contains raw data (PDF documents from the Commission), the database to store the processed data, the list of PDF files to retrieve content from (pdf_list.csv and pdf_list.xlsx) and the database schema (db_schema.pdf).
 
@@ -49,7 +49,7 @@ Just download it as a ZIP file, extract and explore with your preferred IDE.
 
 ## Contributing
 
-Contribution rules to be provided
+Please read the [contribution guidelines][CONTRIBUTING.md] for more information.
 
 ## License
 
