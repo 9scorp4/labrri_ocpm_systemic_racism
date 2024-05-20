@@ -49,7 +49,7 @@ Just download it as a ZIP file, extract and explore with your preferred IDE.
 
 ## Contributing
 
-Please read the [contribution guidelines][CONTRIBUTING.md] for more information.
+Please read the [contribution guidelines](CONTRIBUTING.md) for more information.
 
 ## License
 
@@ -75,11 +75,14 @@ No warranties are given. The license may not give you all of the permissions nec
 ## Acknowledgements
 
 I want to thank my colleagues at the Laboratoire de recherche en relations interculturelles (LABRRI) for their contributions to my master's research. By their names:
-- Bob White
-- Isabelle Comtois
-- Maude Arsenault
-- Roxane Archambault
-- Fritz Gerald Louis
+* Bob White
+* Isabelle Comtois
+* Maude Arsenault
+* Roxane Archambault
+* Fritz Gerald Louis
+
+Special thanks to the contributors to this repository as well:
+* (ADD CONTRIBUTORS)
 
 ## Contact
 
