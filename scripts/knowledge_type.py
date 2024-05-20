@@ -94,7 +94,7 @@ class KnowledgeType:
         venn3(subsets=venn_values, set_labels=('Citoyen', 'Communautaire', 'Municipal'), ax=ax2)
 
         # Set the title of the entire figure
-        fig.suptitle('Knowledge Types')
+        fig.suptitle('Types de savoirs concernant les discriminations systémiques à Montréal', fontsize=16)
 
         # Adjust the layout
         plt.tight_layout()

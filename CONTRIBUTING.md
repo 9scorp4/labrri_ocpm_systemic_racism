@@ -6,7 +6,7 @@ Thank you for considering contributing to this project! Your contributions are i
 
 You can contribute in several ways:
 * Fixing bugs
-* Proposing new ideas for data processing and analysis
+* Proposing new ideas for pipelines
 * Improving documentation
 * Adding new features
 * Enhancing existing features
