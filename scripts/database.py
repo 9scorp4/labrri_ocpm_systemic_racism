@@ -14,8 +14,14 @@ class Database:
         Initialize the database connection and cursor.
 
         Args:
-            db_path: path to the database
+            db (str): Path to the database.
+
+        Raises:
+            sqlite3.Error: If the database connection fails.
         """
+        if not db:
+            raise ValueError("db_path must be a non-empty string")
+
         try:
             self.conn = sqlite3.connect(
                 db,
@@ -34,13 +40,17 @@ class Database:
         """
 
         try:
-            self.cursor.execute("DELETE FROM documents")
-            self.cursor.execute("DELETE FROM content")
-            self.cursor.execute("DELETE FROM sqlite_sequence")
-            self.conn.commit()
+            if self.conn is not None and self.cursor is not None:
+                self.cursor.execute("DELETE FROM documents")
+                self.cursor.execute("DELETE FROM content")
+                self.cursor.execute("DELETE FROM sqlite_sequence")
+                self.conn.commit()
+            else:
+                logging.error("Database connection or cursor is None.")
         except sqlite3.Error as e:
             logging.error(f"Operation failed. Error: {e}", exc_info=True)
-            self.conn.rollback()
+            if self.conn is not None:
+                self.conn.rollback()
             raise
     
     def insert_data(self, organization, document_type, category, clientele, knowledge_type, language, pdf_path, content):
@@ -58,6 +68,13 @@ class Database:
             content: extracted text
         """
         try:
+            # Check if the required parameters are not None
+            if any(param is None for param in [
+                organization, document_type, category, clientele, 
+                knowledge_type, language, pdf_path, content
+            ]):
+                raise ValueError("All parameters must be non-None")
+            
             # Insert data into the documents table
             self.cursor.execute(
                 "INSERT INTO documents (organization, document_type, category, clientele, knowledge_type, language, filepath) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -65,9 +82,10 @@ class Database:
             )
 
             # Insert data into the content table
+            doc_id = self.cursor.lastrowid
             self.cursor.execute(
                 "INSERT INTO content (doc_id, content) VALUES (?, ?)",
-                (self.cursor.lastrowid, content)
+                (doc_id, content)
             )
 
             # Commit the changes
@@ -75,6 +93,9 @@ class Database:
         except sqlite3.Error as e:
             logging.error(f"Operation failed. Error: {e}", exc_info=True)
             self.conn.rollback()
+            raise
+        except Exception as e:
+            logging.error(f"An unexpected error occurred. Error: {e}", exc_info=True)
             raise
 
     def csv_to_xlsx(self, csv_path, xlsx_path):

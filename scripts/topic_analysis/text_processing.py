@@ -100,9 +100,9 @@ class Process:
                         if isinstance(doc, dict):
                             filtered_sentences = [word for word in doc.get(lang, []) if word not in self.stopwords_lang]
                         elif isinstance(doc, list):
-                            filtered_sentences = [word for word in doc if isinstance(word, list) or (word not in set(tuple(self.stopwords_lang)) and word not in self.stopwords_lang)]
+                            filtered_sentences = [word for word in doc if isinstance(word, list) or (word not in set(tuple(self.stopwords_lang)) and word not in tuple(self.stopwords_lang))]
                     else:
-                        filtered_sentences = [word for word in doc if word not in set(tuple(self.stopwords_lang)) and word not in self.stopwords_lang]
+                        filtered_sentences = [word for word in doc if (isinstance(word, dict) and tuple(word.items()) not in set(tuple(self.stopwords_lang.items())) and word not in self.stopwords_lang) or (isinstance(word, str) and word not in self.stopwords_lang)]
 
                     postprocessed_docs.extend(filtered_sentences)
 

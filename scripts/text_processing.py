@@ -14,8 +14,12 @@ class ProcessText:
     """
 
     def __init__(self):
-        self.db = Database("data\database.db")
-        self.conn = self.db.conn
+        try:
+            self.db = Database("data\database.db")
+            self.conn = self.db.conn
+        except Exception as e:
+            logging.error(f"Error initializing database: {e}", exc_info=True)
+            raise
 
     def extract_from_pdf(self, pdf_path):
         """
@@ -27,12 +31,21 @@ class ProcessText:
         Returns:
             content: extracted text
         """
+        if not pdf_path:
+            raise ValueError("pdf_path cannot be None")
+
         text = ""
 
         try:
             with fitz.open(pdf_path) as doc:
+                if not doc:
+                    raise ValueError("Empty document")
+
                 for page_number in range(doc.page_count):
-                    page = doc[page_number]
+                    page = doc.load_page(page_number)
+                    if not page:
+                        raise ValueError(f"Failed to load page {page_number}")
+
                     text += page.get_text("text")
         except Exception as e:
             logging.error(f"Operation failed. Error: {e}", exc_info=True)
@@ -47,6 +60,9 @@ class ProcessText:
             pdf_path: path to the PDF document
             conn: database connection
         """
+        if not pdf_path:
+            raise ValueError("pdf_path cannot be None")
+
         print(f"Applying OCR to {pdf_path}...")
         logging.info(f"Applying OCR to {pdf_path}...")
 
@@ -127,12 +143,15 @@ class ProcessText:
         Clean extracted text.
 
         Args:
-            text: extracted text
+            text (str): extracted text
 
         Returns:
-            cleaned_text: cleaned text
+            str: cleaned text
         """
         try:
+            if not isinstance(text, str):
+                raise ValueError("text must be a string")
+
             logging.debug(f"Initial text: {text}")
 
             # Remove multiple consecutive spaces

@@ -34,7 +34,7 @@ csv_to_xlsx = Database(DB_FILE).csv_to_xlsx
 process_documents = ProcessDocuments(PDF_LIST, MIN_CONTENT_LENGTH, MIN_CONCATENATED_LENGTH)
 
 if not Path(PDF_LIST).exists():
-    logging.error(f"File {PDF_LIST} does not exist.")
+    logging.error(f"File {PDF_LIST} does not exist.", exc_info=True)
     raise FileNotFoundError(PDF_LIST)
 else:
     # Output XLSX file path

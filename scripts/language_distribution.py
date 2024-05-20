@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 from scripts.database import Database
@@ -15,7 +16,7 @@ class LanguageDistributionChart:
 
         Raises:
             ValueError: If db_path is None.
-            ValueError: If the database connection is None.
+            FileNotFoundError: If the database file does not exist.
 
         Initializes the following instance variables:
             - db_path (str): The path to the database file.
@@ -23,15 +24,21 @@ class LanguageDistributionChart:
             - conn (Connection): The database connection object.
             - cursor (Cursor): The database cursor object.
         """
-        logging.info('Initializing LanguageDistributionChart')
         if db_path is None:
             raise ValueError('db_path cannot be None')
+
         self.db_path = db_path
+        if not Path(self.db_path).exists():
+            raise FileNotFoundError('Database file not found')
+
         self.db = Database(self.db_path)
         self.conn = self.db.conn
         if self.conn is None:
             raise ValueError('Database connection is None')
+
         self.cursor = self.conn.cursor()
+        if self.cursor is None:
+            raise ValueError('Database cursor is None')
     
     def df_from_query(self, query):
         """
@@ -40,20 +47,22 @@ class LanguageDistributionChart:
         Parameters:
             query (str): The SQL query to execute.
 
-        Raises:
-            ValueError: If the query is None.
-            ValueError: If the retrieved content_df is None.
-
         Returns:
             pandas.DataFrame: The DataFrame containing the results of the query.
+
+        Raises:
+            ValueError: If the query is None.
+            pandas.errors.DatabaseError: If the query execution fails.
         """
         if query is None:
             raise ValueError('query cannot be None')
-        logging.info('Retrieving data from the database')
-        content_df = pd.read_sql_query(query, self.conn)
-        if content_df is None:
-            raise ValueError('content_df is None')
-        return content_df
+
+        try:
+            logging.info('Retrieving data from the database')
+            return pd.read_sql_query(query, self.conn)
+        except pd.errors.DatabaseError as e:
+            logging.error(f'Query execution failed. Error: {e}')
+            raise
 
     def count_graph(self, where):
         """
@@ -67,11 +76,13 @@ class LanguageDistributionChart:
 
         Raises:
             ValueError: If the retrieved data from the database is None.
+            ValueError: If the category is not "All categories" or a specific category.
 
         This function retrieves data from the database based on the specified category. It then extracts the languages and counts from the retrieved data. Using this information, it creates a figure with two subplots: one for the pie chart and the other for the count table. The pie chart displays the counts of documents in each language, while the count table provides a tabular representation of the language counts. The first row of the table is bolded. The title of the entire figure is set based on the category. The layout is adjusted to reduce the gap between subplots. The resulting plot is saved in a PNG file and shown. Additionally, the results are saved in a CSV file.
         """
         logging.info('Retrieving data from the database')
         logging.info(f'Generating graph for {where}')
+
         if where == "All categories":
             query = "SELECT d.language, COUNT(d.id) FROM documents d GROUP by d.language"
         else:
@@ -82,6 +93,7 @@ class LanguageDistributionChart:
             WHERE d.category = '{where}'
             GROUP BY d.language
             """
+
         logging.info('Executing query')
         df = self.df_from_query(query)
         if df is None:
@@ -118,7 +130,7 @@ class LanguageDistributionChart:
         if where == "All categories":
             fig.suptitle("Nombre de documents par langue")
         else:
-            fig.suptitle(f"Nombre de documents dans la catégorie {where} par langue")
+            fig.suptitle(f"Nombre de documents dans la catégorie {where} par langue")
 
         # Adjust layout to reduce gap between subplots
         logging.info('Adjusting layout')
@@ -182,7 +194,8 @@ class LanguageDistributionChart:
                         elif language == 'fr':
                             fr_count += 1
                     except Exception as e:
-                        print(f"Error: {e}")
+                        logging.error(f"Error: {e}")
+                        raise ValueError(f"Error: {e}")
             
             # Append the data to the rows list
             rows.append([doc_name, doc_language, en_count, fr_count])

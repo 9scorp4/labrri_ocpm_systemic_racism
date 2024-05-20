@@ -1,0 +1,34 @@
+2024-05-19 16:17:02,602:INFO:Database connection successful.
+2024-05-19 16:17:02,602:INFO:Retrieving data from the database
+2024-05-19 16:17:02,602:INFO:Generating graph for All categories
+2024-05-19 16:17:02,602:INFO:Executing query
+2024-05-19 16:17:02,602:INFO:Retrieving data from the database
+2024-05-19 16:17:02,606:INFO:Received data from the database
+2024-05-19 16:17:02,606:INFO:Extracting languages and counts
+2024-05-19 16:17:02,606:INFO:Creating figure
+2024-05-19 16:17:02,626:INFO:Plotting pie chart
+2024-05-19 16:17:02,637:INFO:Creating count table
+2024-05-19 16:17:02,637:INFO:Bolding first row of the table
+2024-05-19 16:17:02,638:INFO:Adjusting layout
+2024-05-19 16:17:02,638:INFO:Saving and showing plot
+2024-05-19 16:17:02,744:INFO:Saving results in a CSV file
+2024-05-19 16:17:02,754:INFO:Database connection successful.
+2024-05-19 16:17:02,754:INFO:Retrieving data from the database
+2024-05-19 16:17:02,754:INFO:Generating graph for Organismes communautaires et à but non-lucratif
+2024-05-19 16:17:02,754:INFO:Executing query
+2024-05-19 16:17:02,754:INFO:Retrieving data from the database
+2024-05-19 16:17:02,755:INFO:Received data from the database
+2024-05-19 16:17:02,755:INFO:Extracting languages and counts
+2024-05-19 16:17:02,755:INFO:Creating figure
+2024-05-19 16:17:02,764:INFO:Plotting pie chart
+2024-05-19 16:17:02,770:INFO:Creating count table
+2024-05-19 16:17:02,771:INFO:Bolding first row of the table
+2024-05-19 16:17:02,771:INFO:Adjusting layout
+2024-05-19 16:17:02,772:INFO:Saving and showing plot
+2024-05-19 16:17:02,880:INFO:Saving results in a CSV file
+2024-05-19 16:17:02,889:INFO:Database connection successful.
+2024-05-19 16:17:02,890:INFO:Retrieving data from the database
+2024-05-19 16:17:02,890:INFO:Retrieving data from the database
+2024-05-19 16:17:04,994:INFO:Saving results in a CSV file
+2024-05-19 16:17:04,997:INFO:Saving results inb an Excel file
+2024-05-19 16:17:05,026:INFO:Showing results

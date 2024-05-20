@@ -44,8 +44,8 @@ Just download it as a ZIP file, extract and explore with your preferred IDE.
 - 'general_analysis.ipynb' pipeline: Perform a general data analysis.
 - 'word_frequency.ipynb' pipeline: Analyze by word frequency.
 - 'language_distribution.ipynb' pipeline: Analyze by language distribution.
-- 'knowledge_type.ipynb' pipeline: Analyse by knowledge types
-- 'topic_analysis.ipynb' pipeline: Tokenize text and analyze by topics.
+- 'knowledge_type.ipynb' pipeline: Analyze by knowledge types
+- 'topic_analysis.ipynb' pipeline: Tokenize text by language and compared analysis by topics.
 
 ## Contributing
 

@@ -19,6 +19,7 @@ class WordFrequencyChart:
         Raises:
             ValueError: If db_path is None.
             ValueError: If the database connection is None.
+            FileNotFoundError: If the stopwords cannot be downloaded.
 
         Initializes the following instance variables:
             - db_path (str): The path to the database file.
@@ -35,17 +36,33 @@ class WordFrequencyChart:
         logging.info('Initializing WordFrequencyChart')
         if db_path is None:
             raise ValueError('db_path cannot be None')
+
         self.db_path = db_path
         self.db = Database(self.db_path)
         self.conn = self.db.conn
         if self.conn is None:
             raise ValueError('Database connection is None')
-        
+
+        try:
+            nltk.download('stopwords')
+        except LookupError:
+            raise FileNotFoundError('Stopwords cannot be downloaded')
+
         self.en_stopwords = set(stopwords.words('english'))
         self.fr_stopwords = set(stopwords.words('french'))
 
-        self.custom_stopwords = {'entre', 'ainsi', 'leurs', 'beaucoup', 'souvent', 'dire', 'plus', 'cette', 'fait', 'faire', 'donc', 'aussi', 'parce', 'peut', 'avoir', 'autres', 'sténo', 'tout', 'alors','vraiment', 'bien', 'être', 'quand', 'puis', 'très', 'faut', 'comme', 'ariane', 'émond', 'a', 'plus', 'comme', 'cette', 'ça', 'fait', 'être', 'faire', 'mme', 'donc', 'aussi', 'autres', 'si', 'entre', 'bien', 'tout', 'g', 'peut', 'leurs', 'o', 'gh', 'avoir', 'non', 'the', 'de', 'la', 'et', 'des', 'le', 'les', 'l', 'may', 'would', 'also', 'see', 'one', 'http', 'à', 'du', 'like', 'coprésidente', 'well', 'non', 'think', 'see', 'xurukulasuriya', 'dexter', 'plus', 'aussi', 'très', 'get', 'mme', 'novembre', 'séance', 'sténo', 'mmm', 'commissaire', 'coprésidente', 'know', 'sarah', 'soirée', 'go', 'oui', 'holness', 'ça', 'émond', 'thierry', 'thuot', 'lindor', 'merci', 'would', 'balarama', 'ariane', 'like', 'lot', 'donc', 'fait', 'si', 'comme', 'judy', 'ouellet', 'one', 'years', 'parce', 'going', 'pinet', 'monsieur', 'avoir', 'dit'}  # Add your additional stopwords here
-        self.custom_stopwords = set(self.custom_stopwords)
+        self.custom_stopwords = {
+            'entre', 'ainsi', 'leurs', 'beaucoup', 'souvent', 'dire', 'plus', 'cette', 'fait', 'faire', 'donc',
+            'aussi', 'parce', 'peut', 'avoir', 'autres', 'sténo', 'tout', 'alors', 'vraiment', 'bien', 'être',
+            'quand', 'puis', 'très', 'faut', 'comme', 'ariane', 'émond', 'a', 'plus', 'comme', 'cette', 'ça', 'fait',
+            'être', 'faire', 'mme', 'donc', 'aussi', 'autres', 'si', 'entre', 'bien', 'tout', 'g', 'peut', 'leurs',
+            'o', 'gh', 'avoir', 'non', 'the', 'de', 'la', 'et', 'des', 'le', 'les', 'l', 'may', 'would', 'also', 'see',
+            'one', 'http', 'à', 'du', 'like', 'coprésidente', 'well', 'non', 'think', 'see', 'xurukulasuriya', 'dexter',
+            'plus', 'aussi', 'très', 'get', 'mme', 'novembre', 'séance', 'sténo', 'mmm', 'commissaire', 'coprésidente',
+            'know', 'sarah', 'soirée', 'go', 'oui', 'holness', 'ça', 'émond', 'thierry', 'thuot', 'lindor', 'merci',
+            'would', 'balarama', 'ariane', 'like', 'lot', 'donc', 'fait', 'si', 'comme', 'judy', 'ouellet', 'one',
+            'years', 'parce', 'going', 'pinet', 'monsieur', 'avoir', 'dit'
+        }
 
         self.all_stopwords = self.en_stopwords.union(self.fr_stopwords, self.custom_stopwords)
 
@@ -53,20 +70,26 @@ class WordFrequencyChart:
         """
         Retrieves a pandas DataFrame from a SQL query.
 
-        Parameters:
+        Args:
             query (str): The SQL query to execute.
 
         Raises:
             ValueError: If the query is None.
             ValueError: If the retrieved content_df is None.
+            ValueError: If the connection to the database is None.
 
         Returns:
             pandas.DataFrame: The DataFrame containing the results of the query.
         """
         if query is None:
             raise ValueError('query cannot be None')
+        if self.conn is None:
+            raise ValueError('Database connection is None')
         logging.info('Retrieving data from the database')
-        content_df = pd.read_sql_query(query, self.conn)
+        try:
+            content_df = pd.read_sql_query(query, self.conn)
+        except Exception as e:
+            raise ValueError('Failed to retrieve data from the database') from e
         if content_df is None:
             raise ValueError('content_df is None')
         return content_df
@@ -93,12 +116,14 @@ class WordFrequencyChart:
         df = self.df_from_query(f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE category = '{where}'")
         if df is None:
             raise ValueError("df is None")
-        
+
+        # Check if any content is None
+        if df['content'].isnull().any().any():
+            raise ValueError("content contains None values")
+
         # Tokenize the text, convert to lowercase, and remove stop words
         word_freq = Counter()
         for content in df['content']:
-            if content is None:
-                raise ValueError("content is None")
             tokens = word_tokenize(content)
             words = [word.lower() for word in tokens if word.isalpha() and len(word) >= 4 and word.lower() not in self.all_stopwords]
             word_freq.update(words)
@@ -135,11 +160,21 @@ class WordFrequencyChart:
             ValueError: If the dataframe retrieved from the database is None or if any content in the dataframe is None.
         """
         logging.info('Tokenizing and removing stopwords')
-        # Retrieve text content of all French documents from the database
-        df = self.df_from_query(f"SELECT c.content FROM documents d INNER JOIN content C ON d.id = c.doc_id WHERE d.language = '{lang}'")
+        # Retrieve text content of all documents in the specified language
+        query = f"""
+        SELECT c.content
+        FROM documents d
+        INNER JOIN content C ON d.id = c.doc_id
+        WHERE d.language = '{lang}'
+        """
+        df = self.df_from_query(query)
         if df is None:
             raise ValueError('df is None')
-        
+
+        # Check if any content is None
+        if df['content'].isnull().any().any():
+            raise ValueError('content contains None values')
+
         # Tokenize the text, convert to lowercase, and remove stop words
         all_words = []
         for content in df['content']:
@@ -148,7 +183,7 @@ class WordFrequencyChart:
             tokens = word_tokenize(content)
             words = [word.lower() for word in tokens if word.isalpha() and word.lower() not in self.all_stopwords]
             all_words.extend(words)
-        
+
         # Count the frequency of each word
         word_freq = Counter(all_words)
 
@@ -156,8 +191,7 @@ class WordFrequencyChart:
         most_common_words = word_freq.most_common(20)
 
         # Extract word and frequency data for plotting
-        words = [word[0] for word in most_common_words]
-        frequencies = [word[1] for word in most_common_words]
+        words, frequencies = zip(*most_common_words)
 
         # Plot the most frequent words
         logging.info(f'Plotting the most frequent words in {lang} corpus')
@@ -191,8 +225,11 @@ class WordFrequencyChart:
         df = self.df_from_query("SELECT content FROM content")
         if df is None:
             logging.error('df is None')
-            print("df is None")
             raise ValueError('df is None')
+
+        # Check if any content is None
+        if df['content'].isnull().any().any():
+            raise ValueError('content contains None values')
 
         # Combine the content into a single string
         logging.info('Combining the content into a single string')

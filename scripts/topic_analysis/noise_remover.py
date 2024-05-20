@@ -6,15 +6,27 @@ from spacy.lang.en import English
 
 class NoiseRemover:
     def __init__(self, lang):
-        if lang == None:
+        """
+        Initialize the NoiseRemover class.
+
+        Args:
+            lang (str): The language to be used for noise removal.
+
+        Raises:
+            ValueError: If language is not specified.
+        """
+        # Check if language is specified
+        if lang is None:
             raise ValueError("Language must be specified")
         
         # Load spacy model
         try:
+            # Load French and English models
             self.nlp_fr = French()
             self.nlp_en = English()
         except Exception as e:
-            raise ValueError(f"Failed to load spacy model. Error: {e}", exc_info=True)
+            # Raise error if model loading fails
+            raise ValueError(f"Failed to load spacy model. Error: {e}")
         
         # Combine stopwords for both languages
         self.stopwords_fr = set(stopwords.words('french'))
@@ -22,12 +34,16 @@ class NoiseRemover:
         self.additional_stopwords = set()
 
         try:
-            with open(r'scripts\topic_analysis\stopwords.txt', 'r', encoding='utf-8') as f:
+            # Read additional stopwords from file
+            stopwords_file = r'scripts\topic_analysis\stopwords.txt'
+            with open(stopwords_file, 'r', encoding='utf-8') as f:
                 for line in f:
                     self.additional_stopwords.add(line.strip().lower())
         except FileNotFoundError:
-            raise FileNotFoundError("No stopwords.txt file found. Skipping addition of additional stopwords.")
+            # Log warning if stopwords file is not found
+            logging.warning("No stopwords.txt file found. Skipping addition of additional stopwords.")
         
+        # Set stopwords for the specified language
         if lang == 'bilingual':
             self.stopwords_lang = {
                 'fr': self.stopwords_fr | self.additional_stopwords,
@@ -40,21 +56,47 @@ class NoiseRemover:
         else:
             self.stopwords_lang = {}
         
+        # Log the number of additional stopwords added
         if self.stopwords_lang:
             logging.info(f"Added {len(self.stopwords_lang)} additional stopwords")
         else:
             logging.warning("No additional stopwords found. Skipping addition of additional stopwords.")
     
     def clean_docs(self, docs, lang=None):
+        """
+        Cleans the documents based on the specified language.
+
+        Args:
+            docs (list): The list of documents to be cleaned.
+            lang (str): The language of the documents. Default is None.
+
+        Returns:
+            list: The cleaned documents.
+
+        Raises:
+            ValueError: If docs is None or lang is None.
+            ValueError: If lang is invalid.
+        """
+        # Check if docs is not None
+        if docs is None:
+            raise ValueError("Documents must be specified")
+        
+        # Check if lang is specified
+        if lang is None:
+            raise ValueError("Language must be specified")
+        
         processed_docs = []
         logging.debug(f"Cleaning {len(docs)} documents")
 
+        # Determine the language of the documents and clean accordingly
         if lang == 'bilingual':
             processed_docs = self.bilingual_docs(docs)
         elif lang == 'fr':
             processed_docs = self.fr_docs(docs)
         elif lang == 'en':
             processed_docs = self.en_docs(docs)
+        else:
+            raise ValueError("Invalid language")
         
         return processed_docs
     
@@ -62,16 +104,14 @@ class NoiseRemover:
         logging.info("Cleaning bilingual documents")
         logging.debug(f"Documents to clean: {len(docs)}")
 
-        logging.debug("Flattening documents")
-        flattened_docs = [item for sublist in docs for item in sublist]
-        logging.debug(f"Flattened documents: {len(flattened_docs)}")
-
-        logging.debug("Merging documents")
-        merged_docs = {'fr': [], 'en': []}
         try:
+            flattened_docs = [item for sublist in docs for item in sublist]
+            logging.debug(f"Flattened documents: {len(flattened_docs)}")
+
+            merged_docs = {'fr': [], 'en': []}
+
             # Merge list of dictionaries into a single dictionary
             for doc in flattened_docs:
-                logging.debug(f"Merging document: {doc}")
                 if doc is None:
                     raise ValueError("Document is None")
                 for key, value in doc.items():
@@ -81,14 +121,12 @@ class NoiseRemover:
                         merged_docs[key] = [value]
             logging.debug(f"Merged documents: {merged_docs}")
 
-            logging.debug("Translating punctuation")
             translation_table = str.maketrans('', '', string.punctuation)
 
             merged_docs['fr'] = [value.translate(translation_table) for value in merged_docs['fr']]
             merged_docs['en'] = [value.translate(translation_table) for value in merged_docs['en']]
             logging.debug(f"Translated punctuation: {merged_docs}")
 
-            logging.debug("Filtering out empty strings")
             merged_docs = {
                 'fr': [value for value in merged_docs['fr'] if value],
                 'en': [value for value in merged_docs['en'] if value]
@@ -96,12 +134,10 @@ class NoiseRemover:
             logging.debug(f"Filtered empty strings: {merged_docs}")
 
             stopwords_lang = self.stopwords_lang
-            logging.debug("Fitlering stopwords")
             merged_docs['fr'] = [value for value in merged_docs['fr'] if value.lower() not in stopwords_lang['fr']]
             merged_docs['en'] = [value for value in merged_docs['en'] if value.lower() not in stopwords_lang['en']]
             logging.debug(f"Filtered stopwords: {merged_docs}")
 
-            logging.debug("Removing duplicates")
             merged_docs = {
                 'fr': list(set(merged_docs['fr'])),
                 'en': list(set(merged_docs['en']))
@@ -116,33 +152,91 @@ class NoiseRemover:
         return merged_docs
     
     def fr_docs(self, docs):
+        """
+        Cleans French documents by removing punctuation, stopwords, and digits.
+        
+        Args:
+            docs (list): List of French documents to be cleaned.
+        
+        Returns:
+            list: Cleaned French documents.
+        """
+        # Log start of document cleaning process
         logging.debug(f"Cleaning {len(docs)} documents")
+        
         try:
+            processed_docs = []  # List to store cleaned documents
+            
+            # Process each document in the list
             for doc in docs:
+                if doc is None:
+                    raise ValueError("Document is None")
+                
+                # Tokenize the document using French spaCy model
                 tokens = self.nlp_fr(doc)
+                
+                # Filter tokens to remove punctuation, stopwords, and digits
+                filtered_tokens = [token.text.lower() for token in tokens 
+                                   if token.text.lower() not in self.stopwords_fr 
+                                   and token.text not in string.punctuation 
+                                   and not token.text.isdigit()]
+                
+                # Join the filtered tokens to form a processed document
+                processed_doc = ' '.join(filtered_tokens)
+                
+                # Append cleaned document to the list if it is not empty
+                if processed_doc and len(processed_doc) > 0:
+                    processed_docs.append(processed_doc)
+            
+            # Return the list of cleaned documents
+            return processed_docs
+        
+        # Log and return empty list if an error occurs during document cleaning
         except Exception as e:
             logging.error(f"Failed to clean documents. Error: {e}", exc_info=True)
             return []
-        
-        filtered_tokens = [token.text.lower() for token in tokens if token.text.lower() not in self.stopwords_fr and token.text not in string.punctuation and not token.text.isdigit()]
-        logging.debug(f"Filtered tokens: {filtered_tokens}")
-
-        processed_doc = ' '.join(filtered_tokens)
-        if processed_doc and len(processed_doc) > 0:
-            return [processed_doc]
         
     def en_docs(self, docs):
+        """
+        Cleans English documents by removing punctuation, stopwords, and digits.
+        
+        Args:
+            docs (list): List of English documents to be cleaned.
+        
+        Returns:
+            list: Cleaned English documents.
+        """
+        # Log start of document cleaning process
         logging.debug(f"Cleaning {len(docs)} documents")
+        
         try:
+            processed_docs = []  # List to store cleaned documents
+            
+            # Process each document in the list
             for doc in docs:
+                if doc is None:
+                    raise ValueError("Document is None")
+                
+                # Tokenize the document using English spaCy model
                 tokens = self.nlp_en(doc)
+                
+                # Filter tokens to remove punctuation, stopwords, and digits
+                filtered_tokens = [token.text.lower() for token in tokens 
+                                   if token.text.lower() not in self.stopwords_en 
+                                   and token.text not in string.punctuation 
+                                   and not token.text.isdigit()]
+                
+                # Join the filtered tokens to form a processed document
+                processed_doc = ' '.join(filtered_tokens)
+                
+                # Append cleaned document to the list if it is not empty
+                if processed_doc and len(processed_doc) > 0:
+                    processed_docs.append(processed_doc)
+            
+            # Return the list of cleaned documents
+            return processed_docs
+        
+        # Log and return empty list if an error occurs during document cleaning
         except Exception as e:
             logging.error(f"Failed to clean documents. Error: {e}", exc_info=True)
             return []
-        
-        filtered_tokens = [token.text.lower() for token in tokens if token.text.lower() not in self.stopwords_en and token.text not in string.punctuation and not token.text.isdigit()]
-        logging.debug(f"Filtered tokens: {filtered_tokens}")
-
-        processed_doc = ' '.join(filtered_tokens)
-        if processed_doc and len(processed_doc) > 0:
-            return [processed_doc]
