@@ -49,7 +49,7 @@ Just download it as a ZIP file, extract and explore with your preferred IDE.
 
 ## Contributing
 
-Please read the [contribution guidelines](CONTRIBUTING.md) for more information.
+This repository is open for contributions. Please read the [contribution guidelines](CONTRIBUTING.md) for more information.
 
 ## License
 
