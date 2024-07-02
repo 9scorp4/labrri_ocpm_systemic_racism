@@ -4,6 +4,15 @@ import os
 from pathlib import Path
 from datetime import datetime
 import logging
+from starlette.applications import Starlette
+from starlette.staticfiles import StaticFiles
+
+# Initialize static files folder
+app = Starlette()
+static_dir = Path(os.path.dirname(__file__)) / "static"
+if not static_dir.exists():
+    os.makedirs(static_dir)
+
 from scripts.database import Database
 from scripts.document_processing import ProcessDocuments
 
@@ -28,6 +37,9 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s:%(levelname)s:%(message)s",
 )
+
+# Initialize static files
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Initialize functions
 csv_to_xlsx = Database(DB_FILE).csv_to_xlsx

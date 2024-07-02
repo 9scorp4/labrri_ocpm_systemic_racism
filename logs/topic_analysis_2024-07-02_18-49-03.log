@@ -1,0 +1,13 @@
+2024-07-02 18:49:08,783:INFO:Initializing Tools
+2024-07-02 18:49:08,785:INFO:Added 102 additional stopwords
+2024-07-02 18:49:09,342:INFO:Initializing Process
+2024-07-02 18:49:09,343:INFO:Initializing Tools
+2024-07-02 18:49:09,343:INFO:Added 102 additional stopwords
+2024-07-02 18:49:09,889:INFO:Added 102 additional stopwords
+2024-07-02 18:49:10,456:ERROR:Error fetching document 1 from the database: no such column: id
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\analysis.py", line 53, in fetch_single
+    cursor.execute("SELECT id, content FROM content WHERE doc_id=?", (doc_id,))
+sqlite3.OperationalError: no such column: id
+2024-07-02 18:49:10,458:ERROR:Document with ID 1 not found in the database
+2024-07-02 18:49:10,458:INFO:Data processing completed successfully

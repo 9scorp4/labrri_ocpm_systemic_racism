@@ -166,11 +166,21 @@ class NoiseRemover:
         
         try:
             processed_docs = []  # List to store cleaned documents
+
+            if isinstance(docs, list):
+                docs = [docs]
+            elif not isinstance(docs, list):
+                raise ValueError("Expected a list, but got: {}".format(type(docs)))
             
             # Process each document in the list
             for doc in docs:
                 if doc is None:
-                    raise ValueError("Document is None")
+                    continue
+                
+                if isinstance(doc, list):
+                    doc = " ".join(doc)
+                elif not isinstance(doc, str):
+                    raise ValueError("Expected a string, but got: {}".format(type(doc)))
                 
                 # Tokenize the document using French spaCy model
                 tokens = self.nlp_fr(doc)
@@ -187,6 +197,9 @@ class NoiseRemover:
                 # Append cleaned document to the list if it is not empty
                 if processed_doc and len(processed_doc) > 0:
                     processed_docs.append(processed_doc)
+            
+            if not processed_docs:
+                logging.warning("No valid documents after cleaning.")
             
             # Return the list of cleaned documents
             return processed_docs
@@ -216,6 +229,11 @@ class NoiseRemover:
             for doc in docs:
                 if doc is None:
                     raise ValueError("Document is None")
+                
+                if isinstance(doc, list):
+                    doc = ' '.join(doc)
+                elif not isinstance(doc, str):
+                    raise ValueError("Expected a string, but got: {}".format(type(doc)))
                 
                 # Tokenize the document using English spaCy model
                 tokens = self.nlp_en(doc)

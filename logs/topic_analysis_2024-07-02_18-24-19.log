@@ -1,0 +1,36 @@
+2024-07-02 18:25:31,177:INFO:Initializing Tools
+2024-07-02 18:25:31,177:ERROR:Failed to process data: Error: Language must be specified
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis_main.py", line 14, in main
+    analysis = Analysis(db=r'data\database.db', lang=lang)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\analysis.py", line 24, in __init__
+    self.tools = Tools()
+                 ^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\tools.py", line 22, in __init__
+    raise ValueError("Language must be specified")
+ValueError: Language must be specified
+2024-07-02 18:30:19,010:INFO:Initializing Tools
+2024-07-02 18:30:19,010:ERROR:Failed to process data: Error: Language must be specified
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis_main.py", line 14, in main
+    analysis = Analysis(db=r'data\database.db', lang=lang)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\analysis.py", line 24, in __init__
+    self.tools = Tools(lang)
+                 ^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\tools.py", line 22, in __init__
+    raise ValueError("Language must be specified")
+ValueError: Language must be specified
+2024-07-02 18:30:26,082:INFO:Initializing Tools
+2024-07-02 18:30:26,082:ERROR:Failed to process data: Error: Language must be specified
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis_main.py", line 14, in main
+    analysis = Analysis(db=r'data\database.db', lang=lang)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\analysis.py", line 24, in __init__
+    self.tools = Tools(lang)
+                 ^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\topic_analysis\tools.py", line 22, in __init__
+    raise ValueError("Language must be specified")
+ValueError: Language must be specified

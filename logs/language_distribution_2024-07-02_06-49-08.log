@@ -1,0 +1,35 @@
+2024-07-02 06:49:09,679:INFO:generated new fontManager
+2024-07-02 06:49:12,353:INFO:Database connection successful.
+2024-07-02 06:49:12,354:INFO:Retrieving data from the database
+2024-07-02 06:49:12,354:INFO:Generating graph for All categories
+2024-07-02 06:49:12,354:INFO:Executing query
+2024-07-02 06:49:12,354:INFO:Retrieving data from the database
+2024-07-02 06:49:12,354:INFO:Received data from the database
+2024-07-02 06:49:12,355:INFO:Extracting languages and counts
+2024-07-02 06:49:12,355:INFO:Creating figure
+2024-07-02 06:49:12,385:INFO:Plotting pie chart
+2024-07-02 06:49:12,390:INFO:Creating count table
+2024-07-02 06:49:12,391:INFO:Bolding first row of the table
+2024-07-02 06:49:12,391:INFO:Adjusting layout
+2024-07-02 06:49:12,392:INFO:Saving and showing plot
+2024-07-02 06:49:12,498:INFO:Saving results in a CSV file
+2024-07-02 06:49:12,510:INFO:Database connection successful.
+2024-07-02 06:49:12,510:INFO:Retrieving data from the database
+2024-07-02 06:49:12,510:INFO:Generating graph for Organismes communautaires et à but non-lucratif
+2024-07-02 06:49:12,510:INFO:Executing query
+2024-07-02 06:49:12,510:INFO:Retrieving data from the database
+2024-07-02 06:49:12,512:INFO:Received data from the database
+2024-07-02 06:49:12,512:INFO:Extracting languages and counts
+2024-07-02 06:49:12,512:INFO:Creating figure
+2024-07-02 06:49:12,523:INFO:Plotting pie chart
+2024-07-02 06:49:12,583:INFO:Creating count table
+2024-07-02 06:49:12,583:INFO:Bolding first row of the table
+2024-07-02 06:49:12,584:INFO:Adjusting layout
+2024-07-02 06:49:12,584:INFO:Saving and showing plot
+2024-07-02 06:49:12,688:INFO:Saving results in a CSV file
+2024-07-02 06:49:12,698:INFO:Database connection successful.
+2024-07-02 06:49:12,698:INFO:Retrieving data from the database
+2024-07-02 06:49:12,698:INFO:Retrieving data from the database
+2024-07-02 06:49:15,530:INFO:Saving results in a CSV file
+2024-07-02 06:49:15,533:INFO:Saving results inb an Excel file
+2024-07-02 06:49:15,642:INFO:Showing results

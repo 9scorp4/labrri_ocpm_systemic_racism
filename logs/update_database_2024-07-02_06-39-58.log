@@ -1,0 +1,1862 @@
+2024-07-02 06:39:58,544:INFO:Database connection successful.
+2024-07-02 06:39:58,544:INFO:Database connection successful.
+2024-07-02 06:39:58,544:INFO:Database connection successful.
+2024-07-02 06:39:58,550:DEBUG:CSV file data\pdf_list.csv successfully read.
+2024-07-02 06:39:58,656:INFO:XLSX file data\pdf_list.xlsx successfully created.
+2024-07-02 06:39:58,708:INFO:Processing document: data\data\8.1-Regroupement des activistes pour l'inclusion au Québec (RAPLIQ)\8.1_rapliq.pdf
+2024-07-02 06:39:58,709:INFO:Extracting text from PDF: data\data\8.1-Regroupement des activistes pour l'inclusion au Québec (RAPLIQ)\8.1_rapliq.pdf
+2024-07-02 06:39:58,709:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,710:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,711:INFO:Processing document: data\data\8.2-François Picard\8.2_francois_picard.pdf
+2024-07-02 06:39:58,711:INFO:Extracting text from PDF: data\data\8.2-François Picard\8.2_francois_picard.pdf
+2024-07-02 06:39:58,711:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,711:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,712:INFO:Processing document: data\data\8.3-Carrefour de ressources en interculturel\8.3_carrefour_de_ressources_en_interculturel.pdf
+2024-07-02 06:39:58,712:INFO:Extracting text from PDF: data\data\8.3-Carrefour de ressources en interculturel\8.3_carrefour_de_ressources_en_interculturel.pdf
+2024-07-02 06:39:58,712:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,712:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,713:INFO:Processing document: data\data\8.4-Diversité artistique Montréal (DAM)\8.4_dam.pdf
+2024-07-02 06:39:58,713:INFO:Extracting text from PDF: data\data\8.4-Diversité artistique Montréal (DAM)\8.4_dam.pdf
+2024-07-02 06:39:58,713:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,713:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,715:INFO:Processing document: data\data\8.5-DéPhy Montréal\8.5_dephy_montreal.pdf
+2024-07-02 06:39:58,715:INFO:Extracting text from PDF: data\data\8.5-DéPhy Montréal\8.5_dephy_montreal.pdf
+2024-07-02 06:39:58,715:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,715:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,715:INFO:Processing document: data\data\8.6-Conseil des arts de Montréal\8.6_cam-memoire_racisme_discrimination.pdf
+2024-07-02 06:39:58,715:INFO:Extracting text from PDF: data\data\8.6-Conseil des arts de Montréal\8.6_cam-memoire_racisme_discrimination.pdf
+2024-07-02 06:39:58,715:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,716:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,716:INFO:Processing document: data\data\8.7-COR Organisme de communication, ouverture et rapprochement interculturel\8.7_cor.pdf
+2024-07-02 06:39:58,717:INFO:Extracting text from PDF: data\data\8.7-COR Organisme de communication, ouverture et rapprochement interculturel\8.7_cor.pdf
+2024-07-02 06:39:58,717:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,717:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,717:INFO:Processing document: data\data\8.8-Marie-Ève Couture Ménard\8.8_marieeve_couturemenard.pdf
+2024-07-02 06:39:58,718:INFO:Extracting text from PDF: data\data\8.8-Marie-Ève Couture Ménard\8.8_marieeve_couturemenard.pdf
+2024-07-02 06:39:58,718:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,718:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,719:INFO:Processing document: data\data\8.9-Marie-Chantale Faust\8.9_mariechantalefaust.pdf
+2024-07-02 06:39:58,719:INFO:Extracting text from PDF: data\data\8.9-Marie-Chantale Faust\8.9_mariechantalefaust.pdf
+2024-07-02 06:39:58,719:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,719:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,720:INFO:Processing document: data\data\8.10-Conseil jeunesse de Montréal\8.10_conseiljeunessemontreal.pdf
+2024-07-02 06:39:58,720:INFO:Extracting text from PDF: data\data\8.10-Conseil jeunesse de Montréal\8.10_conseiljeunessemontreal.pdf
+2024-07-02 06:39:58,720:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,721:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,721:INFO:Processing document: data\data\8.11-Ligue des droits et libertés\8.11_liguedroitliberte.pdf
+2024-07-02 06:39:58,722:INFO:Extracting text from PDF: data\data\8.11-Ligue des droits et libertés\8.11_liguedroitliberte.pdf
+2024-07-02 06:39:58,722:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,722:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,723:INFO:Processing document: data\data\8.12-Deepak Awasti\8.12_deepak_awasti.pdf
+2024-07-02 06:39:58,723:INFO:Extracting text from PDF: data\data\8.12-Deepak Awasti\8.12_deepak_awasti.pdf
+2024-07-02 06:39:58,723:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,723:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,724:INFO:Processing document: data\data\8.13-Forum jeunesse de l'île de Montréal\8.13_fjim.pdf
+2024-07-02 06:39:58,724:INFO:Extracting text from PDF: data\data\8.13-Forum jeunesse de l'île de Montréal\8.13_fjim.pdf
+2024-07-02 06:39:58,724:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,725:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,725:INFO:Processing document: data\data\8.14-L'équipe de recherche et d'action Erasme et collaborateurs\8.14_erasme.pdf
+2024-07-02 06:39:58,725:INFO:Extracting text from PDF: data\data\8.14-L'équipe de recherche et d'action Erasme et collaborateurs\8.14_erasme.pdf
+2024-07-02 06:39:58,725:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,726:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,726:INFO:Processing document: data\data\8.15-Conseil québécois LGBT\8.15_conseil_quebecois_lgbt.pdf
+2024-07-02 06:39:58,726:INFO:Extracting text from PDF: data\data\8.15-Conseil québécois LGBT\8.15_conseil_quebecois_lgbt.pdf
+2024-07-02 06:39:58,726:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,727:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,729:INFO:Processing document: data\data\8.16-Culture Montréal\8.16_culture_montreal.pdf
+2024-07-02 06:39:58,729:INFO:Extracting text from PDF: data\data\8.16-Culture Montréal\8.16_culture_montreal.pdf
+2024-07-02 06:39:58,730:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,730:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,731:INFO:Processing document: data\data\8.17-Parole d'excluES\8.17_parole_dexclues.pdf
+2024-07-02 06:39:58,731:INFO:Extracting text from PDF: data\data\8.17-Parole d'excluES\8.17_parole_dexclues.pdf
+2024-07-02 06:39:58,731:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,731:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,732:INFO:Processing document: data\data\8.18-Table de quartier de Parc-Extension\8.18_tablequartier_parcextension.pdf
+2024-07-02 06:39:58,732:INFO:Extracting text from PDF: data\data\8.18-Table de quartier de Parc-Extension\8.18_tablequartier_parcextension.pdf
+2024-07-02 06:39:58,732:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,732:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,733:INFO:Processing document: data\data\8.19-Nafija Rahman\8.19_nafija_rahman.pdf
+2024-07-02 06:39:58,733:INFO:Extracting text from PDF: data\data\8.19-Nafija Rahman\8.19_nafija_rahman.pdf
+2024-07-02 06:39:58,734:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,734:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,734:INFO:Processing document: data\data\8.20-Alain Babineau\8.20_alain_babineau.pdf
+2024-07-02 06:39:58,734:INFO:Extracting text from PDF: data\data\8.20-Alain Babineau\8.20_alain_babineau.pdf
+2024-07-02 06:39:58,735:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,735:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,735:INFO:Processing document: data\data\8.21-André Dudemaine\8.21_andre_dudemaine.pdf
+2024-07-02 06:39:58,736:INFO:Extracting text from PDF: data\data\8.21-André Dudemaine\8.21_andre_dudemaine.pdf
+2024-07-02 06:39:58,736:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,736:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,736:INFO:Processing document: data\data\8.22-Maurice Bakinde\8.22_maurice_bakinde.pdf
+2024-07-02 06:39:58,737:INFO:Extracting text from PDF: data\data\8.22-Maurice Bakinde\8.22_maurice_bakinde.pdf
+2024-07-02 06:39:58,737:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,737:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,737:INFO:Processing document: data\data\8.23-Concordia Student Union\8.23_concordia_student_union_brief.pdf
+2024-07-02 06:39:58,738:INFO:Extracting text from PDF: data\data\8.23-Concordia Student Union\8.23_concordia_student_union_brief.pdf
+2024-07-02 06:39:58,738:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,738:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,738:INFO:Processing document: data\data\8.24-CRARR\8.24_memoire_crarr_-_profilage_racial_-_consultation_publique_-_juin_2017.pdf
+2024-07-02 06:39:58,739:INFO:Extracting text from PDF: data\data\8.24-CRARR\8.24_memoire_crarr_-_profilage_racial_-_consultation_publique_-_juin_2017.pdf
+2024-07-02 06:39:58,739:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,739:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,740:INFO:Processing document: data\data\8.25-Michèle Chappaz\8.25_michele_chappaz.pdf
+2024-07-02 06:39:58,741:INFO:Extracting text from PDF: data\data\8.25-Michèle Chappaz\8.25_michele_chappaz.pdf
+2024-07-02 06:39:58,741:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,741:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,742:INFO:Processing document: data\data\8.26-Conseil de Montréalaises\8.26_conseil_des_montrealaises.pdf
+2024-07-02 06:39:58,742:INFO:Extracting text from PDF: data\data\8.26-Conseil de Montréalaises\8.26_conseil_des_montrealaises.pdf
+2024-07-02 06:39:58,742:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,743:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,743:INFO:Processing document: data\data\8.27-Groupe de recherche\8.27_rapport_armony-hassaoui-mulone.pdf
+2024-07-02 06:39:58,743:INFO:Extracting text from PDF: data\data\8.27-Groupe de recherche\8.27_rapport_armony-hassaoui-mulone.pdf
+2024-07-02 06:39:58,744:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,744:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,744:INFO:Processing document: data\data\8.28-Centre Justice et Foi\8.28_centre_justice_et_foi.pdf
+2024-07-02 06:39:58,744:INFO:Extracting text from PDF: data\data\8.28-Centre Justice et Foi\8.28_centre_justice_et_foi.pdf
+2024-07-02 06:39:58,745:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,745:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,746:INFO:Processing document: data\data\8.29-Bienné Blémur\8.29_biemur_recommandations_ocpm_-_11_novembre_2019.pdf
+2024-07-02 06:39:58,746:INFO:Extracting text from PDF: data\data\8.29-Bienné Blémur\8.29_biemur_recommandations_ocpm_-_11_novembre_2019.pdf
+2024-07-02 06:39:58,746:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,746:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,747:INFO:Processing document: data\data\8.30-Centre social d'aide aux immigrants (CSAI)\8.30_rap_csai.pdf
+2024-07-02 06:39:58,747:INFO:Extracting text from PDF: data\data\8.30-Centre social d'aide aux immigrants (CSAI)\8.30_rap_csai.pdf
+2024-07-02 06:39:58,747:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,747:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,748:INFO:Processing document: data\data\8.31-Conseil interculturel de Montréal\8.31_memoirecim_racisme_systemique_2019.pdf
+2024-07-02 06:39:58,748:INFO:Extracting text from PDF: data\data\8.31-Conseil interculturel de Montréal\8.31_memoirecim_racisme_systemique_2019.pdf
+2024-07-02 06:39:58,748:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,749:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,750:INFO:Processing document: data\data\8.32-Production Feux Sacrés\8.32.2_nadine_stlouis_pfs_rapport_annuel_2018-2019_fr_web.pdf
+2024-07-02 06:39:58,750:INFO:Extracting text from PDF: data\data\8.32-Production Feux Sacrés\8.32.2_nadine_stlouis_pfs_rapport_annuel_2018-2019_fr_web.pdf
+2024-07-02 06:39:58,750:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,750:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,750:INFO:Processing document: data\data\8.33-Fédération des coopératives d'habitation intermunicipale du Montréal métropolitain (FECHIMM)\8.33_fechimm.pdf
+2024-07-02 06:39:58,751:INFO:Extracting text from PDF: data\data\8.33-Fédération des coopératives d'habitation intermunicipale du Montréal métropolitain (FECHIMM)\8.33_fechimm.pdf
+2024-07-02 06:39:58,751:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,751:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,752:INFO:Processing document: data\data\8.34-Daniel Guibord\8.34_guibord_daniel.pdf
+2024-07-02 06:39:58,752:INFO:Extracting text from PDF: data\data\8.34-Daniel Guibord\8.34_guibord_daniel.pdf
+2024-07-02 06:39:58,752:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,753:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,753:INFO:Processing document: data\data\8.35-Thi Thanh Hien Pham\8.35_thi_thanh_hien_pham.pdf
+2024-07-02 06:39:58,753:INFO:Extracting text from PDF: data\data\8.35-Thi Thanh Hien Pham\8.35_thi_thanh_hien_pham.pdf
+2024-07-02 06:39:58,753:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,754:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,754:INFO:Processing document: data\data\8.36-Gustave Arroyo\8.36_gustave_arroyo.pdf
+2024-07-02 06:39:58,754:INFO:Extracting text from PDF: data\data\8.36-Gustave Arroyo\8.36_gustave_arroyo.pdf
+2024-07-02 06:39:58,754:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,755:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,755:INFO:Processing document: data\data\8.37-Henintsoa Ravoala\8.37_henintsoa_ravoala.pdf
+2024-07-02 06:39:58,756:INFO:Extracting text from PDF: data\data\8.37-Henintsoa Ravoala\8.37_henintsoa_ravoala.pdf
+2024-07-02 06:39:58,756:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,756:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,757:INFO:Processing document: data\data\8.38-Robyn Maynard\8.38_robyn_maynard.pdf
+2024-07-02 06:39:58,757:INFO:Extracting text from PDF: data\data\8.38-Robyn Maynard\8.38_robyn_maynard.pdf
+2024-07-02 06:39:58,757:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,758:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,758:INFO:Processing document: data\data\8.39-Xin Bei Cao\8.39_xin_bei_cao.pdf
+2024-07-02 06:39:58,758:INFO:Extracting text from PDF: data\data\8.39-Xin Bei Cao\8.39_xin_bei_cao.pdf
+2024-07-02 06:39:58,758:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,759:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,759:INFO:Processing document: data\data\8.40-Jonathan Harding\8.40_jonathan_harding.pdf
+2024-07-02 06:39:58,759:INFO:Extracting text from PDF: data\data\8.40-Jonathan Harding\8.40_jonathan_harding.pdf
+2024-07-02 06:39:58,759:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,760:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,760:INFO:Processing document: data\data\8.41-Donovan King\8.41_donovan_king.pdf
+2024-07-02 06:39:58,760:INFO:Extracting text from PDF: data\data\8.41-Donovan King\8.41_donovan_king.pdf
+2024-07-02 06:39:58,760:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,761:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,761:INFO:Processing document: data\data\8.42-Centre d'éducation et d'action des femmes\8.42_centre_education_action_femme.pdf
+2024-07-02 06:39:58,761:INFO:Extracting text from PDF: data\data\8.42-Centre d'éducation et d'action des femmes\8.42_centre_education_action_femme.pdf
+2024-07-02 06:39:58,762:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,762:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,762:INFO:Processing document: data\data\8.43-Action accessible\8.43_action_accessible.pdf
+2024-07-02 06:39:58,763:INFO:Extracting text from PDF: data\data\8.43-Action accessible\8.43_action_accessible.pdf
+2024-07-02 06:39:58,763:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,763:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,764:INFO:Processing document: data\data\8.44-Sharon Hackett\8.44_sharon_hackett.pdf
+2024-07-02 06:39:58,764:INFO:Extracting text from PDF: data\data\8.44-Sharon Hackett\8.44_sharon_hackett.pdf
+2024-07-02 06:39:58,764:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,764:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,765:INFO:Processing document: data\data\8.45-#MTLSansProfilage\8.45_mtlsansprofilage.pdf
+2024-07-02 06:39:58,765:INFO:Extracting text from PDF: data\data\8.45-#MTLSansProfilage\8.45_mtlsansprofilage.pdf
+2024-07-02 06:39:58,765:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,765:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,766:INFO:Processing document: data\data\8.46-Inclusion Jeunesse\8.46_inclusion_jeunesse.pdf
+2024-07-02 06:39:58,766:INFO:Extracting text from PDF: data\data\8.46-Inclusion Jeunesse\8.46_inclusion_jeunesse.pdf
+2024-07-02 06:39:58,766:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,766:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,767:INFO:Processing document: data\data\8.47-Sam Boskey\8.47_sam_boskey.pdf
+2024-07-02 06:39:58,767:INFO:Extracting text from PDF: data\data\8.47-Sam Boskey\8.47_sam_boskey.pdf
+2024-07-02 06:39:58,767:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,767:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,768:INFO:Processing document: data\data\8.48-Ensemble Montréal\8.48_ensemble_montreal.pdf
+2024-07-02 06:39:58,768:INFO:Extracting text from PDF: data\data\8.48-Ensemble Montréal\8.48_ensemble_montreal.pdf
+2024-07-02 06:39:58,768:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,769:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,769:INFO:Processing document: data\data\8.50-Social Service Program - Dawson College\8.50_social_service_program_dawson_college.pdf
+2024-07-02 06:39:58,769:INFO:Extracting text from PDF: data\data\8.50-Social Service Program - Dawson College\8.50_social_service_program_dawson_college.pdf
+2024-07-02 06:39:58,769:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,770:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,770:INFO:Processing document: data\data\8.51-Adelle Blackett\8.51_adelle_blackett.pdf
+2024-07-02 06:39:58,770:INFO:Extracting text from PDF: data\data\8.51-Adelle Blackett\8.51_adelle_blackett.pdf
+2024-07-02 06:39:58,770:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,771:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,771:INFO:Processing document: data\data\8.52-Femmes et villes international\8.52_femmes_et_villes_international.pdf
+2024-07-02 06:39:58,772:INFO:Extracting text from PDF: data\data\8.52-Femmes et villes international\8.52_femmes_et_villes_international.pdf
+2024-07-02 06:39:58,772:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,772:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,773:INFO:Processing document: data\data\8.53-Ross Stitt\8.53_ross_stitt.pdf
+2024-07-02 06:39:58,773:INFO:Extracting text from PDF: data\data\8.53-Ross Stitt\8.53_ross_stitt.pdf
+2024-07-02 06:39:58,773:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,773:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,774:INFO:Processing document: data\data\8.54-Taha Abderrafie Maalla\8.54_taha_abderrafie_maalla.pdf
+2024-07-02 06:39:58,774:INFO:Extracting text from PDF: data\data\8.54-Taha Abderrafie Maalla\8.54_taha_abderrafie_maalla.pdf
+2024-07-02 06:39:58,774:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,774:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,775:INFO:Processing document: data\data\8.55-Alex Hernane\8.55_alex_hernane.pdf
+2024-07-02 06:39:58,775:INFO:Extracting text from PDF: data\data\8.55-Alex Hernane\8.55_alex_hernane.pdf
+2024-07-02 06:39:58,775:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,775:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,776:INFO:Processing document: data\data\8.56-Relais-femmes\8.56_relais-femmes.pdf
+2024-07-02 06:39:58,776:INFO:Extracting text from PDF: data\data\8.56-Relais-femmes\8.56_relais-femmes.pdf
+2024-07-02 06:39:58,776:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,776:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,777:INFO:Processing document: data\data\8.57-Centraide\8.57_centraide.pdf
+2024-07-02 06:39:58,777:INFO:Extracting text from PDF: data\data\8.57-Centraide\8.57_centraide.pdf
+2024-07-02 06:39:58,777:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,778:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,779:INFO:Processing document: data\data\8.58-Justice Femme\8.58_justice_femme.pdf
+2024-07-02 06:39:58,779:INFO:Extracting text from PDF: data\data\8.58-Justice Femme\8.58_justice_femme.pdf
+2024-07-02 06:39:58,779:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,780:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,780:INFO:Processing document: data\data\8.59-Fondation Canadienne des femmes\8.59_anuradha_dugal.pdf
+2024-07-02 06:39:58,781:INFO:Extracting text from PDF: data\data\8.59-Fondation Canadienne des femmes\8.59_anuradha_dugal.pdf
+2024-07-02 06:39:58,781:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,781:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,781:INFO:Processing document: data\data\8.60-Frantz Jean-Jacques\8.60.1_depose_par_frantz_jean-jacques-14_nov_2019.pdf
+2024-07-02 06:39:58,782:INFO:Extracting text from PDF: data\data\8.60-Frantz Jean-Jacques\8.60.1_depose_par_frantz_jean-jacques-14_nov_2019.pdf
+2024-07-02 06:39:58,782:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,782:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,783:INFO:Processing document: data\data\8.60-Frantz Jean-Jacques\8.60.2_depose_par_frantz_jean-jacques-a_qui_veut_bien_lentendre.pdf
+2024-07-02 06:39:58,783:INFO:Extracting text from PDF: data\data\8.60-Frantz Jean-Jacques\8.60.2_depose_par_frantz_jean-jacques-a_qui_veut_bien_lentendre.pdf
+2024-07-02 06:39:58,783:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,783:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,784:INFO:Processing document: data\data\8.60-Frantz Jean-Jacques\8.60.3_depose_par_frantz_jean-jacques-des_coupables_innocents_-_la_presse.pdf
+2024-07-02 06:39:58,784:INFO:Extracting text from PDF: data\data\8.60-Frantz Jean-Jacques\8.60.3_depose_par_frantz_jean-jacques-des_coupables_innocents_-_la_presse.pdf
+2024-07-02 06:39:58,784:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,784:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,785:INFO:Processing document: data\data\8.60-Frantz Jean-Jacques\8.60.4_transcription.pdf
+2024-07-02 06:39:58,785:INFO:Extracting text from PDF: data\data\8.60-Frantz Jean-Jacques\8.60.4_transcription.pdf
+2024-07-02 06:39:58,785:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,785:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,786:INFO:Processing document: data\data\8.61-Sandrine Brodeur-Desrosiers\8.61_sandrinebrodeurdesrosiers.pdf
+2024-07-02 06:39:58,786:INFO:Extracting text from PDF: data\data\8.61-Sandrine Brodeur-Desrosiers\8.61_sandrinebrodeurdesrosiers.pdf
+2024-07-02 06:39:58,786:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,787:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,787:INFO:Processing document: data\data\8.62-Balarama Holness\8.62.1_holness_transcription.pdf
+2024-07-02 06:39:58,787:INFO:Extracting text from PDF: data\data\8.62-Balarama Holness\8.62.1_holness_transcription.pdf
+2024-07-02 06:39:58,787:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,788:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,788:INFO:Processing document: data\data\8.63-Ericka Alnéus\8.63.1_alneus_transcription.pdf
+2024-07-02 06:39:58,788:INFO:Extracting text from PDF: data\data\8.63-Ericka Alnéus\8.63.1_alneus_transcription.pdf
+2024-07-02 06:39:58,788:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,789:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,789:INFO:Processing document: data\data\8.64-Comité profilage racial de Saint-Michel\8.64.1_comite_profilage_st-michel_transcription.pdf
+2024-07-02 06:39:58,790:INFO:Extracting text from PDF: data\data\8.64-Comité profilage racial de Saint-Michel\8.64.1_comite_profilage_st-michel_transcription.pdf
+2024-07-02 06:39:58,790:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,790:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,791:INFO:Processing document: data\data\8.65-Josiane Rioux Collin\8.65_josianeriouxcollin.pdf
+2024-07-02 06:39:58,791:INFO:Extracting text from PDF: data\data\8.65-Josiane Rioux Collin\8.65_josianeriouxcollin.pdf
+2024-07-02 06:39:58,791:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,791:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,792:INFO:Processing document: data\data\8.66-Dexter Xurukulasuriya\8.66.1_transcription.pdf
+2024-07-02 06:39:58,792:INFO:Extracting text from PDF: data\data\8.66-Dexter Xurukulasuriya\8.66.1_transcription.pdf
+2024-07-02 06:39:58,792:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,792:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,793:INFO:Processing document: data\data\8.67-Centre Bon Courage\8.67.1_transcription.pdf
+2024-07-02 06:39:58,793:INFO:Extracting text from PDF: data\data\8.67-Centre Bon Courage\8.67.1_transcription.pdf
+2024-07-02 06:39:58,793:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,793:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,794:INFO:Processing document: data\data\8.68-Équipe RDP\8.68.1_transcription.pdf
+2024-07-02 06:39:58,794:INFO:Extracting text from PDF: data\data\8.68-Équipe RDP\8.68.1_transcription.pdf
+2024-07-02 06:39:58,794:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,795:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,795:INFO:Processing document: data\data\8.69-REFA-Canada\8.69.1_transcription.pdf
+2024-07-02 06:39:58,796:INFO:Extracting text from PDF: data\data\8.69-REFA-Canada\8.69.1_transcription.pdf
+2024-07-02 06:39:58,796:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,796:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,797:INFO:Processing document: data\data\8.70-Hoodstock\8.70.1_transcription.pdf
+2024-07-02 06:39:58,797:INFO:Extracting text from PDF: data\data\8.70-Hoodstock\8.70.1_transcription.pdf
+2024-07-02 06:39:58,797:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,797:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,798:INFO:Processing document: data\data\8.71-Centre d'encadrement des jeunes femmes immigrantes (CEJFI)\8.71.1_transcription.pdf
+2024-07-02 06:39:58,798:INFO:Extracting text from PDF: data\data\8.71-Centre d'encadrement des jeunes femmes immigrantes (CEJFI)\8.71.1_transcription.pdf
+2024-07-02 06:39:58,798:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,798:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,799:INFO:Processing document: data\data\8.72-Maison des jeunes de Bordeaux-Cartierville\8.72.1_transcription.pdf
+2024-07-02 06:39:58,799:INFO:Extracting text from PDF: data\data\8.72-Maison des jeunes de Bordeaux-Cartierville\8.72.1_transcription.pdf
+2024-07-02 06:39:58,799:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,799:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,800:INFO:Processing document: data\data\8.73-Service à la famille chinoise\8.73.1_transcription.pdf
+2024-07-02 06:39:58,800:INFO:Extracting text from PDF: data\data\8.73-Service à la famille chinoise\8.73.1_transcription.pdf
+2024-07-02 06:39:58,800:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,800:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,801:INFO:Processing document: data\data\8.74-Thierry Lindor\8.74.1_transcription.pdf
+2024-07-02 06:39:58,801:INFO:Extracting text from PDF: data\data\8.74-Thierry Lindor\8.74.1_transcription.pdf
+2024-07-02 06:39:58,801:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,801:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,802:INFO:Processing document: data\data\8.75-Commission des droits de la personne et des droits de la jeunesse\8.75_commission_droits_personne_et_jeunesse.pdf
+2024-07-02 06:39:58,802:INFO:Extracting text from PDF: data\data\8.75-Commission des droits de la personne et des droits de la jeunesse\8.75_commission_droits_personne_et_jeunesse.pdf
+2024-07-02 06:39:58,802:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,803:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,803:INFO:Processing document: data\data\8.76-Diane Shea, Cheskie Weiss, Baruch Posner, Max Lieberman at May Chiu\8.76_shea_weiss_posner_lieberman_chiu.pdf
+2024-07-02 06:39:58,804:INFO:Extracting text from PDF: data\data\8.76-Diane Shea, Cheskie Weiss, Baruch Posner, Max Lieberman at May Chiu\8.76_shea_weiss_posner_lieberman_chiu.pdf
+2024-07-02 06:39:58,804:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,804:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,805:INFO:Processing document: data\data\8.77-Structure de Promotion de l'Innovation et de la Créativité (SPIC)\8.77.1_transcription.pdf
+2024-07-02 06:39:58,805:INFO:Extracting text from PDF: data\data\8.77-Structure de Promotion de l'Innovation et de la Créativité (SPIC)\8.77.1_transcription.pdf
+2024-07-02 06:39:58,805:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,805:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,806:INFO:Processing document: data\data\8.78-Parole des femmes\8.78.1_transcription.pdf
+2024-07-02 06:39:58,806:INFO:Extracting text from PDF: data\data\8.78-Parole des femmes\8.78.1_transcription.pdf
+2024-07-02 06:39:58,806:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,806:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,807:INFO:Processing document: data\data\8.79-Fabrice Fotso\8.79.1_transcription.pdf
+2024-07-02 06:39:58,807:INFO:Extracting text from PDF: data\data\8.79-Fabrice Fotso\8.79.1_transcription.pdf
+2024-07-02 06:39:58,807:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,808:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,808:INFO:Processing document: data\data\8.80-Elizabeth Hunt\8.80.1_transcription.pdf
+2024-07-02 06:39:58,809:INFO:Extracting text from PDF: data\data\8.80-Elizabeth Hunt\8.80.1_transcription.pdf
+2024-07-02 06:39:58,809:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,809:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,809:INFO:Processing document: data\data\8.81-Enfam Québec\8.81.1_transcription.pdf
+2024-07-02 06:39:58,810:INFO:Extracting text from PDF: data\data\8.81-Enfam Québec\8.81.1_transcription.pdf
+2024-07-02 06:39:58,810:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,810:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,811:INFO:Processing document: data\data\8.82-Montréal Autochtone\8.82_memoire_consultation_publique_racisme_systemique.pdf
+2024-07-02 06:39:58,811:INFO:Extracting text from PDF: data\data\8.82-Montréal Autochtone\8.82_memoire_consultation_publique_racisme_systemique.pdf
+2024-07-02 06:39:58,811:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,811:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,812:INFO:Processing document: data\data\8.83-Ben Valkenburg\8.83.1_transcription.pdf
+2024-07-02 06:39:58,812:INFO:Extracting text from PDF: data\data\8.83-Ben Valkenburg\8.83.1_transcription.pdf
+2024-07-02 06:39:58,812:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,812:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,813:INFO:Processing document: data\data\8.84-Maison des jeunes RDP\8.84.1_transcription.pdf
+2024-07-02 06:39:58,813:INFO:Extracting text from PDF: data\data\8.84-Maison des jeunes RDP\8.84.1_transcription.pdf
+2024-07-02 06:39:58,813:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,813:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,814:INFO:Processing document: data\data\8.85-Fabrice Vil\8.85.1_transcription.pdf
+2024-07-02 06:39:58,814:INFO:Extracting text from PDF: data\data\8.85-Fabrice Vil\8.85.1_transcription.pdf
+2024-07-02 06:39:58,814:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,814:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,815:INFO:Processing document: data\data\8.86-Rémy Paulin Twahirwa\8.86.1_transcription.pdf
+2024-07-02 06:39:58,816:INFO:Extracting text from PDF: data\data\8.86-Rémy Paulin Twahirwa\8.86.1_transcription.pdf
+2024-07-02 06:39:58,816:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,816:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,816:INFO:Processing document: data\data\8.87-Ligue des Noirs du Québec\8.87_ligue_des_noirs_du_quebec.pdf
+2024-07-02 06:39:58,817:INFO:Extracting text from PDF: data\data\8.87-Ligue des Noirs du Québec\8.87_ligue_des_noirs_du_quebec.pdf
+2024-07-02 06:39:58,817:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,817:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,818:INFO:Processing document: data\data\8.88-Marie-Martine Félix\8.88.1_transcription.pdf
+2024-07-02 06:39:58,818:INFO:Extracting text from PDF: data\data\8.88-Marie-Martine Félix\8.88.1_transcription.pdf
+2024-07-02 06:39:58,818:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,818:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,819:INFO:Processing document: data\data\8.89-Edline Henri\8.89.1_transcription.pdf
+2024-07-02 06:39:58,819:INFO:Extracting text from PDF: data\data\8.89-Edline Henri\8.89.1_transcription.pdf
+2024-07-02 06:39:58,819:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,819:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,820:INFO:Processing document: data\data\8.90-Joël Nawej\8.90.1_transcription.pdf
+2024-07-02 06:39:58,820:INFO:Extracting text from PDF: data\data\8.90-Joël Nawej\8.90.1_transcription.pdf
+2024-07-02 06:39:58,820:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,821:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,821:INFO:Processing document: data\data\8.91-Clayton Joseph Grunberg\8.91.1_transcription.pdf
+2024-07-02 06:39:58,821:INFO:Extracting text from PDF: data\data\8.91-Clayton Joseph Grunberg\8.91.1_transcription.pdf
+2024-07-02 06:39:58,821:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,822:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,822:INFO:Processing document: data\data\8.92-Rito Joseph\8.92.1_transcription.pdf
+2024-07-02 06:39:58,823:INFO:Extracting text from PDF: data\data\8.92-Rito Joseph\8.92.1_transcription.pdf
+2024-07-02 06:39:58,823:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,823:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,824:INFO:Processing document: data\data\8.93-Jean-Yves Gagné\8.93.1_transcription.pdf
+2024-07-02 06:39:58,824:INFO:Extracting text from PDF: data\data\8.93-Jean-Yves Gagné\8.93.1_transcription.pdf
+2024-07-02 06:39:58,824:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,824:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,825:INFO:Processing document: data\data\8.94-Corporation Culturelle Latino-Américaine de l'amitié COCLA\8.94.1_transcription.pdf
+2024-07-02 06:39:58,825:INFO:Extracting text from PDF: data\data\8.94-Corporation Culturelle Latino-Américaine de l'amitié COCLA\8.94.1_transcription.pdf
+2024-07-02 06:39:58,825:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,826:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,826:INFO:Processing document: data\data\8.95-Arsenault Dufresne Wee\8.95.1_transcription.pdf
+2024-07-02 06:39:58,826:INFO:Extracting text from PDF: data\data\8.95-Arsenault Dufresne Wee\8.95.1_transcription.pdf
+2024-07-02 06:39:58,826:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,827:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,827:INFO:Processing document: data\data\8.96-Alain Arsenault\8.96.1_transcription.pdf
+2024-07-02 06:39:58,828:INFO:Extracting text from PDF: data\data\8.96-Alain Arsenault\8.96.1_transcription.pdf
+2024-07-02 06:39:58,828:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,828:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,829:INFO:Processing document: data\data\8.97-Tatiana Garakani\8.97.1_transcription.pdf
+2024-07-02 06:39:58,829:INFO:Extracting text from PDF: data\data\8.97-Tatiana Garakani\8.97.1_transcription.pdf
+2024-07-02 06:39:58,829:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,829:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,830:INFO:Processing document: data\data\8.98-Rachad Antonius\8.98.1_rachad-antonius_transcription.pdf
+2024-07-02 06:39:58,830:INFO:Extracting text from PDF: data\data\8.98-Rachad Antonius\8.98.1_rachad-antonius_transcription.pdf
+2024-07-02 06:39:58,830:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,830:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,831:INFO:Processing document: data\data\8.99-Nadia Bini\8.99.1_nadia-bini_transcription.pdf
+2024-07-02 06:39:58,831:INFO:Extracting text from PDF: data\data\8.99-Nadia Bini\8.99.1_nadia-bini_transcription.pdf
+2024-07-02 06:39:58,831:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,832:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,833:INFO:Processing document: data\data\8.100-Table sur la diversité, l'inclusion et la lutte contre les discriminations\8.100_tdild.pdf
+2024-07-02 06:39:58,833:INFO:Extracting text from PDF: data\data\8.100-Table sur la diversité, l'inclusion et la lutte contre les discriminations\8.100_tdild.pdf
+2024-07-02 06:39:58,833:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,834:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,834:INFO:Processing document: data\data\8.101-Conseil national des musulmans canadiens\8.101.1_transcription.pdf
+2024-07-02 06:39:58,834:INFO:Extracting text from PDF: data\data\8.101-Conseil national des musulmans canadiens\8.101.1_transcription.pdf
+2024-07-02 06:39:58,834:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,834:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,836:INFO:Processing document: data\data\8.102-Massimiliano Mulone\8.102.1_transcription.pdf
+2024-07-02 06:39:58,836:INFO:Extracting text from PDF: data\data\8.102-Massimiliano Mulone\8.102.1_transcription.pdf
+2024-07-02 06:39:58,836:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,836:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,837:INFO:Processing document: data\data\8.103-James Oscar\8.103_james_oscar.pdf
+2024-07-02 06:39:58,837:INFO:Extracting text from PDF: data\data\8.103-James Oscar\8.103_james_oscar.pdf
+2024-07-02 06:39:58,837:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,837:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,838:INFO:Processing document: data\data\8.104-Mouvement Action Justice\8.104.1_transcription.pdf
+2024-07-02 06:39:58,838:INFO:Extracting text from PDF: data\data\8.104-Mouvement Action Justice\8.104.1_transcription.pdf
+2024-07-02 06:39:58,838:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,838:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,839:INFO:Processing document: data\data\8.105-Afrique au Féminin\8.105.1_transcription_afrique_au_feminin.pdf
+2024-07-02 06:39:58,843:INFO:Extracting text from PDF: data\data\8.105-Afrique au Féminin\8.105.1_transcription_afrique_au_feminin.pdf
+2024-07-02 06:39:58,844:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,844:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,845:INFO:Processing document: data\data\8.106-Concert'action Lachine\8.106.1_transcription_concertaction_lachine.pdf
+2024-07-02 06:39:58,845:INFO:Extracting text from PDF: data\data\8.106-Concert'action Lachine\8.106.1_transcription_concertaction_lachine.pdf
+2024-07-02 06:39:58,845:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,846:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,846:INFO:Processing document: data\data\8.107-Sayaspora\8.107.1_transcription_sayaspora.pdf
+2024-07-02 06:39:58,847:INFO:Extracting text from PDF: data\data\8.107-Sayaspora\8.107.1_transcription_sayaspora.pdf
+2024-07-02 06:39:58,847:ERROR:Operation failed. Error: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,847:ERROR:Failed to extract text from PDF: module 'fitz' has no attribute 'open'
+Traceback (most recent call last):
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\document_processing.py", line 55, in pdf_single
+    content = self.process_text.extract_from_pdf(pdf_path)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\nicol\Documents\UdeM\Maîtrise\Données\labrri_ocpm_systemic_racism\scripts\text_processing.py", line 40, in extract_from_pdf
+    with fitz.open(pdf_path) as doc:
+         ^^^^^^^^^
+AttributeError: module 'fitz' has no attribute 'open'
+2024-07-02 06:39:58,848:ERROR:Invalid PDF file: data\data\8.108-Rogers Afam Nwabue\Rogers Afam Nwabue.mp4
+2024-07-02 06:39:58,848:INFO:Batch processing complete.
+2024-07-02 06:39:58,849:INFO:No documents with missing, unreadable or incomplete content found.
+2024-07-02 06:39:58,849:INFO:Finished processing data\pdf_list.csv.
