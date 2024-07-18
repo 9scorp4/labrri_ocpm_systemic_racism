@@ -62,17 +62,12 @@ class Documents:
             if not doc_texts:
                 logging.warning("No documents were extracted; documents may be empty or contain only stopwords.")
                 return None
-            
-            # Adjust vectorizer parameters based on the number of documents
-            n_docs = len(doc_texts)
-            max_df = min(0.9, 1.0)
-            min_df = min(4, max(1, int(n_docs * 0.1)))
 
             self.vectorizer = TfidfVectorizer(
-                max_df=max_df,
-                min_df=min_df,
-                max_features=100,
-                ngram_range=(1,2)
+                max_df=0.95,
+                min_df=2,
+                max_features=1000,
+                ngram_range=(1,1)
             )
             
             tfidf_matrix = self.vectorizer.fit_transform(doc_texts)
@@ -89,68 +84,70 @@ class Documents:
             logging.error(f"Failed to vectorize. Error: {e}", exc_info=True)
             return None
 
-    def topic_modeling(self, tfidf_matrix, num_topics=5):
+    def topic_modeling(self, tfidf_matrix, num_topics=3, num_words=10):
         """
-        Perform topic modeling on the input TF-IDF matrix.
+        Topic modeling using Latent Dirichlet Allocation.
 
         Args:
             tfidf_matrix (csr_matrix): Matrix of TF-IDF features.
-            num_topics (int): Number of topics to model. Default is 5.
-
-        Returns:
-            lda_model (LatentDirichletAllocation): Trained Latent Dirichlet Allocation model.
+            num_topics (int): Number of topics to be extracted. Default is 5.
+            num_words (int): Number of words to display for each topic. Default is 10.
 
         Raises:
             ValueError: If tfidf_matrix is None.
             Exception: If topic modeling fails.
+
+        Returns:
+            lda_model (LatentDirichletAllocation): Trained LatentDirichletAllocation model.
+            feature_names (list): List of feature names (words) from the vectorizer.
         """
         # Check if tfidf_matrix is None
         if tfidf_matrix is None:
             raise ValueError("tfidf_matrix cannot be None")
         
         try:
-            # Adjjust number of topics based on the number of documents
-            num_topics = min(num_topics, tfidf_matrix.shape[0])
+            # Log the start of topic modeling
+            logging.debug("Starting topic modeling")
 
             # Instantiate a LatentDirichletAllocation model with the given number of topics
-            lda_model = LatentDirichletAllocation(n_components=num_topics, max_iter=5, learning_method='online', random_state=42)
-            
-            # Fit the model on the tfidf_matrix
-            lda_model.fit(tfidf_matrix)
-            
-            # Return the trained model
-            return lda_model
+            lda_model = LatentDirichletAllocation(n_components=num_topics,
+                                                  max_iter=10,
+                                                  learning_method='online', 
+                                                  random_state=42)
+
+            # Fit the model and get the output
+            lda_output = lda_model.fit_transform(tfidf_matrix)
+
+            # Log the number of topics
+            logging.debug(f"Topic modeling using {num_topics} topics")
+
+            # Get feature names
+            feature_names = self.vectorizer.get_feature_names_out()
+
+            # Get top words for each topic
+            topics = []
+            for topic_idx, topic in enumerate(lda_model.components_):
+                # Log the topic being processed
+                logging.debug(f"Processing topic {topic_idx + 1}")
+                top_features_ind = topic.argsort()[:-num_words - 1:-1]
+                top_features = [feature_names[i] for i in top_features_ind]
+                topics.append(top_features)
+
+            # Log the number of topics found
+            logging.debug(f"Found {len(topics)} topics")
+
+            # Return the trained model, feature names and top words per topic
+            return topics
         except Exception as e:
             # Log the error that occurred during topic modeling
             logging.error(f"Failed to topic modeling. Error: {e}", exc_info=True)
+            return None, None, None
 
-    def plot_topics(self, topics, tfidf_vectorizer, n_top_words=10):
-        """
-        Plot the top words for each topic.
-
-        Args:
-            topics (list): List of topic vectors.
-            tfidf_vectorizer (TfidfVectorizer): TF-IDF vectorizer used for fitting the data.
-            n_top_words (int): Number of top words to display for each topic. Default is 10.
-
-        Raises:
-            ValueError: If topics or tfidf_vectorizer is None.
-            Exception: If plotting fails.
-        """
-        # Check if topics or tfidf_vectorizer is None
-        if topics is None or tfidf_vectorizer is None:
-            raise ValueError("topics and tfidf_vectorizer cannot be None")
-
-        try:
-            feature_names = tfidf_vectorizer.get_feature_names_out()
-
-            for topic_id, topic in enumerate(topics):
-                print(f"Topic {topic_id + 1}:")
-                top_word_indices = topic.argsort()[:-n_top_words - 1:-1]
-                top_words = [feature_names[i] for i in top_word_indices]
-                print(', '.join(top_words))
-        except Exception as e:
-            logging.error(f"Failed to plot topics. Error: {e}", exc_info=True)
+    def plot_topics(self, top_words_per_topic):
+        for topic_idx, top_words in enumerate(top_words_per_topic):
+            print(f"Topic {topic_idx + 1}:")
+            print(", ".join(top_words))
+            print()
 
     def analyze_lang(self, docs, lang):
         if not docs:
@@ -166,14 +163,16 @@ class Documents:
         
         logging.debug(f"Starting LDA for {lang} with tfidf_matrix shape: {tfidf_matrix.shape}")
 
-        lda_model = self.topic_modeling(tfidf_matrix)
+        topics = self.topic_modeling(tfidf_matrix, num_topics=3, num_words=10)
 
-        if lda_model is None:
+        if topics is None:
             logging.warning(f"Failed to create LDA model for {lang}")
             return
         
-        print(f"\n{lang} Topics:\n")
-        self.plot_topics(lda_model.components_, self.vectorizer)
+        print(f"\n{lang.upper()} Topics:\n")
+        for i, topic in enumerate(topics, 1):
+            print(f"Topic {i}: {', '.join(word for word in topic if word)}")
+            print()
 
     def analyze(self, docs):
         if not docs:

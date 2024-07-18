@@ -1,0 +1,29 @@
+# Ignore all log files
+*.log
+
+# Ignore all files in the logs directory
+logs/*.log
+
+# Ignore Python-specific log files
+*.pyc
+__pycache__/
+
+# Ignore IDE-specific log files
+.vscode/
+
+# Ignore system-specific files
+.DS_Store
+
+# Ignore any file with .log extension in any directory
+**/*.log
+
+# Ignore temporary files that might be created by your IDE or system
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.project
+.idea/

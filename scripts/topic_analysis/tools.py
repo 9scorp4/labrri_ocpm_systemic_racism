@@ -1,8 +1,9 @@
 import nltk
-nltk.download('stopwords')
 from nltk.corpus import stopwords
 import spacy
 import logging
+
+nltk.download('stopwords')
 
 class Tools:
     def __init__(self, lang=None):

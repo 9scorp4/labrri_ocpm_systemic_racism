@@ -46,8 +46,8 @@ class NoiseRemover:
         # Set stopwords for the specified language
         if lang == 'bilingual':
             self.stopwords_lang = {
-                'fr': self.stopwords_fr | self.additional_stopwords,
-                'en': self.stopwords_en | self.additional_stopwords
+                'fr': set(self.stopwords_fr | self.additional_stopwords),
+                'en': set(self.stopwords_en | self.additional_stopwords)
             }
         elif lang == 'fr':
             self.stopwords_lang = self.stopwords_fr | self.additional_stopwords
@@ -88,16 +88,42 @@ class NoiseRemover:
         processed_docs = []
         logging.debug(f"Cleaning {len(docs)} documents")
 
-        # Determine the language of the documents and clean accordingly
-        if lang == 'bilingual':
-            processed_docs = self.bilingual_docs(docs)
-        elif lang == 'fr':
-            processed_docs = self.fr_docs(docs)
-        elif lang == 'en':
-            processed_docs = self.en_docs(docs)
-        else:
-            raise ValueError("Invalid language")
-        
+        for doc in docs:
+            if doc is None:
+                continue
+
+            if isinstance(doc, list):
+                doc = " ".join(doc)
+            elif not isinstance(doc, str):
+                doc = str(doc)
+            
+            if lang == 'fr':
+                tokens = self.nlp_fr(doc)
+            elif lang == 'en':
+                tokens = self.nlp_en(doc)
+            elif lang == 'bilingual':
+                tokens = {'fr': self.nlp_fr(doc), 'en': self.nlp_en(doc)}
+            else:
+                raise ValueError("Invalid language: {}".format(lang))
+            
+            logging.info(f'Tokens: {tokens}')
+            
+            if lang == 'bilingual':
+                filtered_tokens = [str(token).lower() for lang_tokens in tokens.values() for token in lang_tokens
+                                   if str(token).lower() not in self.stopwords_lang
+                                   and str(token) not in string.punctuation
+                                   and not str(token).isdigit()]
+            else:
+                filtered_tokens = [token.text.lower() for token in tokens
+                                if token.text.lower() not in self.stopwords_lang
+                                and token.text not in string.punctuation
+                                and not token.text.isdigit()]
+            
+            processed_doc = ' '.join(filtered_tokens)
+
+            if processed_doc and len(processed_doc) > 0:
+                processed_docs.append(processed_doc)
+
         return processed_docs
     
     def bilingual_docs(self, docs):
