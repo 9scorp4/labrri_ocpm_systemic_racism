@@ -88,26 +88,33 @@ class NoiseRemover:
         processed_docs = []
         logging.debug(f"Cleaning {len(docs)} documents")
 
-        for doc in docs:
+        for i, doc in enumerate(docs):
             if doc is None:
+                logging.debug(f"Skipping document {i} as it is None")
                 continue
 
+            # Convert the document to a string
             if isinstance(doc, list):
                 doc = " ".join(doc)
+                logging.debug(f"Converted document {i} to string: {doc}")
             elif not isinstance(doc, str):
                 doc = str(doc)
+                logging.debug(f"Converted document {i} to string: {doc}")
             
+            # Tokenize the document based on the specified language
             if lang == 'fr':
-                tokens = self.nlp_fr(doc)
+                tokens = self.nlp_fr(doc)  # French spacy model
+                logging.debug(f"Tokenized document {i} for French language: {tokens}")
             elif lang == 'en':
-                tokens = self.nlp_en(doc)
+                tokens = self.nlp_en(doc)  # English spacy model
+                logging.debug(f"Tokenized document {i} for English language: {tokens}")
             elif lang == 'bilingual':
-                tokens = {'fr': self.nlp_fr(doc), 'en': self.nlp_en(doc)}
+                tokens = {'fr': self.nlp_fr(doc), 'en': self.nlp_en(doc)}  # Bilingual spacy models
+                logging.debug(f"Tokenized document {i} for bilingual language: {tokens}")
             else:
                 raise ValueError("Invalid language: {}".format(lang))
             
-            logging.info(f'Tokens: {tokens}')
-            
+            # Filter tokens to remove punctuation, stopwords, and digits
             if lang == 'bilingual':
                 filtered_tokens = [str(token).lower() for lang_tokens in tokens.values() for token in lang_tokens
                                    if str(token).lower() not in self.stopwords_lang
@@ -118,25 +125,40 @@ class NoiseRemover:
                                 if token.text.lower() not in self.stopwords_lang
                                 and token.text not in string.punctuation
                                 and not token.text.isdigit()]
+                logging.debug(f"Filtered tokens for document {i}: {filtered_tokens}")
             
+            # Join the filtered tokens to form a processed document
             processed_doc = ' '.join(filtered_tokens)
+            logging.debug(f"Processed document {i}: {processed_doc}")
 
+            # Append cleaned document to the list if it is not empty
             if processed_doc and len(processed_doc) > 0:
                 processed_docs.append(processed_doc)
 
+        logging.debug(f"Cleaned {len(processed_docs)} documents")
         return processed_docs
     
     def bilingual_docs(self, docs):
+        """
+        Cleans bilingual documents by removing punctuation, stopwords, and duplicates.
+        
+        Args:
+            docs (list): List of bilingual documents to be cleaned. Each document is a list of dictionaries.
+        
+        Returns:
+            dict: Cleaned bilingual documents. Each document is a list of strings.
+        """
+        # Log start of document cleaning process
         logging.info("Cleaning bilingual documents")
         logging.debug(f"Documents to clean: {len(docs)}")
 
         try:
+            # Flatten the list of dictionaries into a single list
             flattened_docs = [item for sublist in docs for item in sublist]
             logging.debug(f"Flattened documents: {len(flattened_docs)}")
 
-            merged_docs = {'fr': [], 'en': []}
-
             # Merge list of dictionaries into a single dictionary
+            merged_docs = {'fr': [], 'en': []}
             for doc in flattened_docs:
                 if doc is None:
                     raise ValueError("Document is None")
@@ -147,23 +169,26 @@ class NoiseRemover:
                         merged_docs[key] = [value]
             logging.debug(f"Merged documents: {merged_docs}")
 
+            # Translate punctuation to empty strings
             translation_table = str.maketrans('', '', string.punctuation)
-
             merged_docs['fr'] = [value.translate(translation_table) for value in merged_docs['fr']]
             merged_docs['en'] = [value.translate(translation_table) for value in merged_docs['en']]
             logging.debug(f"Translated punctuation: {merged_docs}")
 
+            # Filter empty strings
             merged_docs = {
                 'fr': [value for value in merged_docs['fr'] if value],
                 'en': [value for value in merged_docs['en'] if value]
             }
             logging.debug(f"Filtered empty strings: {merged_docs}")
 
+            # Filter stopwords
             stopwords_lang = self.stopwords_lang
             merged_docs['fr'] = [value for value in merged_docs['fr'] if value.lower() not in stopwords_lang['fr']]
             merged_docs['en'] = [value for value in merged_docs['en'] if value.lower() not in stopwords_lang['en']]
             logging.debug(f"Filtered stopwords: {merged_docs}")
 
+            # Remove duplicates
             merged_docs = {
                 'fr': list(set(merged_docs['fr'])),
                 'en': list(set(merged_docs['en']))

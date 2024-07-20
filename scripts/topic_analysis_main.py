@@ -6,7 +6,7 @@ from tqdm import tqdm
 from scripts.topic_analysis.text_processing import Process
 from scripts.topic_analysis.analysis import Analysis
 
-def main(lang, mode='batch', document_id=None):
+def main(lang, mode='all', document_id=None):
     if lang is None:
         raise ValueError("lang parameter is required")
     
