@@ -33,7 +33,7 @@ Results from all pipelines must be stored in the 'results' folder. For debugging
 - Word Frequency Analysis.
 - Language Distribution Analysis.
 - Topic Analysis By Language (IN DEVELOPMENT).
-- Sentiment Analysis (IN DEVELOPMENT)
+- Sentiment Analysis (IN DEVELOPMENT).
 
 ## Installation
 
@@ -41,13 +41,17 @@ Just download it as a ZIP file, extract and explore with your preferred IDE (May
 
 ## Usage
 
+This repository is composed of seven pipelines, which are:
+
 - 'update_database.py' pipeline: Populate database using fetched data.
 - 'general_analysis.ipynb' pipeline: Perform a general data analysis.
 - 'word_frequency.ipynb' pipeline: Analyze by word frequency.
 - 'language_distribution.ipynb' pipeline: Analyze by language distribution.
 - 'knowledge_type.ipynb' pipeline: Analyze by knowledge types.
 - 'topic_analysis.ipynb' pipeline: Tokenize text by language and compared analysis by topics.
-- 'sentiment_analysis.ipynb' pipeline: Analyze by sentiment degree
+- 'sentiment_analysis.ipynb' pipeline: Analyze by sentiment level.
+
+Please read the [pipeline blueprints](documentation/pipelines.md) for more details on how to use each pipeline.
 
 ## Contributing
 
