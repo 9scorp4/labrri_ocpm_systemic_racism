@@ -4,6 +4,8 @@ import sqlite3
 from langdetect import detect_langs
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+from scripts.database import Database
 from scripts.topic_analysis.tools import Tools
 from scripts.topic_analysis.noise_remover import NoiseRemover
 from scripts.topic_analysis.documents import Documents, French, English, Bilingual
@@ -28,64 +30,30 @@ class Analysis:
             db (str): Path to the database.
             lang (str): Language of the documents.
         """
-        self.db = db
+        self.db = Database(db)
         self.lang = lang
         self.noise_remover = NoiseRemover(lang)
         self.tools = Tools(lang)
         self.vectorizer = None
 
-    def fetch_all(self):
-        """
-        Fetch all documents from the database.
-
-        Returns:
-            List[Tuple[int, str]]: Documents with their IDs and content.
-        """
-        try:
-            with sqlite3.connect(self.db) as conn:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    SELECT d.id, c.content, d.language
-                    FROM documents d
-                    JOIN content c ON d.id = c.doc_id
-                    WHERE d.language = ?
-                """, (self.lang,))
-                return cursor.fetchall()
-        except Exception as e:
-            logging.error(f"Error fetching documents from the database: {e}", exc_info=True)
-            return []
-
-    def fetch_single(self, doc_id):
-        """
-        Fetch a single document from the database by ID.
-
-        Args:
-            doc_id (int): ID of the document.
-
-        Returns:
-            Tuple[int, str] or None: Document with its ID and content, or None if not found.
-        """
-        try:
-            with sqlite3.connect(self.db) as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT doc_id, content FROM content WHERE doc_id=?", (doc_id,))
-                return cursor.fetchone()
-        except Exception as e:
-            logging.error(f"Error fetching document {doc_id} from the database: {e}", exc_info=True)
-            return None
-
-    def process_documents(self, docs):
+    def process_documents(self, doc_ids=None):
         """
         Process a list of documents and perform topic analysis.
 
         Args:
-            docs (List[Tuple[int, str]]): Documents with their IDs and content.
-            single_doc (bool): Whether to treat the documents as a single document or multiple documents.
+            doc_ids (List[int] or None): List of document IDs to process. If None, process all documents.
 
         Returns:
             List[List[str]]: Topics with their top words.
         """
+        if doc_ids:
+            docs = [self.db.fetch_single(doc_id) for doc_id in doc_ids]
+            docs = [doc for doc in docs if doc]
+        else:
+            docs = self.db.fetch_all(self.lang)
+
         if not docs:
+            logging.error("No documents found in the database.")
             return []
 
         # Clean and preprocess the documents

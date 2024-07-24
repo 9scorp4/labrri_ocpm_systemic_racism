@@ -33,6 +33,7 @@ Results from all pipelines must be stored in the 'results' folder. For debugging
 - Word Frequency Analysis.
 - Language Distribution Analysis.
 - Topic Analysis By Language (IN DEVELOPMENT).
+- Sentiment Analysis (IN DEVELOPMENT)
 
 ## Installation
 
@@ -46,6 +47,7 @@ Just download it as a ZIP file, extract and explore with your preferred IDE (May
 - 'language_distribution.ipynb' pipeline: Analyze by language distribution.
 - 'knowledge_type.ipynb' pipeline: Analyze by knowledge types.
 - 'topic_analysis.ipynb' pipeline: Tokenize text by language and compared analysis by topics.
+- 'sentiment_analysis.ipynb' pipeline: Analyze by sentiment degree
 
 ## Contributing
 

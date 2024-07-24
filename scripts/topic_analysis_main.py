@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
+
 from scripts.topic_analysis.text_processing import Process
 from scripts.topic_analysis.analysis import Analysis
 

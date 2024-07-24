@@ -1,0 +1,91 @@
+id,organization,document_type,category,clientele,knowledge_type,sentiment
+1,Regroupement des activistes pour l'inclusion au Québec (RAPLIQ),Mémoire,Regroupements et réseaux,Personnes en situation de handicap,Communautaire,-0.998
+2,François Picard,Mémoire,Citoyens et particuliers,S.O.,Citoyen,0.9313
+3,Carrefour de ressources en interculturel (CRIC Centre-Sud),Mémoire,Organismes communautaires et à but non-lucratif,Personnes issues de l'immigration,Communautaire,0.5423
+4,Diversité artistique Montréal (DAM),Mémoire,Organismes municipaux et paramunicipaux,Artistes,"Communautaire,Municipal",-0.9474
+5,DéPhy Montréal,Mémoire,Organismes communautaires et à but non-lucratif,Personnes en situation de handicap,Communautaire,-0.9987
+6,Conseil des arts de Montréal (CAM),Mémoire,Organismes municipaux et paramunicipaux,Artistes,Municipal,0.997
+7,Communication - Ouverture - Rapprochement interculturel (COR),Mémoire,Organismes communautaires et à but non-lucratif,Personnes issues de l'immigration,Communautaire,0.9217
+8,Marie-Ève Couture Ménard,Article scientifique,Chercheurs et experts,Général,Citoyen,0.9958
+9,Marie-Chantale Faust,Témoignage,Citoyens et particuliers,S.O.,Citoyen,0.948
+10,Conseil jeunesse de Montréal,Mémoire,Organismes municipaux et paramunicipaux,Jeunes,"Communautaire,Municipal",0.9921
+11,Ligue des droits et libertés,Mémoire,Organismes communautaires et à but non-lucratif,Général,Communautaire,0.998
+13,Forum jeunesse de l'île de Montréal,Mémoire,Organismes municipaux et paramunicipaux,Jeunes,Municipal,-0.9749
+14,L'équipe de recherche et d'action Erasme (et collaborateurs),Mémoire,Chercheurs et experts,Personnes issues de l'immigration,Communautaire,0.9969
+15,Conseil québécois LGBT,Mémoire,Organismes municipaux et paramunicipaux,Communautés LGBTQ+,"Communautaire,Municipal",-0.9964
+16,Culture Montréal,Mémoire,Organismes municipaux et paramunicipaux,Artistes,"Communautaire,Municipal",0.9528
+17,Parole d'excluES,Mémoire,Organismes communautaires et à but non-lucratif,Personnes racisées,Communautaire,0.9979
+18,Table de quartier de Parc-Extension,Mémoire,Organismes municipaux et paramunicipaux,Citoyens,Municipal,-0.9701
+19,Nafija Rahman,Témoignage,Citoyens et particuliers,S.O.,Citoyen,-0.9892
+21,André Dudemaine,Mémoire,Citoyens et particuliers,Communautés autochtones,Citoyen,0.9398
+22,Maurice Bakinde,Témoignage,Citoyens et particuliers,Personnes racisées,Citoyen,0.4404
+24,Centre de Recherche-action sur les relations raciales (CRARR),Mémoire,Chercheurs et experts,Personnes racisées,"Communautaire,Citoyen",-0.9612
+25,Michèle Chappaz,Témoignage,Citoyens et particuliers,Femmes,Citoyen,-0.5423
+26,Conseil des Montréalaises,Mémoire,Organismes municipaux et paramunicipaux,Femmes,"Communautaire,Municipal",-0.9998
+27,"Victor Armony, Mariam Hassaoui et Massimiliano Mulone, pour le Service de police de la Ville de Montréal (SPVM)",Mémoire,Chercheurs et experts,Services policiers,"Citoyen,Municipal",0.7838
+28,Centre Justice et Foi,Mémoire,Organismes communautaires et à but non-lucratif,Communautés religieuses,Citoyen,0.9789
+29,Bienné Blémur,Recommendations,Citoyens et particuliers,S.O.,Citoyen,0.6369
+30,Centre social d'aide aux immigrants (CSAI),Mémoire,Organismes communautaires et à but non-lucratif,Personnes issues de l'immigration,Communautaire,0.9286
+31,Conseil interculturel de Montréal,Mémoire,Organismes municipaux et paramunicipaux,Citoyens,"Communautaire,Municipal",-0.9667
+32,Les Productions Feux Sacrés,Mémoire,Organismes communautaires et à but non-lucratif,Communautés autochtones,Communautaire,0.9988
+33,Fédération des coopératives d'habitation intermunicipale du Montréal métropolitain (FECHIMM),Mémoire,Organismes municipaux et paramunicipaux,Logement,Citoyen,-0.9505
+34,Daniel Guibord,Mémoire,Citoyens et particuliers,Personnes issues de l'immigration,Citoyen,-0.9773
+36,Gustave Arroyo,Témoignage,Citoyens et particuliers,S.O.,Citoyen,0.3612
+37,Henintsoa Ravoala,Témoignage,Citoyens et particuliers,S.O.,Citoyen,0.5859
+39,Xin Bei Cao,Témoignage,Citoyens et particuliers,S.O.,Citoyen,0.4019
+40,Jonathan Harding,Témoignage,Citoyens et particuliers,S.O.,Citoyen,-0.7845
+42,Centre d'éducation et d'action des femmes,Mémoire,Organismes communautaires et à but non-lucratif,Femmes,"Communautaire,Citoyen",-0.9633
+43,Action accessible,Mémoire,Organismes communautaires et à but non-lucratif,Personnes en situation de handicap,Citoyen,0.9423
+44,Sharon Hackett,Témoignage,Citoyens et particuliers,S.O.,Citoyen,0.128
+45,#MTLSansProfilage,Mémoire,Chercheurs et experts,Personnes racisées,"Communautaire,Citoyen",-1.0
+46,Inclusion Jeunesse,Mémoire,Organismes communautaires et à but non-lucratif,Jeunes,Communautaire,0.9571
+48,Ensemble Montréal,Mémoire,Personalités et organisations politiques,Citoyens,"Citoyen,Municipal",0.9905
+51,Femmes et villes international,Mémoire,Organismes municipaux et paramunicipaux,Femmes,Municipal,-1.0
+53,Taha Abderrafie Maalla,Mémoire,Chercheurs et experts,S.O.,"Communautaire,Citoyen",0.2023
+54,Alex Hernane,Témoignage,Citoyens et particuliers,S.O.,Citoyen,-0.9599
+55,Relais-femmes,Article scientifique,Chercheurs et experts,Femmes,Communautaire,-0.9999
+56,Centraide,Mémoire,Organismes communautaires et à but non-lucratif,Personnes en situation de précarité économique,Communautaire,0.9843
+57,Justice Femme,Mémoire,Organismes communautaires et à but non-lucratif,Femmes,Communautaire,0.9551
+58,Fondation Canadienne des femmes,Mémoire,Organismes communautaires et à but non-lucratif,Femmes,"Communautaire,Citoyen",-0.9735
+59,Frantz Jean-Jacques,Article scientifique,Citoyens et particuliers,Personnes racisées,Citoyen,0.9994
+60,Frantz Jean-Jacques,Article de journal,Citoyens et particuliers,Personnes racisées,Citoyen,-0.9576
+61,Frantz Jean-Jacques,Article de journal,Citoyens et particuliers,Personnes racisées,Citoyen,0.6486
+62,Frantz Jean-Jacques,Transcription,Citoyens et particuliers,Personnes racisées,Citoyen,-0.9928
+63,Sandrine Brodeur-Desrosiers,Témoignage,Citoyens et particuliers,S.O.,Citoyen,-0.4299
+65,Ericka Alnéus,Transcription,Citoyens et particuliers,S.O.,Citoyen,0.8871
+66,Comité profilage de Saint-Michel,Transcription,Organismes communautaires et à but non-lucratif,Personnes racisées,"Communautaire,Citoyen",-0.9917
+67,Josiane Rioux Collin,Témoignage,Citoyens et particuliers,Personnes en situation de précarité économique,Citoyen,0.9836
+69,Centre Bon Courage,Transcription,Organismes communautaires et à but non-lucratif,Citoyens,"Communautaire,Citoyen",-0.5362
+70,Équipe RDP,Transcription,Organismes communautaires et à but non-lucratif,Jeunes,Communautaire,-0.9859
+71,Réseau entrepreneuriat des femmes africaines (REFA-Canada),Transcription,Regroupements et réseaux,Entrepreneurs,"Communautaire,Citoyen",-0.9869
+72,Hoodstock,Transcription,Organismes communautaires et à but non-lucratif,Personnes racisées,Communautaire,-0.9848
+73,Centre d'encadrement des jeunes femmes immigrantes (CEJFI),Transcription,Organismes communautaires et à but non-lucratif,Femmes,Communautaire,-0.9399
+74,Maison des jeunes de Bordeaux-Cartierville,Transcription,Organismes communautaires et à but non-lucratif,Jeunes,Communautaire,-0.9573
+75,Service à la famille chinoise,Transcription,Organismes communautaires et à but non-lucratif,Personnes racisées,Communautaire,-0.8706
+77,Commission des droits de la personne et des droits de la jeunesse,Mémoire,Organismes municipaux et paramunicipaux,Citoyens,Municipal,0.9941
+79,Structure de Promotion de l'Innovation et de la Créativité (SPIC),Transcription,Organismes communautaires et à but non-lucratif,Personnes racisées,"Communautaire,Citoyen",0.8611
+81,Fabrice Fotso,Transcription,Citoyens et particuliers,S.O.,Citoyen,0.9149
+83,Enfam Québec,Transcription,Organismes communautaires et à but non-lucratif,Personnes en situation de précarité économique,Communautaire,-0.8194
+84,Montréal Autochtone,Mémoire,Organismes communautaires et à but non-lucratif,Communautés autochtones,"Communautaire,Citoyen",0.989
+85,Ben Valkenburg,Transcription,Citoyens et particuliers,Personnes en situation de précarité économique,Citoyen,0.9872
+86,Maison des jeunes de Rivière-des-Prairies,Transcription,Organismes communautaires et à but non-lucratif,Jeunes,Communautaire,-0.9866
+87,Fabrice Vil,Transcription,Citoyens et particuliers,Personnes racisées,Citoyen,-0.3094
+88,Rémy Paulin Twahirwa,Transcription,Citoyens et particuliers,S.O.,Citoyen,-0.9708
+89,Ligue des Noirs du Québec,Mémoire,Organismes communautaires et à but non-lucratif,Personnes racisées,"Communautaire,Citoyen",-0.9997
+90,Marie-Martine Félix,Transcription,Citoyens et particuliers,S.O.,Citoyen,-0.924
+91,Edline Henri,Transcription,Citoyens et particuliers,S.O.,Citoyen,-0.9266
+92,Joël Nawej,Transcription,Citoyens et particuliers,S.O.,Citoyen,-0.9902
+94,Rito Joseph,Transcription,Citoyens et particuliers,S.O.,Citoyen,0.9447
+95,Jean-Yves Gagné,Transcription,Citoyens et particuliers,Personnes en situation de handicap,Citoyen,-0.9835
+96,Corporation culturelle latino-américaine de l'amitié (COCLA),Transcription,Organismes communautaires et à but non-lucratif,Personnes racisées,Communautaire,0.9563
+97,Arsenault Dufresne Wee,Transcription,Chercheurs et experts,Cabinet d'avocats,"Citoyen,Municipal",0.9775
+98,Alain Arsenault,Transcription,Citoyens et particuliers,S.O.,Citoyen,-0.9775
+99,Tatiana Garakani,Transcription,Citoyens et particuliers,S.O.,Citoyen,0.8485
+100,Rachad Antonius,Transcription,Citoyens et particuliers,S.O.,Citoyen,-0.9849
+101,Nadia Bini,Transcription,Citoyens et particuliers,S.O.,Citoyen,0.9581
+102,"Table sur la diversité, l'inclusion et la lutte contre les discriminations",Mémoire,Chercheurs et experts,Personnes racisées,Municipal,0.9997
+104,Massimiliano Mulone,Transcription,Chercheurs et experts,Services policiers,"Citoyen,Municipal",-0.9974
+106,Mouvement Action Justice,Transcription,Organismes communautaires et à but non-lucratif,S.O.,"Communautaire,Citoyen",-0.9987
+107,Afrique au féminin,Transcription,Organismes communautaires et à but non-lucratif,Femmes,Communautaire,-0.9968
+108,Concert'action Lachine,Transcription,Organismes municipaux et paramunicipaux,Personnes issues de l'immigration,"Citoyen,Municipal",-0.9211
+109,Sayaspora,Transcription,Organismes communautaires et à but non-lucratif,Femmes,"Communautaire,Citoyen",0.9894

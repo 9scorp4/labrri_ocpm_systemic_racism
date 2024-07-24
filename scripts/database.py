@@ -116,6 +116,49 @@ class Database:
         except Exception as e:
             logging.error(f"Operation failed. Error: {e}", exc_info=True)
 
+    def fetch_all(self, lang=None):
+        """
+        Fetch all documents from the database.
+
+        Args:
+            lang (str): The language to filter the documents by. If None, all languages are considered.
+
+        Returns:
+            List[Tuple[int, str, str]]: Documents with their IDs, content, and language.
+        """
+        try:
+            # Construct the SQL query
+            query = """
+                SELECT d.id, c.content, d.language
+                FROM documents d
+                JOIN content c ON d.id = c.doc_id
+            """
+            params = ()
+            if lang:
+                # Add a WHERE clause to filter by language
+                query += "WHERE d.language = ?"
+                params = (lang,)
+
+            # Execute the query and return the results
+            self.cursor.execute(query, params)
+            return self.cursor.fetchall()
+        except Exception as e:
+            # Log and return an empty list on error
+            logging.error(f"Error fetching documents from the database: {e}", exc_info=True)
+            return []
+
+    def fetch_single(self, doc_id):
+        try:
+            self.cursor.execute("""
+                SELECT d.idm, c.content, d.language
+                FROM documents d
+                JOIN content c ON d.id = c.doc_id
+                WHERE d.id = ?
+            """, (doc_id,))
+            return self.cursor.fetchone()
+        except Exception as e:
+            logging.error(f"Error fetching document {doc_id} from the database: {e}", exc_info=True)
+            return None
     def __del__(self):
         """
         Close the database connection.

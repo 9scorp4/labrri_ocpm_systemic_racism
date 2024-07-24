@@ -77,59 +77,29 @@ class NoiseRemover:
             ValueError: If docs is None or lang is None.
             ValueError: If lang is invalid.
         """
-        # Check if docs is not None
-        if docs is None:
-            raise ValueError("Documents must be specified")
-        
-        # Check if lang is specified
-        if lang is None:
-            raise ValueError("Language must be specified")
-        
+        # Check inputs
+        self._check_inputs(docs, lang)
+
         processed_docs = []
         logging.debug(f"Cleaning {len(docs)} documents")
 
+        # Process each document in the list
         for i, doc in enumerate(docs):
             if doc is None:
                 logging.debug(f"Skipping document {i} as it is None")
                 continue
 
             # Convert the document to a string
-            if isinstance(doc, list):
-                doc = " ".join(doc)
-                logging.debug(f"Converted document {i} to string: {doc}")
-            elif not isinstance(doc, str):
-                doc = str(doc)
-                logging.debug(f"Converted document {i} to string: {doc}")
-            
+            doc = self._convert_to_string(doc, i)
+
             # Tokenize the document based on the specified language
-            if lang == 'fr':
-                tokens = self.nlp_fr(doc)  # French spacy model
-                logging.debug(f"Tokenized document {i} for French language: {tokens}")
-            elif lang == 'en':
-                tokens = self.nlp_en(doc)  # English spacy model
-                logging.debug(f"Tokenized document {i} for English language: {tokens}")
-            elif lang == 'bilingual':
-                tokens = {'fr': self.nlp_fr(doc), 'en': self.nlp_en(doc)}  # Bilingual spacy models
-                logging.debug(f"Tokenized document {i} for bilingual language: {tokens}")
-            else:
-                raise ValueError("Invalid language: {}".format(lang))
-            
+            tokens = self._tokenize_document(doc, lang, i)
+
             # Filter tokens to remove punctuation, stopwords, and digits
-            if lang == 'bilingual':
-                filtered_tokens = [str(token).lower() for lang_tokens in tokens.values() for token in lang_tokens
-                                   if str(token).lower() not in self.stopwords_lang
-                                   and str(token) not in string.punctuation
-                                   and not str(token).isdigit()]
-            else:
-                filtered_tokens = [token.text.lower() for token in tokens
-                                if token.text.lower() not in self.stopwords_lang
-                                and token.text not in string.punctuation
-                                and not token.text.isdigit()]
-                logging.debug(f"Filtered tokens for document {i}: {filtered_tokens}")
-            
+            filtered_tokens = self._filter_tokens(tokens, lang, i)
+
             # Join the filtered tokens to form a processed document
-            processed_doc = ' '.join(filtered_tokens)
-            logging.debug(f"Processed document {i}: {processed_doc}")
+            processed_doc = self._join_filtered_tokens(filtered_tokens)
 
             # Append cleaned document to the list if it is not empty
             if processed_doc and len(processed_doc) > 0:
@@ -137,6 +107,65 @@ class NoiseRemover:
 
         logging.debug(f"Cleaned {len(processed_docs)} documents")
         return processed_docs
+
+    def _check_inputs(self, docs, lang):
+        """
+        Check that the inputs are valid.
+        """
+        if docs is None:
+            raise ValueError("Documents must be specified")
+        if lang is None:
+            raise ValueError("Language must be specified")
+
+    def _convert_to_string(self, doc, index):
+        """
+        Convert the document to a string.
+        """
+        if isinstance(doc, list):
+            doc = " ".join(doc)
+        elif not isinstance(doc, str):
+            doc = str(doc)
+        logging.debug(f"Converted document {index} to string: {doc}")
+        return doc
+
+    def _tokenize_document(self, doc, lang, index):
+        """
+        Tokenize the document based on the specified language.
+        """
+        if lang == 'fr':
+            tokens = self.nlp_fr(doc)
+        elif lang == 'en':
+            tokens = self.nlp_en(doc)
+        elif lang == 'bilingual':
+            tokens = {'fr': self.nlp_fr(doc), 'en': self.nlp_en(doc)}
+        else:
+            raise ValueError("Invalid language: {}".format(lang))
+        logging.debug(f"Tokenized document {index} for language {lang}: {tokens}")
+        return tokens
+
+    def _filter_tokens(self, tokens, lang, index):
+        """
+        Filter tokens to remove punctuation, stopwords, and digits.
+        """
+        if lang == 'bilingual':
+            filtered_tokens = [str(token).lower() for lang_tokens in tokens.values() for token in lang_tokens
+                               if str(token).lower() not in self.stopwords_lang
+                               and str(token) not in string.punctuation
+                               and not str(token).isdigit()]
+        else:
+            filtered_tokens = [token.text.lower() for token in tokens
+                               if token.text.lower() not in self.stopwords_lang
+                               and token.text not in string.punctuation
+                               and not token.text.isdigit()]
+        logging.debug(f"Filtered tokens for document {index}: {filtered_tokens}")
+        return filtered_tokens
+
+    def _join_filtered_tokens(self, filtered_tokens):
+        """
+        Join the filtered tokens to form a processed document.
+        """
+        processed_doc = ' '.join(filtered_tokens)
+        return processed_doc
     
     def bilingual_docs(self, docs):
         """
