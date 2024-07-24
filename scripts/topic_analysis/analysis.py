@@ -46,6 +46,8 @@ class Analysis:
         Returns:
             List[List[str]]: Topics with their top words.
         """
+        logging.info(f"Processing documents with lang={self.lang}")
+        
         if doc_ids:
             docs = [self.db.fetch_single(doc_id) for doc_id in doc_ids]
             docs = [doc for doc in docs if doc]

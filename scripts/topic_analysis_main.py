@@ -6,15 +6,18 @@ from tqdm import tqdm
 
 from scripts.topic_analysis.text_processing import Process
 from scripts.topic_analysis.analysis import Analysis
+from scripts.database import Database
 
 def main(lang, mode='all', document_id=None):
     if lang is None:
         raise ValueError("lang parameter is required")
     
-    analysis = Analysis(db=r'data\database.db', lang=lang)
+    db = os.path.join(Path(__file__).parent.parent, 'data', 'database.db')
+    database = Database(db)
+    analysis = Analysis(db=db, lang=lang)
 
     if mode == 'single' and document_id is not None:
-        doc = analysis.fetch_single(document_id)
+        doc = database.fetch_single(document_id)
         if doc is None:
             logging.error(f"Document {document_id} not found in the database.")
             return
@@ -31,7 +34,7 @@ def main(lang, mode='all', document_id=None):
             print("No signficant topics found in the document.")
 
     elif mode == 'all':
-        docs = analysis.fetch_all()
+        docs = database.fetch_all()
         if not docs:
             logging.error("No documents found in the database.")
             return

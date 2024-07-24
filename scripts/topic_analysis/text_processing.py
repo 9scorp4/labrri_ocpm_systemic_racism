@@ -89,10 +89,12 @@ class Process:
             return []
         
     def docs_parallel(self, docs, lang, pbar=None):
-        logging.info("Starting parallel processing...")
+        logging.info(f"Parallel processing documents with lang={lang}")
         postprocessed_docs = []
 
         try:
+            lang = lang or self.lang
+
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 processed_docs = list(executor.map(lambda doc: self.single_doc(doc, lang), docs))
                 for doc in processed_docs:

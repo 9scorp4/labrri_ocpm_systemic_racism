@@ -149,8 +149,10 @@ class Database:
 
     def fetch_single(self, doc_id):
         try:
+            if isinstance(doc_id, tuple):
+                doc_id = doc_id[0]
             self.cursor.execute("""
-                SELECT d.idm, c.content, d.language
+                SELECT d.id, c.content, d.language
                 FROM documents d
                 JOIN content c ON d.id = c.doc_id
                 WHERE d.id = ?

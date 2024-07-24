@@ -31,8 +31,10 @@ class Tools:
             
             # If bilingual, also load the spacy models for French and English
             if lang == 'bilingual':
-                self.nlp['fr'] = self.load_spacy('fr')
-                self.nlp['en'] = self.load_spacy('en')
+                self.nlp = {
+                    'fr': self.load_spacy('fr'),
+                    'en': self.load_spacy('en')
+                }
         except Exception as e:
             # Log and raise an exception if the spacy model cannot be loaded
             logging.error(f"Failed to load spacy model. Error: {e}", exc_info=True)
@@ -140,6 +142,7 @@ class Tools:
             return token
         
         try:
+            lang = lang or self.lang
             lemmatized_token = {}
             if lang == 'bilingual':
                 # Lemmatize the token for French and English

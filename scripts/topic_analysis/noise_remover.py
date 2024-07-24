@@ -19,6 +19,9 @@ class NoiseRemover:
         if lang is None:
             raise ValueError("Language must be specified")
         
+        # Define language
+        self.lang = lang
+
         # Load spacy model
         try:
             # Load French and English models
@@ -77,6 +80,9 @@ class NoiseRemover:
             ValueError: If docs is None or lang is None.
             ValueError: If lang is invalid.
         """
+        lang = lang or self.lang
+        logging.info(f"Cleaning documents with lang={lang}")
+
         # Check inputs
         self._check_inputs(docs, lang)
 
