@@ -29,3 +29,6 @@ local.properties
 .loadpath
 .project
 .idea/
+
+# Ignore all files related to the API to be developed
+api_main.py
