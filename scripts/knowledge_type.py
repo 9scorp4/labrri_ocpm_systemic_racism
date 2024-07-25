@@ -2,6 +2,7 @@ import logging
 import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
+
 from scripts.database import Database
 
 class KnowledgeType:

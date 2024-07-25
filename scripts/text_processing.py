@@ -6,6 +6,7 @@ import fitz
 import pytesseract
 from docx import Document
 from pdf2image import convert_from_path
+
 from scripts.database import Database
 
 class ProcessText:

@@ -2,9 +2,10 @@ import logging
 from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
-from scripts.database import Database
 from langdetect import detect
 from nltk.tokenize import sent_tokenize
+
+from scripts.database import Database
 
 class LanguageDistributionChart:
     def __init__(self, db_path):
