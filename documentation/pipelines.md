@@ -103,7 +103,7 @@ This pipeline analyzes the distribution of both French and English languages in 
 
 **Main Notebook:** knowledge_type.ipynb
 
-This pipeline analyzes the types of municipal knowledge mobilized by the collected documents. For more information, consult the author's master thesis.
+This pipeline analyzes the types of municipal knowledge mobilized by the collected documents. For more information, consult the author's master thesis (still in the making).
 
 ### Key Components:
 
