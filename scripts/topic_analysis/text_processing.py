@@ -1,6 +1,8 @@
 import logging
 import concurrent.futures
+
 from scripts.topic_analysis.tools import Tools
+from exceptions import ProcessingError
 
 class Process:
     def __init__(self, lang=None):
@@ -8,7 +10,7 @@ class Process:
         self.lang = lang
         try:
             self.tools = Tools(lang)
-            self.stopwords_lang = self.tools.stopwords(lang)
+            self.stopwords_lang = self.tools.stopwords_lang
 
             if lang == 'bilingual':
                 self.nlp = {
@@ -33,85 +35,96 @@ class Process:
             logging.debug("Sentence loadad!")
 
             logging.debug("Tokenizing...")
-            try:
-                if lang == 'bilingual':
-                    fr_doc = self.nlp['fr'](text)
-                    en_doc = self.nlp['en'](text)
-                    tokens = [token.text for token in fr_doc] + [token.text for token in en_doc]
-                else:
-                    doc = self.nlp(text)
-                    tokens = [token.text for token in doc]
-                logging.debug(f"Tokens before lemmatization:\n{tokens}")
-            except Exception as e:
-                logging.error(f"Failed to tokenize. Error: {e}", exc_info=True)
-                return None
-            
+            tokens = self._tokenize(text, lang)
+
             logging.debug("Lemmatizing...")
-            lemmatized_tokens = [self.tools.lemmatize(token, lang) for token in tokens if token.lower() not in self.stopwords_lang]
+            lemmatized_tokens = self._lemmatize(tokens, lang)
 
-            if all(isinstance(token, list) for token in lemmatized_tokens):
-                lemmatized_sentence = ' '.join(lemmatized_tokens)
-            else:
-                lemmatized_sentence = lemmatized_tokens
+            lemmatized_sentence = ' '.join(lemmatized_tokens) if isinstance(lemmatized_tokens[0], str) else lemmatized_tokens
 
-            logging.debug(f"Lemmatized sentence:\n{lemmatized_sentence}")
-            logging.debug(f"Total tokens: {len(lemmatized_tokens)}")
-            logging.debug(f"Processed sentence:\n{lemmatized_sentence}")
+            logging.debug(f"Processed sentenceL:\n{lemmatized_sentence}\n")
 
             return lemmatized_sentence
         except Exception as e:
             logging.error(f"Failed to process sentence. Error: {e}", exc_info=True)
-            return None
-
+            raise ProcessingError("Failed to process sentence", error=e)
+        
+    def _tokenize(self, text, lang):
+        try:
+            if lang == 'bilingual':
+                fr_doc = self.nlp['fr'](text)
+                en_doc = self.nlp['en'](text)
+                return [token.text for token in fr_doc] + [token.text for token in en_doc]
+            else:
+                doc = self.nlp(text)
+                return [token.text for token in doc]
+        except Exception as e:
+            logging.error(f"Failed to tokenize text. Error: {e}", exc_info=True)
+            raise ProcessingError("Failed to tokenize text", error=e)
+        
+    def _lemmatize(self, tokens, lang):
+        try:
+            return [self.tools.lemmatize(token, lang) for token in tokens if token.lower() not in self.stopwords_lang]
+        except Exception as e:
+            logging.error(f"Failed to lemmatize tokens. Error: {e}", exc_info=True)
+            raise ProcessingError("Failed to lemmatize tokens", error=e)
+        
     def single_doc(self, doc, lang):
         try:
             lang = lang or self.lang
-            sentences = []
-
+            sentences = self._split_sentences(doc, lang)
+            processed_sentences = [self.single_sentence(sent, lang) for sent in sentences if sent]
+            logging.debug("Document processed successfully!")
+            return [sentence for sentence in processed_sentences if sentence]
+        except Exception as e:
+            logging.error(f"Failed to process document. Error: {e}", exc_info=True)
+            raise ProcessingError("Failed to process document", error=e)
+        
+    def _split_sentences(self, doc, lang):
+        try:
             if lang == 'bilingual':
                 fr_doc = self.nlp['fr'](doc)
                 en_doc = self.nlp['en'](doc)
-
-                for sent in fr_doc.sents:
-                    sentences.append(self.single_sentence(sent, 'fr'))
-                for sent in en_doc.sents:
-                    sentences.append(self.single_sentence(sent, 'en'))
+                return list(fr_doc.sents) + list(en_doc.sents)
             else:
                 doc = self.nlp(doc)
-                for sent in doc.sents:
-                    sentences.append(self.single_sentence(sent, lang))
-            
-            processed_sentences = [sentence for sentence in sentences if sentence]
-            logging.debug("Document processed successfully!")
-            return processed_sentences
+                return list(doc.sents)
         except Exception as e:
-            logging.error(f"Failed to process document. Error: {e}", exc_info=True)
-            return []
+            logging.error(f"Failed to split sentences. Error: {e}", exc_info=True)
+            raise ProcessingError("Failed to split sentences", error=e)
         
     def docs_parallel(self, docs, lang, pbar=None):
         logging.info(f"Parallel processing documents with lang={lang}")
-        postprocessed_docs = []
-
         try:
-            lang = lang or self.lang
-
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 processed_docs = list(executor.map(lambda doc: self.single_doc(doc, lang), docs))
-                for doc in processed_docs:
-                    if lang == 'bilingual':
-                        if isinstance(doc, dict):
-                            filtered_sentences = [word for word in doc.get(lang, []) if word not in self.stopwords_lang]
-                        elif isinstance(doc, list):
-                            filtered_sentences = [word for word in doc if isinstance(word, list) or (word not in set(tuple(self.stopwords_lang)) and word not in tuple(self.stopwords_lang))]
-                    else:
-                        filtered_sentences = [word for word in doc if (isinstance(word, dict) and tuple(word.items()) not in set(tuple(self.stopwords_lang.items())) and word not in self.stopwords_lang) or (isinstance(word, str) and word not in self.stopwords_lang)]
 
-                    postprocessed_docs.extend(filtered_sentences)
+            post_processed_docs = self._postprocess_docs(processed_docs, lang)
 
-                    if pbar:
-                        pbar.update(len(filtered_sentences))
+            if pbar:
+                pbar.update(len(post_processed_docs))
+
+            return post_processed_docs
         except Exception as e:
             logging.error(f"Failed to process documents. Error: {e}", exc_info=True)
-            return []
+            raise ProcessingError("Failed to process documents in parallel", error=e)
         
-        return postprocessed_docs
+    def _postprocess_docs(self, processed_docs, lang):
+        try:
+            post_processed_docs = []
+            for doc in processed_docs:
+                if lang == 'bilingual':
+                    filtered_sentences = self._filter_bilingual_sentences(doc)
+                else:
+                    filtered_sentences = self._filter_sentences(doc)
+                post_processed_docs.extend(filtered_sentences)
+            return post_processed_docs
+        except Exception as e:
+            logging.error(f"Failed to postprocess documents. Error: {e}", exc_info=True)
+            raise ProcessingError("Failed to postprocess documents", error=e)
+        
+    def _filter_bilingual_sentences(self, doc):
+        return [word for word in doc if isinstance(word, list) or (word not in set(tuple(self.stopwords_lang)) and word not in tuple(self.stopwords_lang))]
+
+    def _filter_sentences(self, doc):
+        return [word for word in doc if (isinstance(word, dict) and tuple(word.items()) not in set(tuple(self.stopwords_lang.items())) and word not in self.stopwords_lang) or (isinstance(word, str) and word not in self.stopwords_lang)]

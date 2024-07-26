@@ -15,6 +15,12 @@ def main(lang, mode='all', document_id=None):
     db = os.path.join(Path(__file__).parent.parent, 'data', 'database.db')
     database = Database(db)
     analysis = Analysis(db=db, lang=lang)
+    
+    try:
+        process = Process(lang=lang)
+    except Exception as e:
+        logging.error(f"Error initializing Process: {str(e)}")
+        return
 
     if mode == 'single' and document_id is not None:
         doc = database.fetch_single(document_id)
@@ -23,7 +29,8 @@ def main(lang, mode='all', document_id=None):
             return
         
         with tqdm(total=1, desc=f"Processing Document {document_id}") as pbar:
-            results = analysis.process_documents([doc])
+            procesed_doc = process.single_doc(doc[1], lang)
+            results = analysis.process_documents(([doc[0], procesed_doc]))
             pbar.update(1)
 
         print(f"Document {document_id} Results:")
@@ -41,8 +48,8 @@ def main(lang, mode='all', document_id=None):
         
         with tqdm(total=len(docs), desc="Processing Documents") as pbar:
             for doc in docs:
-                results = analysis.process_documents([doc])
-                pbar.update(len(docs))
+                processed_docs = process.docs_parallel([doc[1] for doc in docs], lang, pbar)
+                results = analysis.process_documents(list(zip([doc[0] for doc in docs], processed_docs)))
 
         print('All Documents Results:')
         if results:

@@ -4,6 +4,7 @@ import re
 import csv
 import logging
 from pathlib import Path
+
 from scripts.text_processing import ProcessText
 from scripts.database import Database
 
