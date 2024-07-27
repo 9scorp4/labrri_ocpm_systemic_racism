@@ -2,6 +2,10 @@
 
 This document provides an overview of the different pipelines used in this project. Each pipeline corresponds to a specific analysis task and is associated with one or more Python scripts or Jupyter notebooks.
 
+The diagram below illustrates the general data workflow of this repository and this document comes to support this diagram by providing more details on the functioning of each pipeline.
+
+![Diagram representing the data analysis workflow of this repository](documentation/images/cmaps/pipelines_workflow.png)
+
 ## Table of contents
 
 - [1. Update Database Pipeline](#1-update-database-pipeline)
