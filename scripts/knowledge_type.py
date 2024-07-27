@@ -30,35 +30,10 @@ class KnowledgeType:
         self.conn = self.db.conn
         if self.conn is None:
             raise ValueError('Database connection is None')
-
-    def df_from_query(self, query):
-        """
-        Retrieves a pandas DataFrame from a SQL query.
-
-        Parameters:
-            query (str): The SQL query to execute.
-
-        Raises:
-            ValueError: If the query is None.
-            ValueError: If the database connection is None.
-            ValueError: If the retrieved content_df is None.
-
-        Returns:
-            pandas.DataFrame: The DataFrame containing the results of the query.
-        """
-        if query is None:
-            raise ValueError('query cannot be None')
-        if self.conn is None:
-            raise ValueError('Database connection is None')
-        logging.info('Retrieving data from the database')
-        content_df = pd.read_sql_query(query, self.conn)
-        if content_df is None:
-            raise ValueError('content_df is None')
-        return content_df
     
     def all_docs(self):
         # Retrieve document content from the database
-        df = self.df_from_query("SELECT knowledge_type FROM documents")
+        df = self.db.df_from_query("SELECT knowledge_type FROM documents")
         
         # Count the frequency of each knowledge type
         df_original = df['knowledge_type'].value_counts().reset_index()
@@ -123,7 +98,7 @@ class KnowledgeType:
             ValueError: If the dataframe is empty or the compare_with column does not exist.
         """
         # Retrieve document content from the database
-        df = self.df_from_query("SELECT * FROM documents")
+        df = self.db.df_from_query("SELECT * FROM documents")
         
         # Check if the dataframe is empty
         if df.empty:
@@ -167,7 +142,7 @@ class KnowledgeType:
             ValueError: If the dataframe is empty or no documents are found with the specified knowledge type.
         """
         # Retrieve document content from the database
-        df = self.df_from_query("SELECT * FROM documents")
+        df = self.db.df_from_query("SELECT * FROM documents")
 
         # Check if the dataframe is empty
         if df.empty:

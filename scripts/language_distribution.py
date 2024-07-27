@@ -40,30 +40,6 @@ class LanguageDistributionChart:
         self.cursor = self.conn.cursor()
         if self.cursor is None:
             raise ValueError('Database cursor is None')
-    
-    def df_from_query(self, query):
-        """
-        Retrieves a pandas DataFrame from a SQL query.
-
-        Parameters:
-            query (str): The SQL query to execute.
-
-        Returns:
-            pandas.DataFrame: The DataFrame containing the results of the query.
-
-        Raises:
-            ValueError: If the query is None.
-            pandas.errors.DatabaseError: If the query execution fails.
-        """
-        if query is None:
-            raise ValueError('query cannot be None')
-
-        try:
-            logging.info('Retrieving data from the database')
-            return pd.read_sql_query(query, self.conn)
-        except pd.errors.DatabaseError as e:
-            logging.error(f'Query execution failed. Error: {e}')
-            raise
 
     def count_graph(self, where):
         """
@@ -96,7 +72,7 @@ class LanguageDistributionChart:
             """
 
         logging.info('Executing query')
-        df = self.df_from_query(query)
+        df = self.db.df_from_query(query)
         if df is None:
             raise ValueError('df is None')
         logging.info('Received data from the database')
@@ -165,7 +141,7 @@ class LanguageDistributionChart:
             query = "SELECT d.organization, d.language, c.content FROM documents d INNER JOIN content c ON d.id = c.doc_id"
         else:
             query = f"SELECT d.organization, d.language, c.content FROM documents d INNER JOIN content c ON d.id = c.doc_id WHERE d.language = '{where}'"
-        df = self.df_from_query(query)
+        df = self.db.df_from_query(query)
         if df is None:
             raise ValueError('df is None')
         

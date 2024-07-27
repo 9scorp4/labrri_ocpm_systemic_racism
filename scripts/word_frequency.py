@@ -65,34 +65,6 @@ class WordFrequencyChart:
         }
 
         self.all_stopwords = self.en_stopwords.union(self.fr_stopwords, self.custom_stopwords)
-
-    def df_from_query(self, query):
-        """
-        Retrieves a pandas DataFrame from a SQL query.
-
-        Args:
-            query (str): The SQL query to execute.
-
-        Raises:
-            ValueError: If the query is None.
-            ValueError: If the retrieved content_df is None.
-            ValueError: If the connection to the database is None.
-
-        Returns:
-            pandas.DataFrame: The DataFrame containing the results of the query.
-        """
-        if query is None:
-            raise ValueError('query cannot be None')
-        if self.conn is None:
-            raise ValueError('Database connection is None')
-        logging.info('Retrieving data from the database')
-        try:
-            content_df = pd.read_sql_query(query, self.conn)
-        except Exception as e:
-            raise ValueError('Failed to retrieve data from the database') from e
-        if content_df is None:
-            raise ValueError('content_df is None')
-        return content_df
     
     def top_20_words_category(self, where: str) -> None:
         """
@@ -113,7 +85,7 @@ class WordFrequencyChart:
 
         logging.info('Tokenizing and removing stopwords')
         # Retrieve document content from the database
-        df = self.df_from_query(f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE category = '{where}'")
+        df = self.db.df_from_query(f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE category = '{where}'")
         if df is None:
             raise ValueError("df is None")
 
@@ -167,7 +139,7 @@ class WordFrequencyChart:
         INNER JOIN content C ON d.id = c.doc_id
         WHERE d.language = '{lang}'
         """
-        df = self.df_from_query(query)
+        df = self.db.df_from_query(query)
         if df is None:
             raise ValueError('df is None')
 
@@ -222,7 +194,7 @@ class WordFrequencyChart:
         """
         # Retrieve document content from the database
         logging.info('Retrieving document content from the database')
-        df = self.df_from_query("SELECT content FROM content")
+        df = self.db.df_from_query("SELECT content FROM content")
         if df is None:
             logging.error('df is None')
             raise ValueError('df is None')

@@ -98,6 +98,31 @@ class Database:
             logging.error(f"An unexpected error occurred. Error: {e}", exc_info=True)
             raise
 
+    def df_from_query(self, query):
+        """
+        Retrieves a pandas DataFrame from a SQL query.
+
+        Parameters:
+            query (str): The SQL query to execute.
+
+        Raises:
+            ValueError: If the query is None.
+            ValueError: If the database connection is None.
+            ValueError: If the retrieved content_df is None.
+
+        Returns:
+            pandas.DataFrame: The DataFrame containing the results of the query.
+        """
+        if query is None:
+            raise ValueError('query cannot be None')
+        if self.conn is None:
+            raise ValueError('Database connection is None')
+        logging.info('Retrieving data from the database')
+        content_df = pd.read_sql_query(query, self.conn)
+        if content_df is None:
+            raise ValueError('content_df is None')
+        return content_df
+
     def csv_to_xlsx(self, csv_path, xlsx_path):
         """
         Convert a CSV file to an XLSX file.
