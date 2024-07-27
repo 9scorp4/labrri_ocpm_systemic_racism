@@ -30,7 +30,7 @@ def main(lang, mode='all', document_id=None):
         
         with tqdm(total=1, desc=f"Processing Document {document_id}") as pbar:
             procesed_doc = process.single_doc(doc[1], lang)
-            results = analysis.process_documents(([doc[0], procesed_doc]))
+            results = analysis.analyze_docs(([doc[0], procesed_doc]))
             pbar.update(1)
 
         print(f"Document {document_id} Results:")
@@ -49,7 +49,7 @@ def main(lang, mode='all', document_id=None):
         with tqdm(total=len(docs), desc="Processing Documents") as pbar:
             for doc in docs:
                 processed_docs = process.docs_parallel([doc[1] for doc in docs], lang, pbar)
-                results = analysis.process_documents(list(zip([doc[0] for doc in docs], processed_docs)))
+                results = analysis.analyze_docs(list(zip([doc[0] for doc in docs], processed_docs)))
 
         print('All Documents Results:')
         if results:

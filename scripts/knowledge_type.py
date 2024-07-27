@@ -112,7 +112,7 @@ class KnowledgeType:
         df_original.to_excel('results/knowledge_type/knowledge_types_original.xlsx', index=False)
         df_split.to_excel('results/knowledge_type/knowledge_types_split.xlsx', index=False)
 
-    def cross_table(self, compare_with=None):
+    def crosstable(self, compare_with=None):
         """
         Creates a cross table of knowledge types.
 
@@ -144,17 +144,17 @@ class KnowledgeType:
         # Create a cross table
         if compare_with is not None:
             # Create a cross table using the specified column to compare the knowledge types with
-            cross_table = pd.crosstab(expanded_df[compare_with], expanded_df['knowledge_type'], margins=True, margins_name="Total")
+            crosstable = pd.crosstab(expanded_df[compare_with], expanded_df['knowledge_type'], margins=True, margins_name="Total")
         else:
             # Create a cross table using the knowledge types as the columns
-            cross_table = pd.crosstab(expanded_df['knowledge_type'], margins=True, margins_name="Total")
+            crosstable = pd.crosstab(expanded_df['knowledge_type'], margins=True, margins_name="Total")
 
         # Save the cross table to a CSV and XLSX file
-        cross_table.to_csv(f'results/knowledge_type/cross_table_knowledge_types_{compare_with}.csv', index=True)
-        cross_table.to_excel(f'results/knowledge_type/cross_table_knowledge_types_{compare_with}.xlsx', index=True)
+        crosstable.to_csv(f'results/knowledge_type/crosstable_knowledge_types_{compare_with}.csv', index=True)
+        crosstable.to_excel(f'results/knowledge_type/crosstable_knowledge_types_{compare_with}.xlsx', index=True)
 
         # Print the cross table
-        print(cross_table)
+        print(crosstable)
 
     def docs_list(self, knowledge_type):
         """

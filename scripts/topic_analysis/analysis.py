@@ -41,7 +41,7 @@ class Analysis:
             logging.error(f"Error initializing Analysis: {str(e)}")
             raise AnalysisError("Error initializing Analysis", error=e)
 
-    def process_documents(self, doc_ids=None):
+    def analyze_docs(self, doc_ids=None):
         """
         Process a list of documents and perform topic analysis.
 
