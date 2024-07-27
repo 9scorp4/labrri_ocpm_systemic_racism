@@ -1,10 +1,10 @@
 # Pipeline blueprints
 
+![Diagram representing the data analysis workflow of this repository](images/cmaps/pipelines_workflow.png)
+
 This document provides an overview of the different pipelines used in this project. Each pipeline corresponds to a specific analysis task and is associated with one or more Python scripts or Jupyter notebooks.
 
-The diagram below illustrates the general data workflow of this repository and this document comes to support this diagram by providing more details on the functioning of each pipeline.
-
-![Diagram representing the data analysis workflow of this repository](images/cmaps/pipelines_workflow.png)
+The diagram above illustrates the general data workflow of this repository and this document comes to support this diagram by providing more details on the functioning of each pipeline.
 
 ## Table of contents
 
