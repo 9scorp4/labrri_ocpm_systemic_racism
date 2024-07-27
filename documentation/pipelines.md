@@ -4,7 +4,7 @@ This document provides an overview of the different pipelines used in this proje
 
 The diagram below illustrates the general data workflow of this repository and this document comes to support this diagram by providing more details on the functioning of each pipeline.
 
-![Diagram representing the data analysis workflow of this repository](documentation/images/cmaps/pipelines_workflow.png)
+![Diagram representing the data analysis workflow of this repository](images/cmaps/pipelines_workflow.png)
 
 ## Table of contents
 
