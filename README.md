@@ -1,6 +1,6 @@
 # Projet OCPM: Racisme systémique
 
-[<img src="images/labbri_logo_retina.png" alt="LABRRI" width="500"/>](https://labrri.net/)  [<img src="images/universite-de-montreal-logo-png-transparent.png" alt="Université de Montréal" width="200"/>](https://umontreal.ca/)
+[<img src="documentation/images/labbri_logo_retina.png" alt="LABRRI" width="500"/>](https://labrri.net/)  [<img src="documentation/images/universite-de-montreal-logo-png-transparent.png" alt="Université de Montréal" width="200"/>](https://umontreal.ca/)
 
 Welcome to Projet "OCPM: Racisme systémique", by Nicolas Arias Garcia (9scorp4) et al. All data used for analysis come from the documentation dossier of the Office de Consultation Publique de Montréal's Commission on Systemic Racism and Discrimination (available [here](https://ocpm.qc.ca/fr/r%26ds/documentation)).
 
