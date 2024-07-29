@@ -8,7 +8,7 @@ The diagram above illustrates the general data workflow of this repository and t
 
 ## Table of contents
 
-- [1. Update Database Pipeline](#1-update-database-pipeline)
+- [1. Update Database](#1-update-database)
 - [2. General Analysis](#2-general-analysis)
 - [3. Word Frequency Analysis](#3-word-frequency-analysis)
 - [4. Language Distribution Analysis](#4-language-distribution-analysis)
@@ -17,7 +17,7 @@ The diagram above illustrates the general data workflow of this repository and t
 - [7. Sentiment Analysis](#7-sentiment-analysis-in-development)
 - [Notes](#notes)
 
-## 1. Update Database Pipeline
+## 1. Update Database
 
 **Main Script:** update_database.py
 
