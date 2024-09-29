@@ -1,25 +1,28 @@
 import re
-import logging
 from pathlib import Path
-from tqdm import tqdm
+from loguru import logger
 import fitz
 import pytesseract
 from docx import Document
 from pdf2image import convert_from_path
+import spacy
+from unidecode import unidecode
 
 from scripts.database import Database
 
 class ProcessText:
     """
-    Class for text processing.
+    Class for text processing with improved cleaning and anonymization.
     """
 
     def __init__(self):
         try:
-            self.db = Database("data\database.db")
+            self.db = Database("data/database.db")
             self.conn = self.db.conn
+            self.nlp_fr = spacy.load("fr_core_news_sm")
+            self.nlp_en = spacy.load("en_core_web_sm")
         except Exception as e:
-            logging.error(f"Error initializing database: {e}", exc_info=True)
+            logger.error(f"Error initializing ProcessText: {e}")
             raise
 
     def extract_from_pdf(self, pdf_path):
@@ -49,7 +52,7 @@ class ProcessText:
 
                     text += page.get_text("text")
         except Exception as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
+            logger.error(f"Operation failed. Error: {e}")
             raise
         return text
     
@@ -59,101 +62,71 @@ class ProcessText:
 
         Args:
             pdf_path: path to the PDF document
-            conn: database connection
         """
         if not pdf_path:
             raise ValueError("pdf_path cannot be None")
 
-        print(f"Applying OCR to {pdf_path}...")
-        logging.info(f"Applying OCR to {pdf_path}...")
+        logger.info(f"Applying OCR to {pdf_path}...")
 
-        # Create a cursor
         cursor = self.conn.cursor()
 
-        # Retrieve the document_id from the documents table based on the filepath
         cursor.execute("SELECT id FROM documents WHERE filepath = ?", (pdf_path,))
         document_id = cursor.fetchone()
 
         if not document_id:
-            print(f"No document found for {pdf_path}.")
-            logging.info(f"No document found for {pdf_path}.")
+            logger.info(f"No document found for {pdf_path}.")
             return
 
         document_id = document_id[0]
 
-        # Convert PDF to images
         try:
             images = convert_from_path(pdf_path)
         except Exception as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
+            logger.error(f"Operation failed. Error: {e}")
             raise
 
-        # Initialize outer progress bar for the entire process
-        ocr_progress_bar = tqdm(total=len(images), desc="Processing pages", unit="page")
-
         extracted_text = []
-        for i, image in enumerate(images):
-            # Upgrade the progress bar
-            ocr_progress_bar.update(1)
-
+        for image in images:
             text = pytesseract.image_to_string(image)
             extracted_text.append(text)
 
-        # Close the progress bar
-        ocr_progress_bar.close()
-        
-        logging.info(f"Text extracted from {pdf_path}")
-        logging.debug(f"Extracted text: {extracted_text}")
+        logger.info(f"Text extracted from {pdf_path}")
+        logger.debug(f"Extracted text: {extracted_text}")
 
-        # Update the content in the database
         try:
-            # Concatenate all extracted text into a single string
             combined_text = '\n'.join(extracted_text)
-
-            # Update the content in the database
             cursor.execute("UPDATE content SET content = ? WHERE doc_id = ?", (combined_text, document_id))
-
-            # Commit the changes
             self.conn.commit()
-            logging.debug(f"Content updated in the database.")
+            logger.debug(f"Content updated in the database.")
         except Exception as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
+            logger.error(f"Operation failed. Error: {e}")
             self.conn.rollback()
 
-        # Initialize the progress bar for saving text to a Word document
-        word_progress_bar = tqdm(total=1, desc="Writing text to Word document", unit="doc")
-
-        # Create a Word document
         document = Document()
         for text in extracted_text:
             document.add_paragraph(text)
         
-        # Save document
-        pdf_path = Path(pdf_path)
-        output_txt_path = pdf_path.with_suffix(".docx")
+        output_txt_path = Path(pdf_path).with_suffix(".docx")
         document.save(output_txt_path)
 
-        # Close the progress bar
-        word_progress_bar.close()
+        logger.info(f"OCR extraction completed for document ID: {document_id}. Word document saved to {output_txt_path}.")
 
-        print(f"OCR extraction completed for document ID: {document_id}. Word document saved to {output_txt_path}.")
-        logging.info(f"OCR extraction completed for document ID: {document_id}. Word document saved to {output_txt_path}.")
-
-    def clean(self, text):
+    def clean(self, text: str, lang: str = 'fr') -> str:
         """
-        Clean extracted text.
+        Clean extracted text with improved noise removal and language-specific processing.
 
         Args:
-            text (str): extracted text
+            text: extracted text
+            lang: language of the text ('fr' for French, 'en' for English)
 
         Returns:
-            str: cleaned text
+            cleaned text
         """
         try:
             if not isinstance(text, str):
                 raise ValueError("text must be a string")
 
-            logging.debug(f"Initial text: {text}")
+            logger.debug(f"Initial text: {text}")
 
             # Remove multiple consecutive spaces
             cleaned_text = re.sub(r'\s+', ' ', text)
@@ -164,14 +137,87 @@ class ProcessText:
             # Replace consecutive newlines with a single newline
             cleaned_text = re.sub(r'\n+', '\n', cleaned_text)
 
-            # Remove non-alphanumeric characters (except those needed in French)
+            # Remove non-alphanumeric characters (except those needed in French and English)
             cleaned_text = re.sub(r'[^\w\s.;:?!-]', ' ', cleaned_text).strip()
 
             # Convert to lowercase
             cleaned_text = cleaned_text.lower()
 
-            logging.debug(f"Cleaned text: {cleaned_text}")
+            # Language-specific cleaning
+            if lang == 'fr':
+                cleaned_text = self.clean_french(cleaned_text)
+            elif lang == 'en':
+                cleaned_text = self.clean_english(cleaned_text)
+
+            # Light anonymization using NER
+            cleaned_text = self.anonymize(cleaned_text, lang)
+
+            logger.debug(f"Cleaned text: {cleaned_text}")
             return cleaned_text
         except Exception as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
+            logger.error(f"Operation failed. Error: {e}")
             raise
+
+    def clean_french(self, text: str) -> str:
+        """
+        Apply French-specific text cleaning.
+
+        Args:
+            text: text to clean
+
+        Returns:
+            cleaned text
+        """
+        # Remove common French contractions
+        contractions = {
+            "l'": "l ", "d'": "d ", "j'": "j ", "m'": "m ", "t'": "t ", "s'": "s ",
+            "n'": "n ", "qu'": "qu ", "jusqu'": "jusque ", "lorsqu'": "lorsque "
+        }
+        for contraction, replacement in contractions.items():
+            text = text.replace(contraction, replacement)
+
+        # Handle accents
+        text = unidecode(text)
+
+        return text
+
+    def clean_english(self, text: str) -> str:
+        """
+        Apply English-specific text cleaning.
+
+        Args:
+            text: text to clean
+
+        Returns:
+            cleaned text
+        """
+        # Remove common English contractions
+        contractions = {
+            "n't": " not", "'s": " is", "'m": " am", "'re": " are",
+            "'ll": " will", "'d": " would", "'ve": " have"
+        }
+        for contraction, replacement in contractions.items():
+            text = text.replace(contraction, replacement)
+
+        return text
+
+    def anonymize(self, text: str, lang: str) -> str:
+        """
+        Perform light anonymization using Named Entity Recognition.
+
+        Args:
+            text: text to anonymize
+            lang: language of the text ('fr' for French, 'en' for English)
+
+        Returns:
+            anonymized text
+        """
+        nlp = self.nlp_fr if lang == 'fr' else self.nlp_en
+        doc = nlp(text)
+
+        anonymized_text = text
+        for ent in doc.ents:
+            if ent.label_ in ['PERSON', 'ORG']:
+                anonymized_text = anonymized_text.replace(ent.text, f"[{ent.label_}]")
+
+        return anonymized_text
