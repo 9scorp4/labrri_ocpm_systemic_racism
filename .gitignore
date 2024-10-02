@@ -30,5 +30,8 @@ local.properties
 .project
 .idea/
 
+# Ignore results
+results/**/
+
 # Ignore all files related to the API to be developed
 api.py
