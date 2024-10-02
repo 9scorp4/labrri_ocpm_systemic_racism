@@ -1,52 +1,24 @@
-import logging
+from loguru import logger
 import pandas as pd
 import nltk
-nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+from nltk.util import ngrams
 from collections import Counter
 import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import TfidfVectorizer
 from scripts.database import Database
+
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
 
 class WordFrequencyChart:
     def __init__(self, db_path):
-        """
-        Initializes the WordFrequencyChart class.
-
-        Args:
-            db_path (str): The path to the database file.
-
-        Raises:
-            ValueError: If db_path is None.
-            ValueError: If the database connection is None.
-            FileNotFoundError: If the stopwords cannot be downloaded.
-
-        Initializes the following instance variables:
-            - db_path (str): The path to the database file.
-            - db (Database): The database object.
-            - conn (Connection): The database connection object.
-            - en_stopwords (set): The set of English stopwords.
-            - fr_stopwords (set): The set of French stopwords.
-            - custom_stopwords (set): The set of custom stopwords.
-            - all_stopwords (set): The set of all stopwords.
-
-        Returns:
-            None
-        """
-        logging.info('Initializing WordFrequencyChart')
         if db_path is None:
             raise ValueError('db_path cannot be None')
 
         self.db_path = db_path
         self.db = Database(self.db_path)
-        self.conn = self.db.conn
-        if self.conn is None:
-            raise ValueError('Database connection is None')
-
-        try:
-            nltk.download('stopwords')
-        except LookupError:
-            raise FileNotFoundError('Stopwords cannot be downloaded')
 
         self.en_stopwords = set(stopwords.words('english'))
         self.fr_stopwords = set(stopwords.words('french'))
@@ -65,173 +37,157 @@ class WordFrequencyChart:
         }
 
         self.all_stopwords = self.en_stopwords.union(self.fr_stopwords, self.custom_stopwords)
-    
-    def top_20_words_category(self, where: str) -> None:
-        """
-        Retrieves the top 20 most frequent words from the documents in a specified category, tokenizes the text, converts the words to lowercase, removes stop words, and plots the most frequent words.
+
+    def tokenize_and_clean(self, text, lang=None):
+        tokens = word_tokenize(text.lower())
+        if lang == 'fr':
+            stopwords = self.fr_stopwords
+        elif lang == 'en':
+            stopwords = self.en_stopwords
+        else:
+            stopwords = self.all_stopwords
+        return [word for word in tokens if word.isalpha() and word not in stopwords and word not in self.custom_stopwords]
+
+    def get_ngrams(self, tokens, n):
+        return list(ngrams(tokens, n))
+
+    def top_n_words(self, where, n=20, ngram=1, lang=None):
+        logger.info(f'Analyzing top {n} {ngram}-grams for {"category: " + where if lang is None else "language: " + lang}')
         
-        Parameters:
-            self (WordFrequencyChart): The WordFrequencyChart instance.
+        if lang is None:
+            query = f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE category = '{where}'"
+        else:
+            query = f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE d.language = '{lang}'"
         
-        Returns:
-            None
-        
-        Raises:
-            ValueError: If the dataframe retrieved from the database is None or if any content in the dataframe is None.
-            TypeError: If the input parameter where is not of type str.
-        """
-        if not isinstance(where, str):
-            raise TypeError(f"Expected a string, got {type(where).__name__}")
-
-        logging.info('Tokenizing and removing stopwords')
-        # Retrieve document content from the database
-        df = self.db.df_from_query(f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE category = '{where}'")
-        if df is None:
-            raise ValueError("df is None")
-
-        # Check if any content is None
-        if df['content'].isnull().any().any():
-            raise ValueError("content contains None values")
-
-        # Tokenize the text, convert to lowercase, and remove stop words
-        word_freq = Counter()
-        for content in df['content']:
-            tokens = word_tokenize(content)
-            words = [word.lower() for word in tokens if word.isalpha() and len(word) >= 4 and word.lower() not in self.all_stopwords]
-            word_freq.update(words)
-
-        # Get the 20 most common words and their frequencies
-        most_common_words = word_freq.most_common(20)
-
-        # Plot the most frequent words and save the results in a PNG file
-        logging.info('Plotting the most frequent words')
-        words, frequencies = zip(*most_common_words)
-        plt.figure(figsize=(10, 6))
-        plt.bar(words, frequencies)
-        plt.title(f"Les 20 mots les plus fréquents parmi les documents de la catégorie {where}")
-        plt.xlabel("Mots")
-        plt.ylabel("Frequence")
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.savefig(f'results/word_frequency/top_20_{where}.png')
-        plt.show()
-
-        # Save the results in a CSV file
-        logging.info('Saving the results')
-        df = pd.DataFrame(most_common_words, columns=['Word', 'Frequency'])
-        df.to_csv(f'results/word_frequency/top_20_{where}.csv', index=False)
-
-    def top_20_words_lang(self, lang):
-        """
-        Retrieves the text content of all documents in a specified language from the database, tokenizes the text, removes stopwords, counts the frequency of each word, extracts the 20 most common words, plots the word frequencies, and saves the results in a CSV file and a PNG file.
-
-        Args:
-            lang (str): The language of the documents to retrieve.
-
-        Raises:
-            ValueError: If the dataframe retrieved from the database is None or if any content in the dataframe is None.
-        """
-        logging.info('Tokenizing and removing stopwords')
-        # Retrieve text content of all documents in the specified language
-        query = f"""
-        SELECT c.content
-        FROM documents d
-        INNER JOIN content C ON d.id = c.doc_id
-        WHERE d.language = '{lang}'
-        """
         df = self.db.df_from_query(query)
-        if df is None:
-            raise ValueError('df is None')
+        
+        if df is None or df.empty:
+            logger.warning(f"No data found for {'category: ' + where if lang is None else 'language: ' + lang}")
+            return None
 
-        # Check if any content is None
-        if df['content'].isnull().any().any():
-            raise ValueError('content contains None values')
-
-        # Tokenize the text, convert to lowercase, and remove stop words
-        all_words = []
+        all_ngrams = []
         for content in df['content']:
-            if content is None:
-                raise ValueError('content is None')
-            tokens = word_tokenize(content)
-            words = [word.lower() for word in tokens if word.isalpha() and word.lower() not in self.all_stopwords]
-            all_words.extend(words)
+            tokens = self.tokenize_and_clean(content, lang)
+            all_ngrams.extend(self.get_ngrams(tokens, ngram))
 
-        # Count the frequency of each word
-        word_freq = Counter(all_words)
+        ngram_freq = Counter(all_ngrams)
+        most_common = ngram_freq.most_common(n)
 
-        # Get the 20 most common words and their frequencies
-        most_common_words = word_freq.most_common(20)
+        words, frequencies = zip(*most_common)
+        words = [' '.join(word) for word in words]
 
-        # Extract word and frequency data for plotting
-        words, frequencies = zip(*most_common_words)
-
-        # Plot the most frequent words
-        logging.info(f'Plotting the most frequent words in {lang} corpus')
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(12, 6))
         plt.bar(words, frequencies)
-        plt.title(f"Les 20 mots les plus fréquents dans le corpus (lang = {lang})")
-        plt.xlabel("Mots")
-        plt.ylabel("Frequence")
-        plt.xticks(rotation=45)
+        plt.title(f"Top {n} {ngram}-grams in {'category: ' + where if lang is None else 'language: ' + lang}")
+        plt.xlabel("Words")
+        plt.ylabel("Frequency")
+        plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
-        plt.savefig(f'results/word_frequency/top_20_{lang}.png')
-        plt.show()
+        plt.savefig(f'results/word_frequency/top_{n}_{ngram}grams_{"category_" + where if lang is None else "lang_" + lang}.png')
+        plt.close()
 
-        # Save the results in a CSV file
-        logging.info('Saving the results')
-        df = pd.DataFrame(most_common_words, columns=['Word', 'Frequency'])
-        df.to_csv(f'results/word_frequency/top_20_{lang}.csv', index=False)
+        df_result = pd.DataFrame(most_common, columns=[f'{ngram}-gram', 'Frequency'])
+        df_result[f'{ngram}-gram'] = df_result[f'{ngram}-gram'].apply(lambda x: ' '.join(x))
+        df_result.to_csv(f'results/word_frequency/top_{n}_{ngram}grams_{"category_" + where if lang is None else "lang_" + lang}.csv', index=False)
 
-    def frequency_certain_words(self, words):
-        """
-        Retrieves the document content from the database, combines it into a single string, counts the frequency of each word in the specified list of words, creates a bar plot of the word frequencies, and saves the results in a CSV file and a PNG file.
+        logger.info(f'Analysis complete for {"category: " + where if lang is None else "language: " + lang}')
+        return df_result
 
-        Args:
-            words (list): A list of words to count the frequency of.
+    def compare_categories(self, categories, n=20, ngram=1):
+        logger.info(f'Comparing top {n} {ngram}-grams across categories: {categories}')
+        results = {}
+        for category in categories:
+            results[category] = self.top_n_words(category, n, ngram)
 
-        Raises:
-            ValueError: If the dataframe retrieved from the database is None or if any content in the dataframe is None.
-        """
-        # Retrieve document content from the database
-        logging.info('Retrieving document content from the database')
-        df = self.db.df_from_query("SELECT content FROM content")
-        if df is None:
-            logging.error('df is None')
-            raise ValueError('df is None')
+        plt.figure(figsize=(15, 8))
+        x = list(range(n))
+        width = 0.8 / len(categories)
+        
+        for i, (category, df) in enumerate(results.items()):
+            if df is not None:
+                plt.bar([xi + i * width for xi in x], df['Frequency'], width, label=category)
 
-        # Check if any content is None
-        if df['content'].isnull().any().any():
-            raise ValueError('content contains None values')
-
-        # Combine the content into a single string
-        logging.info('Combining the content into a single string')
-        content = ' '.join(df['content'])
-
-        # Count the frequency of each word
-        logging.info('Counting the frequency of each word')
-        word_freq = {word: content.count(word) for word in words}
-
-        # Create a bar plot
-        logging.info('Creating a bar plot')
-        plt.figure(figsize=(10, 6))
-        plt.bar(word_freq.keys(), word_freq.values())
-        plt.title("Frequence des mots sélectionnés")
-        plt.xlabel("Mots")
-        plt.ylabel("Frequence")
-        plt.xticks(rotation=45)
+        plt.xlabel(f'{ngram}-grams')
+        plt.ylabel('Frequency')
+        plt.title(f'Top {n} {ngram}-grams Comparison Across Categories')
+        plt.legend()
+        plt.xticks([xi + width * (len(categories) - 1) / 2 for xi in x], 
+                   results[categories[0]][f'{ngram}-gram'] if results[categories[0]] is not None else [], 
+                   rotation=45, ha='right')
         plt.tight_layout()
-        plt.savefig('results/word_frequency/frequency_certain_words.png')
-        plt.show()
+        plt.savefig(f'results/word_frequency/category_comparison_{ngram}grams.png')
+        plt.close()
 
-        # Save the results in a CSV file
-        logging.info('Saving the results')
-        df = pd.DataFrame(list(word_freq.items()), columns=['Word', 'Frequency'])
-        df.to_csv('results/word_frequency/frequency_certain_words.csv', index=False)
+        logger.info('Category comparison complete')
+
+    def compare_languages(self, n=20, ngram=1):
+        logger.info(f'Comparing top {n} {ngram}-grams across languages')
+        results = {}
+        for lang in ['fr', 'en']:
+            results[lang] = self.top_n_words(lang, n, ngram, lang=lang)
+
+        plt.figure(figsize=(15, 8))
+        x = list(range(n))
+        width = 0.35
+        
+        for i, (lang, df) in enumerate(results.items()):
+            if df is not None:
+                plt.bar([xi + i * width for xi in x], df['Frequency'], width, label=lang)
+
+        plt.xlabel(f'{ngram}-grams')
+        plt.ylabel('Frequency')
+        plt.title(f'Top {n} {ngram}-grams Comparison Across Languages')
+        plt.legend()
+        plt.xticks([xi + width / 2 for xi in x], 
+                   results['fr'][f'{ngram}-gram'] if results['fr'] is not None else [], 
+                   rotation=45, ha='right')
+        plt.tight_layout()
+        plt.savefig(f'results/word_frequency/language_comparison_{ngram}grams.png')
+        plt.close()
+
+        logger.info('Language comparison complete')
+
+    def tfidf_analysis(self, where, lang=None):
+        logger.info(f'Performing TF-IDF analysis for {"category: " + where if lang is None else "language: " + lang}')
+        
+        if lang is None:
+            query = f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE category = '{where}'"
+        else:
+            query = f"SELECT c.content FROM content c JOIN documents d ON c.doc_id = d.id WHERE d.language = '{lang}'"
+        
+        df = self.db.df_from_query(query)
+        
+        if df is None or df.empty:
+            logger.warning(f"No data found for {'category: ' + where if lang is None else 'language: ' + lang}")
+            return None
+
+        stopwords = self.fr_stopwords if lang == 'fr' else self.en_stopwords if lang == 'en' else self.all_stopwords
+        vectorizer = TfidfVectorizer(stop_words=list(stopwords.union(self.custom_stopwords)))
+        tfidf_matrix = vectorizer.fit_transform(df['content'])
+
+        feature_names = vectorizer.get_feature_names_out()
+        tfidf_scores = tfidf_matrix.sum(axis=0).A1
+        word_scores = list(zip(feature_names, tfidf_scores))
+        word_scores.sort(key=lambda x: x[1], reverse=True)
+
+        top_words = word_scores[:20]
+        words, scores = zip(*top_words)
+
+        plt.figure(figsize=(12, 6))
+        plt.bar(words, scores)
+        plt.title(f"Top 20 words by TF-IDF score in {'category: ' + where if lang is None else 'language: ' + lang}")
+        plt.xlabel("Words")
+        plt.ylabel("TF-IDF Score")
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.savefig(f'results/word_frequency/tfidf_top20_{"category_" + where if lang is None else "lang_" + lang}.png')
+        plt.close()
+
+        df_result = pd.DataFrame(top_words, columns=['Word', 'TF-IDF Score'])
+        df_result.to_csv(f'results/word_frequency/tfidf_top20_{"category_" + where if lang is None else "lang_" + lang}.csv', index=False)
+
+        logger.info(f'TF-IDF analysis complete for {"category: " + where if lang is None else "language: " + lang}')
+        return df_result
 
     def __del__(self):
-        """
-        Closes the database connection if it is not None.
-        """
-        logging.info('Closing the database connection')
-        if self.conn is not None:
-            self.conn.close()
+        logger.info('WordFrequencyChart object is being destroyed')

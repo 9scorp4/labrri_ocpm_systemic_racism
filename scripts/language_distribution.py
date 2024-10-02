@@ -1,64 +1,101 @@
-import logging
-from pathlib import Path
-import matplotlib.pyplot as plt
+from loguru import logger
 import pandas as pd
-from langdetect import detect
+import matplotlib.pyplot as plt
+from langdetect import detect, DetectorFactory
 from nltk.tokenize import sent_tokenize
+import spacy
+from collections import Counter
+from tqdm import tqdm
+import seaborn as sns
+import multiprocessing
+from functools import partial
+from collections import defaultdict
 
 from scripts.database import Database
 
+# Set seed for reproducibility in language detection
+DetectorFactory.seed = 0
+
+def process_single_document(doc, nlp_fr, nlp_en):
+    doc_id, organization, language, content, category, document_type = doc
+
+    nlp = nlp_fr if language == 'fr' else nlp_en
+    processed_doc = nlp(content)
+
+    lang_counts = {
+        'fr': 0,
+        'en': 0,
+        'other': 0
+    }
+    other_samples = defaultdict(list)
+    total_chars = 0
+    code_switches = 0
+    previous_lang = None
+
+    for sent in processed_doc.sents:
+        if len(sent.text.strip()) > 18:
+            try:
+                sent_lang = detect(sent.text)
+                chars = len(sent.text)
+
+                if sent_lang in ['fr', 'en']:
+                    lang_counts[sent_lang] += chars
+                else:
+                    lang_counts['other'] += chars
+                    other_samples[sent_lang].append(sent.text[:50])
+                
+                total_chars += chars
+
+                if previous_lang and sent_lang != previous_lang:
+                    code_switches += 1
+                previous_lang = sent_lang
+
+            except Exception as e:
+                logger.error(f"Error processing sentence in document {doc_id}: {e}")
+
+    total_chars = sum(lang_counts.values())
+    en_percentage = (lang_counts['en'] / total_chars) * 100 if total_chars > 0 else 0
+    fr_percentage = (lang_counts['fr'] / total_chars) * 100 if total_chars > 0 else 0
+    other_percentage = (lang_counts['other'] / total_chars) * 100 if total_chars > 0 else 0
+
+    top_other_langs = sorted(other_samples.items(), key=lambda x: sum(len(s) for s in x[1]), reverse=True)[:3]
+
+    return {
+        'Document ID': doc_id,
+        'Organization': organization,
+        'Declared Language': language,
+        'Category': category,
+        'Document Type': document_type,
+        'English (%)': en_percentage,
+        'French (%)': fr_percentage,
+        'Other (%)': other_percentage,
+        'Code Switches': code_switches,
+        'Other Lang 1': top_other_langs[0][0] if top_other_langs else None,
+        'Other Lang 1 Sample': '; '.join(top_other_langs[0][1][:3]) if top_other_langs else None,
+        'Other Lang 2': top_other_langs[1][0] if len(top_other_langs) > 1 else None,
+        'Other Lang 2 Sample': '; '.join(top_other_langs[1][1][:3]) if len(top_other_langs) > 1 else None,
+        'Other Lang 3': top_other_langs[2][0] if len(top_other_langs) > 2 else None,
+        'Other Lang 3 Sample': '; '.join(top_other_langs[2][1][:3]) if len(top_other_langs) > 2 else None,
+    }
+
 class LanguageDistributionChart:
     def __init__(self, db_path):
-        """
-        Initializes the LanguageDistributionChart class.
-
-        Args:
-            db_path (str): The path to the database file.
-
-        Raises:
-            ValueError: If db_path is None.
-            FileNotFoundError: If the database file does not exist.
-
-        Initializes the following instance variables:
-            - db_path (str): The path to the database file.
-            - db (Database): The database object.
-            - conn (Connection): The database connection object.
-            - cursor (Cursor): The database cursor object.
-        """
         if db_path is None:
             raise ValueError('db_path cannot be None')
 
         self.db_path = db_path
-        if not Path(self.db_path).exists():
-            raise FileNotFoundError('Database file not found')
-
         self.db = Database(self.db_path)
-        self.conn = self.db.conn
-        if self.conn is None:
-            raise ValueError('Database connection is None')
+        
+        # Load spaCy models for improved language detection and code-switching analysis
+        self.nlp = {
+            'fr': spacy.load('fr_core_news_sm'),
+            'en': spacy.load('en_core_web_sm')
+        }
 
-        self.cursor = self.conn.cursor()
-        if self.cursor is None:
-            raise ValueError('Database cursor is None')
+        logger.info("LanguageDistributionChart initialized successfully")
 
     def count_graph(self, where):
-        """
-        Generates a count graph based on the specified category.
-
-        Parameters:
-            where (str): The category to generate the count graph for. It can be "All categories" or a specific category.
-
-        Returns:
-            None
-
-        Raises:
-            ValueError: If the retrieved data from the database is None.
-            ValueError: If the category is not "All categories" or a specific category.
-
-        This function retrieves data from the database based on the specified category. It then extracts the languages and counts from the retrieved data. Using this information, it creates a figure with two subplots: one for the pie chart and the other for the count table. The pie chart displays the counts of documents in each language, while the count table provides a tabular representation of the language counts. The first row of the table is bolded. The title of the entire figure is set based on the category. The layout is adjusted to reduce the gap between subplots. The resulting plot is saved in a PNG file and shown. Additionally, the results are saved in a CSV file.
-        """
-        logging.info('Retrieving data from the database')
-        logging.info(f'Generating graph for {where}')
+        logger.info(f'Generating graph for {where}')
 
         if where == "All categories":
             query = "SELECT d.language, COUNT(d.id) FROM documents d GROUP by d.language"
@@ -71,140 +108,184 @@ class LanguageDistributionChart:
             GROUP BY d.language
             """
 
-        logging.info('Executing query')
         df = self.db.df_from_query(query)
-        if df is None:
-            raise ValueError('df is None')
-        logging.info('Received data from the database')
+        if df is None or df.empty:
+            logger.warning(f"No data found for {'category: ' + where if where != 'All categories' else 'all categories'}")
+            return None
 
-        # Extract languages and counts from the retrieved data
-        logging.info('Extracting languages and counts')
-        languages = [entry[0] for entry in df.values]
-        counts = [entry[1] for entry in df.values]
+        languages = df.iloc[:, 0].tolist()
+        counts = df.iloc[:, 1].tolist()
 
-        # Create a figure with two subplots: one for the pie chart and the other for the count table
-        logging.info('Creating figure')
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 7))
 
-        # Plot the pie chart
-        logging.info('Plotting pie chart')
         ax1.pie(counts, labels=languages, autopct='%1.1f%%', startangle=90)
         ax1.axis('equal')
+        ax1.set_title("Language Distribution")
 
-        # Create a count table
-        logging.info('Creating count table')
-        ax2.axis('off')
-        table_data = [["Language", "Count"]] + [[language, count] for language, count in zip(languages, counts)]
-        table = ax2.table(cellText=table_data, loc='center', cellLoc='center')
+        ax2.bar(languages, counts)
+        ax2.set_title("Document Count by Language")
+        ax2.set_xlabel("Language")
+        ax2.set_ylabel("Number of Documents")
 
-        # Bold the first row of the table
-        logging.info('Bolding first row of the table')
-        for cell in table.get_celld().values():
-            if cell.get_text().get_text() == "Language" or cell.get_text().get_text() == "Count":
-                cell.get_text().set_fontweight('bold')
+        for i, v in enumerate(counts):
+            ax2.text(i, v, str(v), ha='center', va='bottom')
 
-        # Set the title of the entire figure
-        if where == "All categories":
-            fig.suptitle("Nombre de documents par langue")
-        else:
-            fig.suptitle(f"Nombre de documents dans la catégorie {where} par langue")
+        plt.suptitle(f"Language Distribution for {'All Categories' if where == 'All categories' else 'Category: ' + where}")
+        plt.tight_layout()
+        plt.savefig(f'results/language_distribution/{where.replace(" ", "_").lower()}_count.png')
+        plt.close()
 
-        # Adjust layout to reduce gap between subplots
-        logging.info('Adjusting layout')
-        plt.subplots_adjust(wspace=0.1)
+        df.columns = ['Language', 'Count']
+        df.to_csv(f'results/language_distribution/{where.replace(" ", "_").lower()}_count.csv', index=False)
+        logger.info(f'Graph generated and saved for {where}')
 
-        # Save the results in a PNG file and show the plot
-        logging.info('Saving and showing plot')
-        plt.savefig(f'results/language_distribution/{where}_count.png')
-        plt.show()
+        return df
 
-        # Save the results in a CSV file
-        logging.info('Saving results in a CSV file')
-        df.to_csv(f'results/language_distribution/{where}_count.csv', index=False)
+    def improved_language_detection(self, text):
+        try:
+            if not text or not text.strip():
+                return 'unknown'
+            
+            lang = detect(text)
+
+            if lang == 'fr':
+                doc = self.nlp_fr(text[:1000])
+                fr_words = sum(1 for token in doc if token.lang_ == 'fr')
+                if fr_words / len(doc) < 0.5:
+                    lang = 'en'
+            elif lang == 'en':
+                doc = self.nlp_en(text[:1000])
+                en_words = sum(1 for token in doc if token.lang_ == 'en')
+                if en_words / len(doc) < 0.5:
+                    lang = 'fr'
+
+            return lang
+        except Exception as e:
+            logger.error(f"Failed to detect language. Error: {e}")
+            return 'unknown'
+
+    def analyze_code_switching(self, text):
+        sentences = sent_tokenize(text)
+        switches = 0
+        prev_lang = None
+        
+        for sentence in sentences:
+            curr_lang = self.improved_language_detection(sentence)
+            if prev_lang and curr_lang != prev_lang and curr_lang != 'unknown':
+                switches += 1
+            prev_lang = curr_lang if curr_lang != 'unknown' else prev_lang
+        
+        return switches
 
     def language_percentage_distribution(self, where):
-        """
-        Calculates the percentage distribution of English and French sentences in the given documents.
+        logger.info(f'Analyzing language distribution for {where}')
         
-        Args:
-            where (str): The language to filter the documents by. If "All languages" is provided, all documents will be considered.
-        
-        Raises:
-            ValueError: If the retrieved dataframe is None.
-        
-        Returns:
-            None
-        """
-        # Retrieve data from the database
-        logging.info('Retrieving data from the database')
         if where == "All languages":
-            query = "SELECT d.organization, d.language, c.content FROM documents d INNER JOIN content c ON d.id = c.doc_id"
+            query = "SELECT d.id, d.organization, d.language, c.content, d.category, d.document_type FROM documents d INNER JOIN content c ON d.id = c.doc_id"
         else:
-            query = f"SELECT d.organization, d.language, c.content FROM documents d INNER JOIN content c ON d.id = c.doc_id WHERE d.language = '{where}'"
+            query = f"SELECT d.id, d.organization, d.language, c.content, d.category, d.document_type FROM documents d INNER JOIN content c ON d.id = c.doc_id WHERE d.language = '{where}'"
+        
         df = self.db.df_from_query(query)
-        if df is None:
-            raise ValueError('df is None')
+        if df is None or df.empty:
+            logger.warning(f"No data found for {where}")
+            return None
         
-        # Initialize lists to store data for the table
-        rows = []
+        docs = list(df.itertuples(index=False, name=None))
 
-        for _, row in df.iterrows():
-            doc_name = row['organization']
-            doc_language = row['language']
-            doc_text = row['content']
+        with multiprocessing.Pool() as pool:
+            process_doc = partial(process_single_document, nlp_fr=self.nlp['fr'], nlp_en=self.nlp['en'])
+            results = list(tqdm(pool.imap(process_doc, docs), total=len(docs), desc='Processing Documents'))
 
-            # Tokenize the text
-            sentences = sent_tokenize(doc_text)
+        result_df = pd.DataFrame(results)
 
-            # Intialize counters
-            en_count = 0
-            fr_count = 0
-
-            # Classify each sentence individually
-            for sentence in sentences:
-                # Check if the sentence contains sufficient length for language detection
-                if len(sentence.strip()) > 18:
-                    try:
-                        language = detect(sentence)
-                        if language == 'en':
-                            en_count += 1
-                        elif language == 'fr':
-                            fr_count += 1
-                    except Exception as e:
-                        logging.error(f"Error: {e}")
-                        raise ValueError(f"Error: {e}")
-            
-            # Append the data to the rows list
-            rows.append([doc_name, doc_language, en_count, fr_count])
+        avg_columns = ['English (%)', 'French (%)', 'Other (%)', 'Code Switches']
+        overall_averages = result_df[avg_columns].mean()
+        overall_averages = pd.DataFrame(overall_averages).T
+        overall_averages['Document ID'] = 'Overall Average'
+        overall_averages['Organization'] = ''
+        overall_averages['Declared Language'] = ''
+        overall_averages['Category'] = ''
+        overall_averages['Document Type'] = ''
         
-        # Create dataframe
-        headers = ["Organization", "Language", "English Sentences", "French Sentences"]
-        result_df = pd.DataFrame(rows, columns=headers)
+        for i in range(1, 4):
+            lang_col = f'Other Lang {i}'
+            sample_col = f'Other Lang {i} Sample'
+            print(f"\n{lang_col} samples:")
+            for lang, sample in zip(result_df[lang_col], result_df[sample_col]):
+                if pd.notnull(lang) and pd.notnull(sample):
+                    print(f"{lang}: {sample}")
 
-        # Calculate percentages
-        total_sentences = result_df["English Sentences"] + result_df["French Sentences"]
-        result_df['English (%)'] = (result_df["English Sentences"] / total_sentences) * 100
-        result_df['French (%)'] = (result_df["French Sentences"] / total_sentences) * 100
+            overall_averages[lang_col] = result_df[lang_col].mode().iloc[0] if not result_df[lang_col].isna().all() else None
 
-        # Calculate total counts for English and French sentences across all documents
-        total_en_count = result_df["English Sentences"].sum()
-        total_fr_count = result_df["French Sentences"].sum()
-        
-        # Calculate overall percentages
-        overall_en_percentage = (total_en_count / (total_en_count + total_fr_count)) * 100
-        overall_fr_percentage = (total_fr_count / (total_en_count + total_fr_count)) * 100
-        
-        # Add overall averages to the table
-        result_df.loc[len(result_df)] = ["", "", "", "Overall Average", overall_en_percentage, overall_fr_percentage]
-        
-        # Save the results in a CSV file
-        logging.info('Saving results in a CSV file')
-        result_df.to_csv(f'results/language_distribution/{where}_percentage.csv', index=False)
+            samples = result_df[sample_col].dropna().tolist()[:3]
+            overall_averages[sample_col] = ', '.join(samples) if samples else 'No samples'
 
-        # Save the results in an Excel file
-        logging.info('Saving results inb an Excel file')
-        result_df.to_excel(f'results/language_distribution/{where}_percentage.xlsx', index=False)
+        result_df = pd.concat([result_df, overall_averages], ignore_index=True)
 
-        # Show the results
-        logging.info('Showing results')
-        print(result_df)
+        result_df.to_csv(f'results/language_distribution/{where.replace(" ", "_").lower()}_percentage.csv', index=False)
+        result_df.to_excel(f'results/language_distribution/{where.replace(" ", "_").lower()}_percentage.xlsx', index=False)
+
+        logger.info(f'Graph generated and saved for {where}')
+
+        return result_df
+
+    def visualize_language_distribution(self, data):
+        logger.info('Visualizing language distribution')
+
+        # Create a box plot for language percentages
+        plt.figure(figsize=(12, 6))
+        sns.boxplot(data=data[['English (%)', 'French (%)', 'Other (%)']])
+        plt.title('Distribution of Language Percentages')
+        plt.ylabel('Percentage')
+        plt.savefig('results/language_distribution/language_percentage_distribution.png')
+        plt.close()
+
+        # Create a histogram for code switches
+        plt.figure(figsize=(12, 6))
+        sns.histplot(data=data, x='Code Switches', kde=True)
+        plt.title('Distribution of Code Switches')
+        plt.xlabel('Number of Code Switches')
+        plt.ylabel('Count')
+        plt.savefig('results/language_distribution/code_switches_distribution.png')
+        plt.close()
+
+        # Create a grouped bar plot for average language percentages by category
+        category_averages = data.groupby('Category')[['English (%)', 'French (%)', 'Other (%)']].mean()
+        category_averages.plot(kind='bar', figsize=(12, 6))
+        plt.title('Average Language Percentages by Category')
+        plt.xlabel('Category')
+        plt.ylabel('Percentage')
+        plt.legend(title='Language')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.savefig('results/language_distribution/language_percentages_by_category.png')
+        plt.close()
+
+        logger.info('Language distribution visualizations completed')
+
+    def analyze_all(self):
+        logger.info('Starting comprehensive language distribution analysis')
+
+        # Analyze overall distribution
+        overall_dist = self.count_graph("All categories")
+
+        # Analyze distribution by category
+        categories = self.db.df_from_query("SELECT DISTINCT category FROM documents")['category'].tolist()
+        for category in categories:
+            self.count_graph(category)
+
+        # Detailed language analysis for all languages
+        detailed_analysis = self.language_percentage_distribution("All languages")
+
+        # Visualize language distribution
+        self.visualize_language_distribution(detailed_analysis)
+
+        logger.info('Comprehensive language distribution analysis completed')
+        return overall_dist, detailed_analysis
+
+if __name__ == "__main__":
+    db_path = "path/to/your/database.db"
+    chart = LanguageDistributionChart(db_path)
+    overall_dist, detailed_analysis = chart.analyze_all()
+    print(overall_dist)
+    print(detailed_analysis.describe())

@@ -3,10 +3,12 @@ from pathlib import Path
 from loguru import logger
 import fitz
 import pytesseract
-from docx import Document
+from docx import Document as DocxDocument
 from pdf2image import convert_from_path
 import spacy
 from unidecode import unidecode
+import numpy as np
+import cv2
 
 from scripts.database import Database
 
@@ -18,7 +20,6 @@ class ProcessText:
     def __init__(self):
         try:
             self.db = Database("data/database.db")
-            self.conn = self.db.conn
             self.nlp_fr = spacy.load("fr_core_news_sm")
             self.nlp_en = spacy.load("en_core_web_sm")
         except Exception as e:
@@ -41,75 +42,69 @@ class ProcessText:
         text = ""
 
         try:
+            logger.info(f"Attempting to extract text from {pdf_path}")
             with fitz.open(pdf_path) as doc:
                 if not doc:
-                    raise ValueError("Empty document")
+                    logger.warning(f"Empty document: {pdf_path}")
+                    return ""
 
-                for page_number in range(doc.page_count):
+                logger.info(f"Document has {len(doc)} pages")
+                for page_number in range(len(doc)):
                     page = doc.load_page(page_number)
                     if not page:
-                        raise ValueError(f"Failed to load page {page_number}")
+                        logger.warning(f"Failed to load page {page_number} from {pdf_path}")
+                        continue
 
-                    text += page.get_text("text")
+                    page_text = page.get_text("text")
+                    text += page_text
+                    logger.debug(f"Extracted {len(page_text)} characters from page {page_number}")
+
+            if not text.strip():
+                logger.warning(f"No text extracted from {pdf_path}. Attempting OCR.")
+                text = self.ocr_pdf(pdf_path)
+
         except Exception as e:
-            logger.error(f"Operation failed. Error: {e}")
-            raise
-        return text
-    
-    def ocr_pdf(self, pdf_path):
-        """
-        Apply OCR to a PDF document and updates the corresponding content in the database.
+            logger.error(f"Error extracting text from {pdf_path}: {e}")
+            # Attempt OCR as a fallback
+            logger.info(f"Attempting OCR as fallback for {pdf_path}")
+            text = self.ocr_pdf(pdf_path)
 
-        Args:
-            pdf_path: path to the PDF document
-        """
+        logger.info(f"Total extracted text length: {len(text)}")
+        return text
+
+    def ocr_pdf(self, pdf_path):
         if not pdf_path:
             raise ValueError("pdf_path cannot be None")
-
-        logger.info(f"Applying OCR to {pdf_path}...")
-
-        cursor = self.conn.cursor()
-
-        cursor.execute("SELECT id FROM documents WHERE filepath = ?", (pdf_path,))
-        document_id = cursor.fetchone()
-
-        if not document_id:
-            logger.info(f"No document found for {pdf_path}.")
-            return
-
-        document_id = document_id[0]
+        
+        logger.info(f"Attempting OCR on {pdf_path}")
 
         try:
-            images = convert_from_path(pdf_path)
+            images = convert_from_path(pdf_path, dpi=300)
         except Exception as e:
-            logger.error(f"Operation failed. Error: {e}")
-            raise
+            logger.error(f"Error converting PDF {pdf_path} to images: {e}")
 
         extracted_text = []
-        for image in images:
-            text = pytesseract.image_to_string(image)
+        for i, image in enumerate(images):
+            img_np = np.array(image)
+            gray = cv2.cvtColor(img_np, cv2.COLOR_BGR2GRAY)
+            threshold = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+            text = pytesseract.image_to_string(threshold, lang='fra+eng')
             extracted_text.append(text)
 
-        logger.info(f"Text extracted from {pdf_path}")
-        logger.debug(f"Extracted text: {extracted_text}")
-
-        try:
-            combined_text = '\n'.join(extracted_text)
-            cursor.execute("UPDATE content SET content = ? WHERE doc_id = ?", (combined_text, document_id))
-            self.conn.commit()
-            logger.debug(f"Content updated in the database.")
-        except Exception as e:
-            logger.error(f"Operation failed. Error: {e}")
-            self.conn.rollback()
-
-        document = Document()
-        for text in extracted_text:
-            document.add_paragraph(text)
+            logger.info(f"Extracted text from image {i+1}")
         
-        output_txt_path = Path(pdf_path).with_suffix(".docx")
-        document.save(output_txt_path)
+        logger.info(f"Text extracted from all pages of {pdf_path}")
 
-        logger.info(f"OCR extraction completed for document ID: {document_id}. Word document saved to {output_txt_path}.")
+        combined_text = '\n'.join(extracted_text)
+
+        self.db.update_document_content(pdf_path, combined_text)
+
+        output_txt_path = Path(pdf_path).with_suffix('.txt')
+        with open(output_txt_path, 'w', encoding='utf-8') as f:
+            f.write(combined_text)
+
+        logger.info(f"OCR extraction completed for {pdf_path}. Text saved to {output_txt_path}")
+        return combined_text
 
     def clean(self, text: str, lang: str = 'fr') -> str:
         """
