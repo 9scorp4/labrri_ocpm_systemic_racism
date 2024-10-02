@@ -1,193 +1,182 @@
-# -*- coding: utf-8 -*-
-
-import sqlite3
-import logging
+from loguru import logger
+from pathlib import Path
+from sqlalchemy import create_engine, text, func
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 import pandas as pd
+from alembic import command
+from alembic.config import Config
+from contextlib import contextmanager
+from datetime import datetime
+
+from .models import Base, Document, Content, DatabaseUpdate
 
 class Database:
-    """
-    Class for database operations.
-    """
-
-    def __init__(self, db):
-        """
-        Initialize the database connection and cursor.
-
-        Args:
-            db (str): Path to the database.
-
-        Raises:
-            sqlite3.Error: If the database connection fails.
-        """
-        if not db:
+    def __init__(self, db_path):
+        if not db_path:
             raise ValueError("db_path must be a non-empty string")
 
         try:
-            self.conn = sqlite3.connect(
-                db,
-                detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
-                uri=True)
-            self.conn.text_factory = str
-            self.cursor = self.conn.cursor()
-            logging.info("Database connection successful.")
-        except sqlite3.Error as e:
-            logging.error(f"Database connection failed. Error: {e}", exc_info=True)
+            self.engine = create_engine(f"sqlite:///{db_path}")
+            self.Session = sessionmaker(bind=self.engine)
+            Base.metadata.create_all(self.engine)
+            self.Document = Document
+            self.Content = Content
+            logger.info("Database connection successful.")
+        except SQLAlchemyError as e:
+            logger.error(f"Database connection failed. Error: {e}")
             raise
-    
-    def clear_previous_data(self):
-        """
-        Clear the previous data in the database.
-        """
 
+    @contextmanager
+    def session_scope(self):
+        """Provide a transactional scope around a series of operations."""
+        session = self.Session()
         try:
-            if self.conn is not None and self.cursor is not None:
-                self.cursor.execute("DELETE FROM documents")
-                self.cursor.execute("DELETE FROM content")
-                self.cursor.execute("DELETE FROM sqlite_sequence")
-                self.conn.commit()
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+
+    def get_document_by_path(self, pdf_path):
+        with self.session_scope() as session:
+            return session.query(Document).filter(Document.filepath == str(Path(pdf_path))).first()
+        
+    def update_document(self, doc_id, organization, document_type, category, clientele, knowledge_type, language, content):
+        with self.session_scope() as session:
+            doc = session.query(Document).filter(Document.id == doc_id).first()
+            if doc:
+                doc.organization = organization
+                doc.document_type = document_type
+                doc.category = category
+                doc.clientele = clientele
+                doc.knowledge_type = knowledge_type
+                doc.language = language
+                if doc.content:
+                    doc.content.content = content
+                else:
+                    doc.content = Content(content=content)
+                logger.info(f"Document {doc_id} updated successfully.")
             else:
-                logging.error("Database connection or cursor is None.")
-        except sqlite3.Error as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
-            if self.conn is not None:
-                self.conn.rollback()
-            raise
-    
-    def insert_data(self, organization, document_type, category, clientele, knowledge_type, language, pdf_path, content):
-        """
-        Allows for data insertion into the database.
+                logger.error(f"Document {doc_id} not found.")
 
-        Args:
-            organization: name of the organization
-            document_type: type of the document
-            category: category of the organization
-            clientele: clientele the organization addresses
-            knowledge_type: type of knowledge mobilized
-            language: language of the document
-            pdf_path: path to the PDF document
-            content: extracted text
-        """
-        try:
-            # Check if the required parameters are not None
-            if any(param is None for param in [
-                organization, document_type, category, clientele, 
-                knowledge_type, language, pdf_path, content
-            ]):
-                raise ValueError("All parameters must be non-None")
-            
-            # Insert data into the documents table
-            self.cursor.execute(
-                "INSERT INTO documents (organization, document_type, category, clientele, knowledge_type, language, filepath) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (organization, document_type, category, clientele, knowledge_type, language, pdf_path)
+    def update_document_content(self, filepath, content):
+        with self.session_scope() as session:
+            document = session.query(self.Document).filter_by(filepath=str(Path(filepath))).first()
+            if document:
+                if document.content:
+                    document.content.content = content
+                else:
+                    document.content = self.Content(content=content)
+                logger.info(f"Updated content for document: {filepath}")
+            else:
+                logger.warning(f"Document not found in database: {filepath}")                    
+
+    def log_database_updates(self, new_docs, updated_docs):
+        with self.session_scope() as session:
+            update = DatabaseUpdate(
+                timestamp=datetime.now(),
+                new_documents=new_docs,
+                updated_documents=updated_docs
             )
+            session.add(update)
+            logger.info(f"Logged database update: {new_docs} new documents, {updated_docs} updated documents.")
 
-            # Insert data into the content table
-            doc_id = self.cursor.lastrowid
-            self.cursor.execute(
-                "INSERT INTO content (doc_id, content) VALUES (?, ?)",
-                (doc_id, content)
+    def get_documents_needing_ocr(self, min_content_length, min_concatenated_length):
+        with self.session_scope() as session:
+            query = session.query(Document.filepath).join(Content).filter(
+                (Content.content == None) |
+                (Content.content == '') |
+                (func.length(Content.content) < min_content_length) |
+                (func.length(func.replace(Content.content, ' ', '')) < min_concatenated_length)
             )
-
-            # Commit the changes
-            self.conn.commit()
-        except sqlite3.Error as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
-            self.conn.rollback()
-            raise
-        except Exception as e:
-            logging.error(f"An unexpected error occurred. Error: {e}", exc_info=True)
-            raise
-
-    def df_from_query(self, query):
-        """
-        Retrieves a pandas DataFrame from a SQL query.
-
-        Parameters:
-            query (str): The SQL query to execute.
-
-        Raises:
-            ValueError: If the query is None.
-            ValueError: If the database connection is None.
-            ValueError: If the retrieved content_df is None.
-
-        Returns:
-            pandas.DataFrame: The DataFrame containing the results of the query.
-        """
-        if query is None:
-            raise ValueError('query cannot be None')
-        if self.conn is None:
-            raise ValueError('Database connection is None')
-        logging.info('Retrieving data from the database')
-        content_df = pd.read_sql_query(query, self.conn)
-        if content_df is None:
-            raise ValueError('content_df is None')
-        return content_df
-
-    def csv_to_xlsx(self, csv_path, xlsx_path):
-        """
-        Convert a CSV file to an XLSX file.
-
-        Args:
-            csv_path: path to the CSV file
-            xlsx_path: path to the XLSX file
-        """
-        try:
-            df = pd.read_csv(csv_path)
-            logging.debug(f"CSV file {csv_path} successfully read.")
-            df.to_excel(xlsx_path, index=False)
-            with pd.ExcelWriter(xlsx_path, engine='xlsxwriter') as writer:
-                df.to_excel(writer, index=False)
-            logging.info(f"XLSX file {xlsx_path} successfully created.")
-        except Exception as e:
-            logging.error(f"Operation failed. Error: {e}", exc_info=True)
+            return [doc.filepath for doc in query.all()]
 
     def fetch_all(self, lang=None):
-        """
-        Fetch all documents from the database.
-
-        Args:
-            lang (str): The language to filter the documents by. If None, all languages are considered.
-
-        Returns:
-            List[Tuple[int, str, str]]: Documents with their IDs, content, and language.
-        """
-        try:
-            # Construct the SQL query
-            query = """
-                SELECT d.id, c.content, d.language
-                FROM documents d
-                JOIN content c ON d.id = c.doc_id
-            """
-            params = ()
+        with self.session_scope() as session:
+            query = session.query(Document).join(Content)
             if lang:
-                # Add a WHERE clause to filter by language
-                query += "WHERE d.language = ?"
-                params = (lang,)
-
-            # Execute the query and return the results
-            self.cursor.execute(query, params)
-            return self.cursor.fetchall()
-        except Exception as e:
-            # Log and return an empty list on error
-            logging.error(f"Error fetching documents from the database: {e}", exc_info=True)
-            return []
+                query = query.filter(Document.language == lang)
+            return query.all()
 
     def fetch_single(self, doc_id):
+        with self.session_scope() as session:
+            return session.query(Document).filter(Document.id == doc_id).first()
+
+    def df_from_query(self, query):
         try:
-            if isinstance(doc_id, tuple):
-                doc_id = doc_id[0]
-            self.cursor.execute("""
-                SELECT d.id, c.content, d.language
-                FROM documents d
-                JOIN content c ON d.id = c.doc_id
-                WHERE d.id = ?
-            """, (doc_id,))
-            return self.cursor.fetchone()
+            return pd.read_sql(query, self.engine)
+        except SQLAlchemyError as e:
+            logger.error(f"Error executing query: {e}")
+            raise
+
+    def clear_previous_data(self):
+        with self.session_scope() as session:
+            session.query(Content).delete()
+            session.query(Document).delete()
+            logger.info("Previous data cleared successfully.")
+
+    def insert_data(self, organization, document_type, category, clientele, knowledge_type, language, pdf_path, content):
+        with self.session_scope() as session:
+            new_doc = Document(
+                organization=organization,
+                document_type=document_type,
+                category=category,
+                clientele=clientele,
+                knowledge_type=knowledge_type,
+                language=language,
+                filepath=str(Path(pdf_path))
+            )
+            new_content = Content(content=content)
+            new_doc.content = new_content
+            session.add(new_doc)
+            logger.info(f"Data inserted successfully for document: {organization}")
+
+    def run_migrations(self, alembic_cfg_path):
+        try:
+            alembic_cfg = Config(alembic_cfg_path)
+            command.upgrade(alembic_cfg, "head")
+            logger.info("Database migrations completed successfully.")
         except Exception as e:
-            logging.error(f"Error fetching document {doc_id} from the database: {e}", exc_info=True)
-            return None
+            logger.error(f"Error running database migrations: {e}")
+            raise
+
+    def check_data_integrity(self):
+        with self.session_scope() as session:
+            orphaned_content = session.query(Content).filter(
+                ~Content.doc_id.in_(session.query(Document.id))
+            ).count()
+
+            missing_content = session.query(Document).filter(
+                ~Document.id.in_(session.query(Content.doc_id))
+            ).count()
+
+            if orphaned_content:
+                logger.warning(f"Found {orphaned_content} orphaned content entries.")
+            if missing_content:
+                logger.warning(f"Found {missing_content} documents without content.")
+
+            return orphaned_content == 0 and missing_content == 0
+
+    def cleanup_orphaned_data(self):
+        with self.session_scope() as session:
+            deleted = session.query(Content).filter(
+                ~Content.doc_id.in_(session.query(Document.id))
+            ).delete(synchronize_session=False)
+            logger.info(f"Cleaned up {deleted} orphaned content entries.")
+
+    def csv_to_xlsx(self, csv_path, xlsx_path):
+        try:
+            df = pd.read_csv(csv_path)
+            df.to_excel(xlsx_path, index=False)
+            logger.info(f"CSV file {csv_path} successfully converted to XLSX file {xlsx_path}.")
+        except Exception as e:
+            logger.error(f"Error converting CSV to XLSX: {e}")
+            raise
+
     def __del__(self):
-        """
-        Close the database connection.
-        """
-        self.conn.close()
+        if hasattr(self, 'engine'):
+            self.engine.dispose()
+        logger.info("Database connection closed.")
