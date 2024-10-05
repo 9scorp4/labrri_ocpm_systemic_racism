@@ -27,7 +27,7 @@ def process_single_document(doc, nlp_fr, nlp_en):
         'en': 0,
         'other': 0
     }
-    other_samples = defaultdict(list)
+    other_samples = []
     total_chars = 0
     code_switches = 0
     previous_lang = None
@@ -42,7 +42,8 @@ def process_single_document(doc, nlp_fr, nlp_en):
                     lang_counts[sent_lang] += chars
                 else:
                     lang_counts['other'] += chars
-                    other_samples[sent_lang].append(sent.text[:50])
+                    if len(other_samples) < 5:
+                        other_samples[sent_lang].append(sent.text[:50])
                 
                 total_chars += chars
 
@@ -58,8 +59,6 @@ def process_single_document(doc, nlp_fr, nlp_en):
     fr_percentage = (lang_counts['fr'] / total_chars) * 100 if total_chars > 0 else 0
     other_percentage = (lang_counts['other'] / total_chars) * 100 if total_chars > 0 else 0
 
-    top_other_langs = sorted(other_samples.items(), key=lambda x: sum(len(s) for s in x[1]), reverse=True)[:3]
-
     return {
         'Document ID': doc_id,
         'Organization': organization,
@@ -70,12 +69,7 @@ def process_single_document(doc, nlp_fr, nlp_en):
         'French (%)': fr_percentage,
         'Other (%)': other_percentage,
         'Code Switches': code_switches,
-        'Other Lang 1': top_other_langs[0][0] if top_other_langs else None,
-        'Other Lang 1 Sample': '; '.join(top_other_langs[0][1][:3]) if top_other_langs else None,
-        'Other Lang 2': top_other_langs[1][0] if len(top_other_langs) > 1 else None,
-        'Other Lang 2 Sample': '; '.join(top_other_langs[1][1][:3]) if len(top_other_langs) > 1 else None,
-        'Other Lang 3': top_other_langs[2][0] if len(top_other_langs) > 2 else None,
-        'Other Lang 3 Sample': '; '.join(top_other_langs[2][1][:3]) if len(top_other_langs) > 2 else None,
+        'Other Samples': '; '.join(other_samples) if other_samples else None
     }
 
 class LanguageDistributionChart:
@@ -207,18 +201,8 @@ class LanguageDistributionChart:
         overall_averages['Category'] = ''
         overall_averages['Document Type'] = ''
         
-        for i in range(1, 4):
-            lang_col = f'Other Lang {i}'
-            sample_col = f'Other Lang {i} Sample'
-            print(f"\n{lang_col} samples:")
-            for lang, sample in zip(result_df[lang_col], result_df[sample_col]):
-                if pd.notnull(lang) and pd.notnull(sample):
-                    print(f"{lang}: {sample}")
-
-            overall_averages[lang_col] = result_df[lang_col].mode().iloc[0] if not result_df[lang_col].isna().all() else None
-
-            samples = result_df[sample_col].dropna().tolist()[:3]
-            overall_averages[sample_col] = ', '.join(samples) if samples else 'No samples'
+        samples = result_df['Other Samples'].dropna().tolist()[:5]
+        overall_averages['Other Samples'] = '; '.join(samples) if samples else 'No samples'
 
         result_df = pd.concat([result_df, overall_averages], ignore_index=True)
 
@@ -228,6 +212,17 @@ class LanguageDistributionChart:
         logger.info(f'Graph generated and saved for {where}')
 
         return result_df
+    
+    def print_other_category_summary(self, result_df):
+        print("\nSummary of 'Other' Category (Error Margin):")
+        print(f"Average 'Other' percentage: {result_df['Other (%)'].mean():.2f}%")
+        print(f"Maximum 'Other' percentage: {result_df['Other (%)'].max():.2f}%")
+        print(f"Number of documents with 'Other' content: {(result_df['Other (%)'] > 0).sum()}")
+        
+        print("\nSample 'Other' content:")
+        for _, row in result_df.iterrows():
+            if pd.notnull(row['Other Samples']):
+                print(f"Document {row['Document ID']} ({row['Other (%)']:.2f}%): {row['Other Samples']}")
 
     def visualize_language_distribution(self, data):
         logger.info('Visualizing language distribution')
@@ -276,6 +271,9 @@ class LanguageDistributionChart:
 
         # Detailed language analysis for all languages
         detailed_analysis = self.language_percentage_distribution("All languages")
+
+        # Print summary of 'Other' category
+        self.print_other_category_summary(detailed_analysis)
 
         # Visualize language distribution
         self.visualize_language_distribution(detailed_analysis)
