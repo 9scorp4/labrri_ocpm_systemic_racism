@@ -39,26 +39,9 @@ def topic_analysis(lang, mode='all', document_id=None, method='lda', num_topics=
                 results = analysis.analyze_docs([doc], method=method, num_topics=num_topics)
                 pbar.update(1)
 
-            if results:
-                logger.info(f"Document {document_id} Results:")
-                topic_df, words_df = create_topic_dataframes(results)
-
-                if topic_df is not None and not topic_df.empty:
-                    logger.info(f"Topic DataFrame:")
-                    logger.info(topic_df.to_string())
-                    topic_df.to_csv(f'results/topic_analysis/topic_analysis_{document_id}_topics.csv', index=False)
-                else:
-                    logger.warning("Topic DataFrame is empty.")
-
-                if words_df is not None and not words_df.empty:
-                    logger.info(f"Word DataFrame:")
-                    logger.info(words_df.to_string())
-                    words_df.to_csv(f'results/topic_analysis/topic_analysis_{document_id}_words.csv', index=False)
-                else:
-                    logger.warning("Word DataFrame is empty.")
-
-                topic_df.to_csv(f'results/topic_analysis/topic_analysis_{document_id}_topics.csv', index=False)
-                words_df.to_csv(f'results/topic_analysis/topic_analysis_{document_id}_words.csv', index=False)
+            for label, words, coherence_score in results:
+                topic_id = database.add_topic(label, words, coherence_score)
+                db.add_document_topic(document_id, topic_id, 1.0)
         elif mode == 'all':
             docs = database.fetch_all()
             if not docs:
@@ -71,26 +54,11 @@ def topic_analysis(lang, mode='all', document_id=None, method='lda', num_topics=
                     results = analysis.analyze_docs(processed_docs, method=method, num_topics=num_topics)
                     pbar.update(len(docs))
 
-            logger.info('All Documents Results:')
-            if results:
-                topic_df, words_df = create_topic_dataframes(results)
-
-                if topic_df is not None and not topic_df.empty:
-                    logger.info(f"Topic DataFrame:")
-                    logger.info(topic_df.to_string())
-                    topic_df.to_csv(f'results/topic_analysis/topic_analysis_all_{lang}_topics.csv', index=False)
-                else:
-                    logger.warning("Topic DataFrame is empty.")
-
-                if words_df is not None and not words_df.empty:
-                    logger.info(f"Word DataFrame:")
-                    logger.info(words_df.to_string())
-                    words_df.to_csv(f'results/topic_analysis/topic_analysis_all_{lang}_words.csv', index=False)
-                else:
-                    logger.warning("Word DataFrame is empty.")
-            else:
-                logger.warning("Noe results returned from topic analysis.")
-                topic_df, words_df = None, None
+            for label, words, coherence_score in results:
+                topic_id = database.add_topic(label, words, coherence_score)
+                for doc in docs:
+                    relevance_score = calculate_relevance(doc, words)
+                    database.add_document_topic(doc[0], topic_id, relevance_score)
         else:
             logger.error(f"Invalid mode or missing document ID for single mode.")
             return None, None

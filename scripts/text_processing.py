@@ -11,20 +11,45 @@ import numpy as np
 import cv2
 
 from scripts.database import Database
+from scripts.topic_analysis.tools import Tools
 
 class ProcessText:
     """
     Class for text processing with improved cleaning and anonymization.
     """
 
-    def __init__(self):
+    def __init__(self, lang=None):
+        logger.info("Initializing text processing...")
+        self.lang = lang
         try:
-            self.db = Database("data/database.db")
-            self.nlp_fr = spacy.load("fr_core_news_sm")
-            self.nlp_en = spacy.load("en_core_web_sm")
+            self.tools = Tools(lang)
         except Exception as e:
-            logger.error(f"Error initializing ProcessText: {e}")
-            raise
+            logger.error(f"Error initializing tools: {e}")
+            raise e
+        
+    def single_sentence(self, sentence, lang=None):
+        try:
+            lang = lang or self.lang
+            logger.debug(f"Processing sentence:\n{sentence}")
+
+            if not sentence or not isinstance(sentence, str):
+                logger.warning("Skipping empty sentence")
+                return None
+
+            logger.debug("Tokenizing...")
+            tokens = self.tools.tokenize(sentence)
+
+            logger.debug("Preprocessing...")
+            processed_tokens = self.tools.preprocess(sentence, lang)
+
+            processed_sentence = " ".join(processed_tokens)
+
+            logger.debug(f"Processed sentence:\n{processed_sentence}")  
+
+            return processed_sentence
+        except Exception as e:
+            logger.error(f"Failed to process sentence. Error: {e}")
+            return None
 
     def extract_from_pdf(self, pdf_path):
         """

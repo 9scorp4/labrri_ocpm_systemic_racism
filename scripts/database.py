@@ -9,7 +9,7 @@ from alembic.config import Config
 from contextlib import contextmanager
 from datetime import datetime
 
-from .models import Base, Document, Content, DatabaseUpdate
+from .models import Base, Document, Content, DatabaseUpdate, DocumentTopic, Topic
 
 class Database:
     def __init__(self, db_path):
@@ -187,6 +187,27 @@ class Database:
         except Exception as e:
             logger.error(f"Error converting CSV to XLSX: {e}")
             raise
+
+    def add_topic(self, label, words, coherence_score):
+        with self.session_scope() as session:
+            topic = Topic(label=label, words=words, coherence_score=coherence_score)
+            session.add(topic)
+            session.commit()
+            return topic.id
+    
+    def add_document_topic(self, doc_id, topic_id, relevance_score):
+        with self.session_scope() as session:
+            doc_topic = DocumentTopic(doc_id=doc_id, topic_id=topic_id, relevance_score=relevance_score)
+            session.add(doc_topic)
+            session.commit()
+    
+    def get_document_topics(self, doc_id):
+        with self.session_scope() as session:
+            return session.query(Topic).join(DocumentTopic).filter(DocumentTopic.doc_id == doc_id).all()
+
+    def get_all_topics(self):
+        with self.session_scope() as session:
+            return session.query(Topic).all()
 
     def __del__(self):
         if hasattr(self, 'engine'):

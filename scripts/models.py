@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -32,3 +32,21 @@ class DatabaseUpdate(Base):
     timestamp = Column(DateTime)
     new_documents = Column(Integer)
     updated_documents = Column(Integer)
+
+class Topic(Base):
+    __tablename__ = 'topics'
+
+    id = Column(Integer, primary_key=True)
+    label = Column(String)
+    words = Column(String)
+    coherence_score = Column(Float)
+    documents = relationship('Document', secondary='document_topics', back_populates='topics')
+
+class DocumentTopic(Base):
+    __tablename__ = 'document_topics'
+
+    doc_id = Column(Integer, ForeignKey('documents.id'), primary_key=True)
+    topic_id = Column(Integer, ForeignKey('topics.id'), primary_key=True)
+    relevance_score = Column(Float)
+
+Document.topics = relationship('Topic', secondary='document_topics', back_populates='documents')

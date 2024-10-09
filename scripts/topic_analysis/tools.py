@@ -39,7 +39,7 @@ class Tools:
                 # Initialize French spaCy model
                 self.nlp['fr'] = spacy.load('fr_core_news_md')
                 # Load French stopwords
-                self.stopwords_lang['fr'] = list(stopwords.words('french'))
+                self.stopwords_lang['fr'] = set(stopwords.words('french'))
                 # Initialize French lemmatizer (using spaCy model)
                 self.lemmatizers['fr'] = self.nlp['fr']
                 # Initialize French stemmer
@@ -49,12 +49,16 @@ class Tools:
                 # Initialize English spaCy model
                 self.nlp['en'] = spacy.load('en_core_web_md')
                 # Load English stopwords
-                self.stopwords_lang['en'] = list(stopwords.words('english'))
+                self.stopwords_lang['en'] = set(stopwords.words('english'))
                 # Initialize English lemmatizer (using WordNetLemmatizer)
                 self.lemmatizers['en'] = WordNetLemmatizer()
                 # Initialize English stemmer
                 self.stemmers['en'] = SnowballStemmer('english')
                 logger.info("English model loaded successfully.")
+
+            if lang == 'bilingual':
+                self.stopwords_lang['bilingual'] = self.stopwords_lang['fr'].union(self.stopwords_lang['en'])
+                logger.info("Bilingual model loaded successfully.")
         except Exception as e:
             logger.error(f"Failed to load spacy model. Error: {e}", exc_info=True)
             raise e
@@ -88,9 +92,7 @@ class Tools:
 
             # Add the additional stopwords to the existing stopwords for each language
             for lang in self.stopwords_lang:
-                if not isinstance(self.stopwords_lang[lang], set):
-                    self.stopwords_lang[lang] = set(self.stopwords_lang[lang])
-                self.stopwords_lang[lang].update(additional_stopwords)
+                self.stopwords_lang[lang] = self.stopwords_lang[lang].union(additional_stopwords)
 
             logger.info(f"Loaded {len(additional_stopwords)} additional stopwords")
         except FileNotFoundError:
@@ -132,22 +134,20 @@ class Tools:
         Raises:
             ValueError: If the language is not supported
         """
-        if lang not in self.lemmatizers:
+        if lang == 'bilingual':
+            try:
+                # Try French lemmatization first, then English if it fails
+                return self.lemmatizers['fr'](token)[0].lemma_
+            except:
+                return self.lemmatizers['en'].lemmatize(token)
+        elif lang in self.lemmatizers:
+            if lang == 'fr':
+                return self.lemmatizers[lang](token)[0].lemma_
+            else:
+                return self.lemmatizers[lang].lemmatize(token)
+        else:
             logger.error(f"Lemmatizer not found for language: {lang}")
             return token
-        
-        try:
-            if lang == 'fr':
-                # Use spaCy model for French lemmatization
-                doc = self.lemmatizers[lang](token)
-                return doc[0].lemma_
-            else:
-                # Use WordNetLemmatizer for English lemmatization
-                return self.lemmatizers[lang].lemmatize(token)
-        except Exception as e:
-            logger.error(f"Failed to lemmatize token: {token}. Error: {e}", exc_info=True)
-            return token
-
         
     def stem(self, token, lang):
         """
