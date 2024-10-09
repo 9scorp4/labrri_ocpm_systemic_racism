@@ -1,7 +1,7 @@
 from loguru import logger
 from pathlib import Path
 from sqlalchemy import create_engine, text, func
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy.exc import SQLAlchemyError
 import pandas as pd
 from alembic import command
@@ -96,14 +96,26 @@ class Database:
 
     def fetch_all(self, lang=None):
         with self.session_scope() as session:
-            query = session.query(Document).join(Content)
+            query = session.query(Document).options(joinedload(Document.content))
             if lang:
                 query = query.filter(Document.language == lang)
-            return query.all()
+            results = [(doc.id, doc.content.content) for doc in query.all()]
+            logger.info(f"Fetched {len(results)} documents from the database.")
+            if not results:
+                logger.warning("No documents found in the database.")
+            return results
 
     def fetch_single(self, doc_id):
         with self.session_scope() as session:
-            return session.query(Document).filter(Document.id == doc_id).first()
+            if isinstance(doc_id, tuple):
+                doc_id = doc_id[0]
+            doc = session.query(Document).filter(Document.id == doc_id).first()
+            if doc:
+                logger.info(f"Document {doc_id} found in the database.")
+                return (doc.id, doc.content.content)
+            else:
+                logger.warning(f"Document {doc_id} not found in the database.")
+                return None
 
     def df_from_query(self, query):
         try:

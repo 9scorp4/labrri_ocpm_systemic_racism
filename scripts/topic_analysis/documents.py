@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -46,7 +46,7 @@ class Documents:
             raise ValueError("docs cannot be None or empty")
         
         try:
-            logging.debug(f"Vectorizing {len(docs)} documents")
+            logger.debug(f"Vectorizing {len(docs)} documents")
 
             # Extract text content from (doc_id, content) tuples
             doc_texts = []
@@ -60,7 +60,7 @@ class Documents:
                     doc_texts.append(content)
 
             if not doc_texts:
-                logging.warning("No documents were extracted; documents may be empty or contain only stopwords.")
+                logger.warning("No documents were extracted; documents may be empty or contain only stopwords.")
                 return None
 
             self.vectorizer = TfidfVectorizer(
@@ -73,15 +73,15 @@ class Documents:
             tfidf_matrix = self.vectorizer.fit_transform(doc_texts)
 
             if tfidf_matrix.shape[1] == 0:
-                logging.warning("No features were extracted; documents may be empty or contain only stopwords.")
+                logger.warning("No features were extracted; documents may be empty or contain only stopwords.")
                 return None
             
-            logging.debug(f"Vectorized {tfidf_matrix.shape[0]} documents with {tfidf_matrix.shape[1]} features")
+            logger.debug(f"Vectorized {tfidf_matrix.shape[0]} documents with {tfidf_matrix.shape[1]} features")
 
             return tfidf_matrix
         except Exception as e:
             # Log the error that occurred during vectorization
-            logging.error(f"Failed to vectorize. Error: {e}", exc_info=True)
+            logger.error(f"Failed to vectorize. Error: {e}")
             return None
 
     def topic_modeling(self, tfidf_matrix, num_topics=3, num_words=10):
@@ -107,7 +107,7 @@ class Documents:
         
         try:
             # Log the start of topic modeling
-            logging.debug("Starting topic modeling")
+            logger.debug("Starting topic modeling")
 
             # Instantiate a LatentDirichletAllocation model with the given number of topics
             lda_model = LatentDirichletAllocation(n_components=num_topics,
@@ -119,7 +119,7 @@ class Documents:
             lda_output = lda_model.fit_transform(tfidf_matrix)
 
             # Log the number of topics
-            logging.debug(f"Topic modeling using {num_topics} topics")
+            logger.debug(f"Topic modeling using {num_topics} topics")
 
             # Get feature names
             feature_names = self.vectorizer.get_feature_names_out()
@@ -128,19 +128,19 @@ class Documents:
             topics = []
             for topic_idx, topic in enumerate(lda_model.components_):
                 # Log the topic being processed
-                logging.debug(f"Processing topic {topic_idx + 1}")
+                logger.debug(f"Processing topic {topic_idx + 1}")
                 top_features_ind = topic.argsort()[:-num_words - 1:-1]
                 top_features = [feature_names[i] for i in top_features_ind]
                 topics.append(top_features)
 
             # Log the number of topics found
-            logging.debug(f"Found {len(topics)} topics")
+            logger.debug(f"Found {len(topics)} topics")
 
             # Return the trained model, feature names and top words per topic
             return topics
         except Exception as e:
             # Log the error that occurred during topic modeling
-            logging.error(f"Failed to topic modeling. Error: {e}", exc_info=True)
+            logger.error(f"Failed to topic modeling. Error: {e}")
             return None, None, None
 
     def plot_topics(self, top_words_per_topic):
@@ -153,20 +153,20 @@ class Documents:
         if not docs:
             raise ValueError("docs cannot be None or empty")
         
-        logging.debug(f"Starting analysis for {lang} with {len(docs)} documents")
+        logger.debug(f"Starting analysis for {lang} with {len(docs)} documents")
 
         tfidf_matrix = self.vectorize(docs)
 
         if tfidf_matrix is None or tfidf_matrix.shape[0] == 0:
-            logging.warning(f"No documents found for {lang}")
+            logger.warning(f"No documents found for {lang}")
             return
         
-        logging.debug(f"Starting LDA for {lang} with tfidf_matrix shape: {tfidf_matrix.shape}")
+        logger.debug(f"Starting LDA for {lang} with tfidf_matrix shape: {tfidf_matrix.shape}")
 
         topics = self.topic_modeling(tfidf_matrix, num_topics=3, num_words=10)
 
         if topics is None:
-            logging.warning(f"Failed to create LDA model for {lang}")
+            logger.warning(f"Failed to create LDA model for {lang}")
             return
         
         print(f"\n{lang.upper()} Topics:\n")

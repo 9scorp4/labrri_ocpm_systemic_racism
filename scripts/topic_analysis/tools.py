@@ -1,89 +1,233 @@
 import nltk
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer, SnowballStemmer
+from nltk.tokenize import word_tokenize, TweetTokenizer
 import spacy
-import logging
+from loguru import logger
+import os
 
-nltk.download('stopwords')
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
+nltk.download('wordnet', quiet=True)
 
 class Tools:
+    """
+    Initialize tools for a given language.
+
+    Args:
+        lang (str): Language code ('fr', 'en', or 'bilingual')
+    """
     def __init__(self, lang=None):
         """
-        Initialize the Tools class.
+        Initialize tools for a given language.
 
-        This class is used to load the spacy model and the stopwords for the specified language.
-        Args:
-            lang (str): The language to use. Required.
-
-        Raises:
-            ValueError: If the language is not specified.
-            Exception: If the spacy model for the language cannot be loaded.
+        :param lang: str, language code ('fr', 'en', or 'bilingual')
         """
-        logging.info('Initializing Tools')
+        logger.info(f"Initializing tools for {lang}...")
         if lang is None:
             raise ValueError("Language must be specified")
-
+        
         # Initialize spaCy models and stopwords
         self.lang = lang
         self.nlp = {}
         self.stopwords_lang = {}
+        self.lemmatizers = {}
+        self.stemmers = {}
 
         try:
             if lang == 'bilingual' or lang == 'fr':
-                self.nlp['fr'] = spacy.load('fr_core_news_sm')
-                self.stopwords_lang['fr'] = set(stopwords.words('french'))
+                # Initialize French spaCy model
+                self.nlp['fr'] = spacy.load('fr_core_news_md')
+                # Load French stopwords
+                self.stopwords_lang['fr'] = list(stopwords.words('french'))
+                # Initialize French lemmatizer (using spaCy model)
+                self.lemmatizers['fr'] = self.nlp['fr']
+                # Initialize French stemmer
+                self.stemmers['fr'] = SnowballStemmer('french')
+                logger.info("French model loaded successfully.")
             if lang == 'bilingual' or lang == 'en':
-                self.nlp['en'] = spacy.load('en_core_web_sm')
-                self.stopwords_lang['en'] = set(stopwords.words('english'))
+                # Initialize English spaCy model
+                self.nlp['en'] = spacy.load('en_core_web_md')
+                # Load English stopwords
+                self.stopwords_lang['en'] = list(stopwords.words('english'))
+                # Initialize English lemmatizer (using WordNetLemmatizer)
+                self.lemmatizers['en'] = WordNetLemmatizer()
+                # Initialize English stemmer
+                self.stemmers['en'] = SnowballStemmer('english')
+                logger.info("English model loaded successfully.")
         except Exception as e:
-            logging.error(f"Failed to load spacy model. Error: {e}", exc_info=True)
+            logger.error(f"Failed to load spacy model. Error: {e}", exc_info=True)
             raise e
         
+        # Load additional stopwords from file
         self.load_additional_stopwords()
+        # Initialize TweetTokenizer
+        self.tweet_tokenizer = TweetTokenizer()
+
+        logger.info("Tools initialized successfully.")
 
     def load_additional_stopwords(self):
         """
-        Load additional stopwords from the stopwords.txt file and add them to the stopwords for each language.
+        Load additional stopwords from file and add them to the existing stopwords
+        for each language.
 
-        The stopwords.txt file should contain one stopword per line, with no empty lines or leading/trailing white space.
-        Each stopword should be in lowercase.
+        The file should contain one word per line. The words are added to the
+        existing stopwords for each language.
 
-        If the stopwords.txt file is not found, a warning is logged and no additional stopwords are loaded.
+        If the file is not found, a warning is logged.
 
-        If any other error occurs while loading the stopwords, an error is logged and the exception is re-raised.
+        :return: None
         """
         try:
-            # Load additional stopwords from file
-            with open(r'scripts/topic_analysis/stopwords.txt', 'r', encoding='utf-8') as f:
+            # File path is relative to this file
+            stopwords_path = os.path.join(os.path.dirname(__file__), 'stopwords.txt')
+            logger.info(f"Loading additional stopwords from {stopwords_path}...")
+            with open(stopwords_path, 'r', encoding='utf-8') as f:
+                # Read the file and strip and lower-case each line
                 additional_stopwords = set(line.strip().lower() for line in f if line.strip())
 
-            # Add additional stopwords to stopwords for each language
+            # Add the additional stopwords to the existing stopwords for each language
             for lang in self.stopwords_lang:
-                self.stopwords_lang[lang] |= additional_stopwords
+                if not isinstance(self.stopwords_lang[lang], set):
+                    self.stopwords_lang[lang] = set(self.stopwords_lang[lang])
+                self.stopwords_lang[lang].update(additional_stopwords)
 
-            # Log the number of additional stopwords added
-            logging.info(f"Added {len(additional_stopwords)} additional stopwords")
-
+            logger.info(f"Loaded {len(additional_stopwords)} additional stopwords")
         except FileNotFoundError:
-            # Log a warning if the stopwords file is not found
-            logging.warning("No stopwords.txt file found. Skipping addition of additional stopwords.")
-
+            # If the file is not found, log a warning
+            logger.warning("Additional stopwords file not found")
         except Exception as e:
-            # Log an error and re-raise the exception if any other error occurs
-            logging.error(f"Failed to load additional stopwords. Error: {e}", exc_info=True)
-
+            # If an error occurs, log an error and raise the exception
+            logger.error(f"Failed to load additional stopwords. Error: {e}", exc_info=True)
+            raise
     def load_spacy(self, lang):
+        """
+        Load the spaCy model for a given language.
+
+        Args:
+            lang (str): Language code ('fr', 'en', or 'bilingual')
+
+        Returns:
+            spacy.Language: spaCy model for the given language
+
+        Raises:
+            ValueError: If the language is not supported
+        """
         if lang not in self.nlp:
             raise ValueError(f"Invalid language: {lang}")
+        # Return the spaCy model for the given language
         return self.nlp[lang]
-
+    
     def lemmatize(self, token, lang):
-        if lang not in self.nlp:
-            logging.error(f"NLP model not loaded for language: {lang}")
+        """
+        Lemmatize a given token using the lemmatizer for the given language.
+
+        Args:
+            token (str): Token to lemmatize
+            lang (str): Language code ('fr', 'en', or 'bilingual')
+
+        Returns:
+            str: Lemmatized token
+
+        Raises:
+            ValueError: If the language is not supported
+        """
+        if lang not in self.lemmatizers:
+            logger.error(f"Lemmatizer not found for language: {lang}")
             return token
         
         try:
-            doc = self.nlp[lang](token)
-            return doc[0].lemma_
+            if lang == 'fr':
+                # Use spaCy model for French lemmatization
+                doc = self.lemmatizers[lang](token)
+                return doc[0].lemma_
+            else:
+                # Use WordNetLemmatizer for English lemmatization
+                return self.lemmatizers[lang].lemmatize(token)
         except Exception as e:
-            logging.error(f"Failed to lemmatize token. Error: {e}", exc_info=True)
+            logger.error(f"Failed to lemmatize token: {token}. Error: {e}", exc_info=True)
             return token
+
+        
+    def stem(self, token, lang):
+        """
+        Stem a given token using the stemmer for the given language.
+
+        Args:
+            token (str): Token to stem
+            lang (str): Language code ('fr', 'en', or 'bilingual')
+
+        Returns:
+            str: Stemmed token
+
+        Raises:
+            ValueError: If the language is not supported
+        """
+        if lang not in self.stemmers:
+            logger.error(f"Stemmer not found for language: {lang}")
+            return token
+        
+        try:
+            # Use the SnowballStemmer for the given language
+            return self.stemmers[lang].stem(token)
+        except Exception as e:
+            logger.error(f"Failed to stem token: {token}. Error: {e}", exc_info=True)
+            # If an error occurs, return the original token
+            return token
+    
+    def tokenize(self, text, method='standard'):
+        """
+        Tokenize a given text using a chosen method.
+
+        Args:
+            text (str): Text to tokenize
+            method (str): Tokenization method ('standard' or 'tweet')
+
+        Returns:
+            List[str]: Tokens
+
+        Raises:
+            ValueError: If the method is not supported
+        """
+        try:
+            if method == 'standard':
+                # Use standard NLTK word tokenization
+                return word_tokenize(text)
+            elif method == 'tweet':
+                # Use TweetTokenizer for tokenization
+                return self.tweet_tokenizer.tokenize(text)
+            else:
+                raise ValueError(f"Invalid tokenization method: {method}. Using 'standard' instead.")
+                return word_tokenize(text)
+        except Exception as e:
+            logger.error(f"Failed to tokenize text. Error: {e}", exc_info=True)
+            return []
+
+    def is_stopword(self, token, lang):
+        return token.lower() in self.stopwords_lang.get(lang, set())
+    
+    def preprocess(self, text, lang, tokenize_method='standard', use_lemmatization=True):
+        """
+        Preprocess a given text.
+
+        Args:
+            text (str): Text to preprocess
+            lang (str): Language of the text
+            tokenize_method (str, optional): Tokenization method. Defaults to 'standard'.
+            use_lemmatization (bool, optional): Whether to use lemmatization. Defaults to True.
+
+        Returns:
+            List[str]: Preprocessed tokens
+        """
+        tokens = self.tokenize(text, method=tokenize_method)
+        processed_tokens = []
+        for token in tokens:
+            if not self.is_stopword(token, lang):
+                if use_lemmatization:
+                    # Use lemmatization to reduce tokens to their base form
+                    processed_token = self.lemmatize(token, lang)
+                else:
+                    # Use stemming to reduce tokens to their base form
+                    processed_token = self.stem(token, lang)
+                processed_tokens.append(processed_token)
+        return processed_tokens

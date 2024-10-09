@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 import string
 from nltk.corpus import stopwords
 from spacy.lang.fr import French
@@ -43,18 +43,18 @@ class NoiseRemover:
             ValueError: If lang is invalid.
         """
         lang = lang or self.lang
-        logging.info(f"Cleaning documents with lang={lang}")
+        logger.info(f"Cleaning documents with lang={lang}")
 
         # Check inputs
         self._check_inputs(docs, lang)
 
         processed_docs = []
-        logging.debug(f"Cleaning {len(docs)} documents")
+        logger.debug(f"Cleaning {len(docs)} documents")
 
         # Process each document in the list
         for i, doc in enumerate(docs):
             if doc is None:
-                logging.debug(f"Skipping document {i} as it is None")
+                logger.debug(f"Skipping document {i} as it is None")
                 continue
 
             # Convert the document to a string
@@ -73,7 +73,7 @@ class NoiseRemover:
             if processed_doc and len(processed_doc) > 0:
                 processed_docs.append(processed_doc)
 
-        logging.debug(f"Cleaned {len(processed_docs)} documents")
+        logger.debug(f"Cleaned {len(processed_docs)} documents")
         return processed_docs
 
     def _check_inputs(self, docs, lang):
@@ -93,14 +93,14 @@ class NoiseRemover:
             doc = " ".join(doc)
         elif not isinstance(doc, str):
             doc = str(doc)
-        logging.debug(f"Converted document {index} to string: {doc}")
+        logger.debug(f"Converted document {index} to string: {doc}")
         return doc
 
     def _tokenize_document(self, doc, lang, index):
         if lang not in self.nlp:
             raise ValueError(f"Invalid language: {lang}")
         tokens = self.nlp[lang](doc)
-        logging.debug(f"Tokenized document {index} for language {lang}: {tokens}")
+        logger.debug(f"Tokenized document {index} for language {lang}: {tokens}")
         return tokens
 
     def _filter_tokens(self, tokens, lang, index):
@@ -108,7 +108,7 @@ class NoiseRemover:
                            if token.text.lower() not in self.stopwords_lang[lang]
                            and token.text not in string.punctuation
                            and not token.is_digit]
-        logging.debug(f"Filtered tokens for document {index} for language {lang}: {filtered_tokens}")
+        logger.debug(f"Filtered tokens for document {index} for language {lang}: {filtered_tokens}")
         return filtered_tokens
 
     def _join_filtered_tokens(self, filtered_tokens):
