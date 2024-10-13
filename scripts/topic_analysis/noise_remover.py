@@ -97,15 +97,26 @@ class NoiseRemover:
         return doc
 
     def _tokenize_document(self, doc, lang, index):
-        if lang not in self.nlp:
+        if lang == 'bilingual':
+            fr_tokens = self.nlp['fr'](doc)
+            en_tokens = self.nlp['en'](doc)
+            tokens = list(fr_tokens) + list(en_tokens)
+        elif lang in self.nlp:
+            tokens = self.nlp[lang](doc)
+        else:
             raise ValueError(f"Invalid language: {lang}")
-        tokens = self.nlp[lang](doc)
+        
         logger.debug(f"Tokenized document {index} for language {lang}: {tokens}")
         return tokens
 
     def _filter_tokens(self, tokens, lang, index):
+        if lang == 'bilingual':
+            stopwords = set(self.stopwords_lang['fr']).union(set(self.stopwords_lang['en']))
+        else:
+            stopwords = self.stopwords_lang[lang]
+
         filtered_tokens = [token.text.lower() for token in tokens
-                           if token.text.lower() not in self.stopwords_lang[lang]
+                           if token.text.lower() not in stopwords
                            and token.text not in string.punctuation
                            and not token.is_digit]
         logger.debug(f"Filtered tokens for document {index} for language {lang}: {filtered_tokens}")

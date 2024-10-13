@@ -1,6 +1,7 @@
 from loguru import logger
 from collections import Counter
 from itertools import chain
+import spacy
 import nltk
 from nltk.corpus import wordnet, stopwords
 from nltk.util import ngrams
@@ -15,7 +16,17 @@ class TopicLabeler:
         self.vectorizer = vectorizer
         self.domain_terms = domain_terms
         self.lang = lang
-        self.stopwords = set(stopwords.words('english') + stopwords.words('french')) 
+        self.stopwords = set(stopwords.words('english') + stopwords.words('french'))
+
+        if lang == 'fr':
+            self.nlp = spacy.load('fr_core_news_md')
+        elif lang == 'en':
+            self.nlp = spacy.load('en_core_web_md')
+        else:
+            self.nlp = {
+                'fr': spacy.load('fr_core_news_md'),
+                'en': spacy.load('en_core_web_md')
+            }
 
     def initialize_related_terms(self, doc_texts):
         """
@@ -36,7 +47,7 @@ class TopicLabeler:
         # Store the term similarity matrix
         self.term_similarity_matrix = term_similarity
 
-    def label_topics(self, topics, doc_texts, lang='fr'):
+    def label_topics(self, topics, doc_texts):
         """
         Label the topics by finding representative words in the documents.
 
@@ -48,25 +59,32 @@ class TopicLabeler:
             list: List of labeled topics, where each topic is a tuple of (label, topic words).
         """
         labeled_topics = []
-        all_topic_words = set(word for topic in topics for word in topic)
+        all_topic_words = set(word for topic in topics for word in (topic if isinstance(topic, (list, tuple)) else [str(topic)]))
 
         for i, topic in enumerate(topics):
-            unique_words = [word for word in topic if word not in self.stopwords and sum(word in t for t in topics) == 1]
-            common_words = [word for word in topic if word not in unique_words and word not in self.stopwords]
+            if isinstance(topic, (list, tuple)):
+                words = topic
+            elif isinstance(topic, int):
+                words = [str(topic)]
+            else:
+                words = list(topic)
+
+            unique_words = [word for word in words if word not in self.stopwords and sum(word in t for t in topics) == 1]
+            common_words = [word for word in words if word not in unique_words and word not in self.stopwords]
 
             if unique_words:
                 main_theme = unique_words[0]
             elif common_words:
                 main_theme = common_words[0]
             else:
-                main_theme = topic[0]
+                main_theme = words[0]
 
             additional_words = unique_words[1:3] if len(unique_words) > 1 else common_words[:2]
             label = f"Topic {i+1}: {main_theme.capitalize()}"
             if additional_words:
                 label += f" ({', '.join(additional_words)})"
             
-            labeled_topics.append((label, topic))
+            labeled_topics.append((label, words))
         
         return labeled_topics
 
@@ -140,6 +158,41 @@ class TopicLabeler:
             label = f"Topic {topic_index + 1}: " + ', '.join(other_terms) if other_terms else f"Miscellaneous topic {topic_index + 1}"
 
         return label, used_terms
+
+    def generate_label(self, top_words, docs):
+        # Use NLP techniques to generate a more meaningful label
+        combined_words = ' '.join(top_words)
+        
+        if isinstance(self.nlp, dict):
+            en_doc = self.nlp['en'](combined_words)
+            fr_doc = self.nlp['fr'](combined_words)
+
+            if len(en_doc.ents) + len(list(en_doc.noun_chunks)) > len(fr_doc.ents) + len(list(fr_doc.noun_chunks)):
+                doc = en_doc
+                lang = 'en'
+            else:
+                doc = fr_doc
+                lang = 'fr'
+        else:
+            doc = self.nlp(combined_words)
+            lang = self.lang
+        
+        noun_phrases = [chunk.text for chunk in doc.noun_chunks]
+
+        if noun_phrases:
+            label = noun_phrases[0].capitalize()
+        else:
+            label = top_words[0].capitalize()
+
+        domain_context = next((term for term in self.domain_terms if term.lower() in combined_words.lower()), '')
+
+        if domain_context:
+            label += f" ({domain_context})"
+
+        if isinstance(self.nlp, dict):
+            label += f" [{lang.upper()}]"
+
+        return label
 
     def _calculate_term_score(self, term, topic_freq, all_topics_freq):
         tf = topic_freq[term]

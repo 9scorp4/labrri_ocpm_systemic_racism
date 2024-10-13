@@ -1,22 +1,29 @@
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 import os
+import csv
+from datetime import datetime
 from pathlib import Path
 from loguru import logger
 from sklearn.decomposition import LatentDirichletAllocation, NMF, TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from gensim import corpora, models
+from gensim.corpora.dictionary import Dictionary
 from gensim.models import KeyedVectors, CoherenceModel
 from gensim.downloader import load
-import nltk
-from nltk.util import ngrams
+from scipy.sparse import csr_matrix
+from tqdm import tqdm
 import numpy as np
-from collections import Counter
-from itertools import chain
+from collections import Counter, defaultdict
+from itertools import combinations
+import threading
+from contextlib import contextmanager
 
 from scripts.database import Database
 from scripts.topic_analysis.tools import Tools
 from scripts.topic_analysis.noise_remover import NoiseRemover
 from scripts.topic_analysis.topic_labeler import TopicLabeler
-from exceptions import AnalysisError, DatabaseError
+from exceptions import AnalysisError, DatabaseError, VectorizationError
 
 class Analysis:
     """
@@ -48,95 +55,155 @@ class Analysis:
             logger.error(f"Error initializing Analysis: {str(e)}")
             raise AnalysisError("Error initializing Analysis", error=e)
         
+        self.word2vec_model = self._load_word2vec_model()
         self.domain_terms = self._load_domain_terms()
-        self.word2vec_model = CountVectorizer(ngram_range=(1, 3))
-        self.topic_labeler = None
+        self.topic_labeler = TopicLabeler(self.vectorizer, self.domain_terms, self.lang)
 
-    def analyze_docs(self, doc_ids=None, method='lda', num_topics=3, coherence_threshold=0.3):
-        """
-        Process a list of documents and perform topic analysis.
-
-        Args:
-            doc_ids (List[int] or None): List of document IDs to process. If None, process all documents.
-
-        Returns:
-            List[List[str]]: Topics with their top words.
-        """
-        logger.info(f"Processing documents with lang={self.lang}, method={method}")
-        
+    @staticmethod
+    @contextmanager
+    def timeout(seconds):
+        timer = threading.Timer(seconds, lambda: (_ for _ in ()).throw(TimeoutError(f"Timed out after {seconds} seconds")))
+        timer.start()
         try:
-            if doc_ids:
-                docs = self._fetch_documents(doc_ids)
-            else:
-                docs = self.db.fetch_all(self.lang)
+            yield
+        finally:
+            timer.cancel()
 
-            if not docs:
-                logger.error("No documents found in the database.")
-                return []
-
-            logger.info(f'Cleaning {len(docs)} documents...')
-            cleaned_docs = self.noise_remover.clean_docs([doc[1] for doc in docs], self.lang)
-            logger.info('Document cleaning completed.')
-
-            if not cleaned_docs:
-                logger.error("All documents were empty after cleaning.")
-                return []
+    def analyze_docs(self, docs, method='lda', num_topics=40, coherence_threshold=-5.0, min_topics=5, max_topics=20):
+        try:
+            logger.info(f"Starting document analysis with {method} method and {num_topics} initial topics")
             
-            logger.info('Initializing vectorizer...')
-            self._initialize_vectorizer(cleaned_docs)
-
-            logger.info('Vectorizing documents...')
-            try:
-                tfidf_matrix = self.vectorizer.fit_transform(cleaned_docs)
-            except ValueError as ve:
-                logger.error(f"Error vectorizing documents: {str(ve)}")
-                logger.info('Attempting to vectorize with minimun settings...')
-                self.vectorizer.set_params(max_df=1, min_df=1, max_features=None)
-                tfidf_matrix = self.vectorizer.fit_transform(cleaned_docs)
+            docs = list(docs)
             
-            logger.info(f'Performing topic modeling using {method}...')
-            if method == 'lda':
-                topics = self._perform_lda(tfidf_matrix, num_topics)
-            elif method == 'nmf':
-                topics = self._perform_nmf(tfidf_matrix, num_topics)
-            elif method == 'lsa':
-                topics = self._perform_lsa(tfidf_matrix, num_topics)
-            elif method == 'dynamic':
-                topics = self._perform_dynamic_topic_modeling(cleaned_docs, num_topics)
-            else:
-                raise ValueError(f"Invalid method: {method}")
+            logger.info("Vectorizing documents...")
+            tfidf_matrix = self.vectorize(docs)
             
-            logger.info('Filtering topics by coherence...')
-            texts = [doc.split() for doc in cleaned_docs]
-            filtered_topics = []
-            coherence_scores = []
-            for topic in topics:
-                score = self.calculate_coherence_score([topic], texts)
-                if score >= coherence_threshold:
-                    filtered_topics.append(topic)
-                    coherence_scores.append(score)
+            logger.info(f"Performing topic modeling with {method}...")
+            topics = self._perform_topic_modeling(tfidf_matrix, method, num_topics)
             
-            logger.info('Labeling topics...')
-            try:
-                self.topic_labeler = TopicLabeler(self.vectorizer, self.domain_terms, self.lang)
-                labeled_topics = self.topic_labeler.label_topics(filtered_topics, cleaned_docs)
-            except Exception as e:
-                logger.error(f"Error labeling topics: {str(e)}")
-                labeled_topics = [(f"Topic {i+1}: {topic}", topic) for i, topic in enumerate(filtered_topics)]
+            logger.info("Calculating topic coherence...")
+            coherence_scores = self.calculate_topic_coherences(topics, docs)
             
-            labeled_topics_with_scores = [
-                (label, words, score) for (label, words), score in zip(labeled_topics, coherence_scores)
-            ]
-
-            logger.info('Topic analysis completed successfully.')
-            logger.info(f"Topics with scores: {labeled_topics_with_scores}")
-            return labeled_topics_with_scores
-        except DatabaseError as e:
-            logger.error(f"Error processing documents: {str(e)}")
-            raise
+            logger.info("Filtering topics by coherence...")
+            filtered_topics = self.filter_topics_by_coherence(topics, coherence_scores, threshold=coherence_threshold, min_topics=min_topics, max_topics=max_topics)
+            
+            logger.info("Labeling topics...")
+            labeled_topics = self._label_topics(filtered_topics, docs)
+            
+            result = [(label, words, score) for (label, words), score in zip(labeled_topics, coherence_scores)]
+            
+            logger.info("Analysis completed successfully")
+            return result
         except Exception as e:
-            logger.error(f"Error processing documents: {str(e)}")
-            raise AnalysisError("Error processing documents", error=e)
+            logger.error(f"Error analyzing documents: {str(e)}", exc_info=True)
+            raise AnalysisError("Error analyzing documents", error=e)
+
+    def save_topics_to_csv(self, topics, filename=None):
+        if filename is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"results/topic_analysis/topics_{timestamp}.csv"
+        
+        with open(filename, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Topic Number', 'Label', 'Words', 'Coherence Score'])
+            
+            for i, (label, words, score) in enumerate(topics, 1):
+                writer.writerow([i, label, ', '.join(words), score])
+        
+        logger.info(f"Topics saved to {filename}")
+        return filename
+
+    def vectorize(self, docs):
+        logger.debug(f"Vectorizing {len(docs)} documents...")
+
+        if not isinstance(docs, list):
+            docs = list(docs)
+
+        if not self.vectorizer:
+            self._initialize_vectorizer(docs)
+
+        try:
+            if all(isinstance(doc, int) for doc in docs):
+                raise ValueError("All documents appear to be integers. Expected text content.")
+            
+            docs = [str(doc) if not isinstance(doc, str) else doc for doc in docs]
+
+            tfidf_matrix = self.vectorizer.fit_transform(docs)
+            logger.debug(f"Vectorized {tfidf_matrix.shape[0]} doucments with {tfidf_matrix.shape[1]} features")
+
+            return tfidf_matrix
+        except Exception as e:
+            logger.error(f"Error vectorizing documents: {str(e)}")
+            raise VectorizationError("Error vectorizing documents", error=e)
+
+    def _label_topics(self, topics, docs):
+        logger.info(f"Labeling {len(topics)} topics...")
+
+        if not hasattr(self, 'topic_labeler'):
+            self.topic_labeler = TopicLabeler(self.vectorizer, self.domain_terms, self.lang)
+
+        labeled_topics = []
+        for i, topic in enumerate(topics):
+            try:
+                top_words = topic[:5]
+                label = self.topic_labeler.generate_label(top_words, docs)
+                labeled_topics.append((label, topic))
+                logger.debug(f"Label for topic {i+1}: {label}")
+            except Exception as e:
+                logger.error(f"Error generating label for topic {i+1}: {str(e)}")
+                fallback_label = f"Topic {i+1}: {' '.join(topic [:3])}"
+                labeled_topics.append((fallback_label, topic))
+
+        return labeled_topics
+       
+    def _perform_topic_modeling(self, tfidf_matrix, method, num_topics):
+        if method == 'lda':
+            model = LatentDirichletAllocation(
+                n_components=num_topics,
+                max_iter=50,
+                learning_method='online',
+                random_state=42,
+                batch_size=128,
+                doc_topic_prior=0.1,
+                topic_word_prior=0.01,
+                n_jobs=-1
+            )
+        elif method == 'nmf':
+            model = NMF(n_components=num_topics, random_state=42)
+        elif method == 'lsa':
+            model = TruncatedSVD(n_components=num_topics, random_state=42)
+        else:
+            raise ValueError(f"Invalid topic modeling method: {method}")
+        
+        logger.debug(f"Fitting the model...")
+        model.fit(tfidf_matrix)
+        logger.debug("Model fitting completed")
+        
+        feature_names = self.vectorizer.get_feature_names_out()
+        topics = []
+        for topic_idx, topic in enumerate(model.components_):
+            top_features_ind = topic.argsort()[:-21:-1]
+            top_features = [feature_names[i] for i in top_features_ind]
+            topics.append(top_features)
+            logger.debug(f"Topic {topic_idx}: {top_features[:5]}...")
+
+        logger.info(f"Generated {len(topics)} topics")
+        return topics
+        
+    def _calculate_word_doc_freq(self, docs):
+        vectorizer = CountVectorizer(lowercase=True, token_pattern=r'\b\w+\b')
+        X = vectorizer.fit_transform(docs)
+        word_doc_freq = defaultdict(int)
+        feature_names = vectorizer.get_feature_names_out()
+
+        # Calculate document frequency
+        doc_freq = np.bincount(X.indices, minlength=X.shape[1])
+
+        for i, word in enumerate(feature_names):
+            word_doc_freq[word] = doc_freq[i]
+
+        logger.info(f"Number of unique words in corpus: {len(word_doc_freq)}")
+        return word_doc_freq, X
 
     def _load_word2vec_model(self):
         model_path = Path(__file__).parent.parent.parent / 'data' / 'word2vec-google-news-300.model'
@@ -175,6 +242,9 @@ class Analysis:
                 doc = self.db.fetch_single(doc_id)
                 if doc:
                     docs.append(doc)
+                else:
+                    logger.warning(f"Document with id {doc_id} not found")
+            logger.debug(f"Fetched {len(docs)} documents")
             return docs
         except Exception as e:
             logger.error(f"Error fetching documents: {str(e)}")
@@ -184,12 +254,18 @@ class Analysis:
         n_docs = len(docs)
         max_df = max(2, int(0.95 * n_docs))
         min_df = min(2, max(1, int(0.05 * n_docs)))
+
+        if self.lang == 'bilingual':
+            stop_words = list(set(self.tools.stopwords_lang['fr']).union(self.tools.stopwords_lang['en']))
+        else:
+            stop_words = list(self.tools.stopwords_lang.get(self.lang, []))
+
         self.vectorizer = TfidfVectorizer(
             max_df=max_df,
             min_df=min_df,
-            max_features=100,
+            max_features=1000,
             ngram_range=(1,2),
-            stop_words=list(self.tools.stopwords_lang.get(self.lang, []))
+            stop_words=stop_words
         )
         logger.info(f"Initialized vectorizer with max_df={max_df}, min_df={min_df}")
 
@@ -279,45 +355,77 @@ class Analysis:
         else:
             word_counts = Counter(words)
             return word_counts.most_common(1)[0][0] if word_counts else None
-    
-    def calculate_coherence_score(self, topics, texts):
-        try:
-            id2word = corpora.Dictionary(texts)
-            corpus = [id2word.doc2bow(text) for text in texts]
-            
-            coherence_model = CoherenceModel(topics=topics,
-                                            texts=texts,
-                                            dictionary=id2word,
-                                            coherence='c_v')
-            coherence_score = coherence_model.get_coherence()
-            
-            logger.info(f"Coherence score: {coherence_score}")
-            return coherence_score
-        except Exception as e:
-            logger.error(f"Error calculating coherence score: {str(e)}")
-            return None
+
+    @staticmethod
+    def calculate_coherence(topic, texts, dictionary, corpus):
+        cm = CoherenceModel(model=topic, texts=texts, dictionary=dictionary, corpus=corpus, coherence='c_v')
+        return cm.get_coherence()
+
+    def calculate_topic_coherences(self, topics, docs):
+        logger.info('Calculating topic coherence...')
+
+        # Convert docs to a list if it's a generator
+        docs = list(docs)
         
-    def filter_topics_by_coherence(self, topics, texts, threshold=0.3):
-        try:
-            coherence_scores = []
-            for topic in topics:
-                score = self.calculate_coherence_score([topic], texts)
-                if score is not None:
-                    coherence_scores.append(score)
+        # Tokenize documents and create vocabulary
+        tokenized_docs = [doc.lower().split() for doc in docs]
+        vocab = list(set(word for doc in tokenized_docs for word in doc))
+        word_to_id = {word: i for i, word in enumerate(vocab)}
+        
+        # Create document-term matrix
+        rows, cols, data = [], [], []
+        for doc_id, doc in enumerate(tokenized_docs):
+            for word in doc:
+                if word in word_to_id:
+                    rows.append(doc_id)
+                    cols.append(word_to_id[word])
+                    data.append(1)
 
-            if not coherence_scores:
-                logger.warning("No coherence scores found. Skipping filtering.")
-                return topics
+        doc_term_matrix = csr_matrix((data, (rows, cols)), shape=(len(tokenized_docs), len(vocab)))
 
-            filtered_topics = [topic for topic, score in zip(topics, coherence_scores) if score >= threshold]
+        doc_freqs = np.array((doc_term_matrix > 0).sum(0)).flatten()
 
-            logger.info(f"Filtered topics: {len(filtered_topics)} out of {len(topics)} topics kept.")
-            return filtered_topics
-        except Exception as e:
-            logger.error(f"Error filtering topics by coherence: {str(e)}")
-            return topics
-                
+        coherence_scores = []
 
-    def topic_diversity(self, topics):
-        # To be implemented
-        pass
+        for topic in tqdm(topics, desc="Calculating topic coherence"):
+            topic_word_ids = [word_to_id[word] for word in topic if word in word_to_id]
+            if len(topic_word_ids) < 2:
+                coherence_scores.append(0)
+                continue
+
+            topic_coherence = 0
+            pairs_count = 0
+            for i, word_id1 in enumerate(topic_word_ids[:-1]):
+                for word_id2 in topic_word_ids[i + 1:]:
+                    # Calculate co-document frequency
+                    co_doc_freq = (doc_term_matrix[:, word_id1].multiply(doc_term_matrix[:, word_id2])).sum()
+                    coherence = np.log((co_doc_freq + 1) / (doc_freqs[word_id1] + 1))
+                    topic_coherence += coherence
+                    pairs_count += 1
+            
+            if pairs_count > 0:
+                topic_coherence /= pairs_count
+            else:
+                topic_coherence = 0
+            coherence_scores.append(topic_coherence)
+
+        logger.info(f"Calculated coherence scores: {coherence_scores}")
+        return coherence_scores
+
+    def filter_topics_by_coherence(self, topics, coherence_scores, threshold=-5.0, min_topics=10, max_topics=20):
+        if len(topics) != len(coherence_scores):
+            raise ValueError("The number of topics and coherence scores must match.")
+
+        # Higher (closer to 0) scores are better
+        filtered_topics = [(topic, score) for topic, score in zip(topics, coherence_scores) if score >= threshold]
+        filtered_topics.sort(key=lambda x: x[1], reverse=True)
+
+        if len(filtered_topics) < min_topics:
+            logger.warning(f"Less than {min_topics} topics left after filtering. Keeping top {min_topics} topics.")
+            filtered_topics = sorted(zip(topics, coherence_scores), key=lambda x: x[1], reverse=True)[:min_topics]
+        elif len(filtered_topics) > max_topics:
+            logger.info(f"More than {max_topics} topics left after filtering. Keeping top {max_topics} topics.")
+            filtered_topics = filtered_topics[:max_topics]
+
+        logger.info(f"Filtered topics from {len(topics)} to {len(filtered_topics)} based on coherence scores.")
+        return [topic for topic, _ in filtered_topics]

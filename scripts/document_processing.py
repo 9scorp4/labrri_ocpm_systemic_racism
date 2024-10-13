@@ -12,7 +12,7 @@ from scripts.database import Database
 from scripts.models import Document, Content
 
 class ProcessDocuments:
-    def __init__(self, pdf_list_path, min_content_length, min_concatenated_length):
+    def __init__(self, pdf_list_path, min_content_length, min_concatenated_length, language='bilingual'):
         if not pdf_list_path:
             raise ValueError("pdf_list_path cannot be None")
         if min_content_length is None:
@@ -20,11 +20,11 @@ class ProcessDocuments:
         if min_concatenated_length is None:
             raise ValueError("min_concatenated_length cannot be None")
 
-        self.db = Database(r"data\database.db")
+        self.db = Database(r"postgresql://postgres:nicar941105@localhost:5432/labrri_ocpm_systemic_racism")
         self.pdf_list_path = Path(pdf_list_path)
         self.min_content_length = min_content_length
         self.min_concatenated_length = min_concatenated_length
-        self.process_text = ProcessText()
+        self.process_text = ProcessText(language)
 
     def pdf_single(self, pdf_path, organization, document_type, category, clientele, knowledge_type, language):
         logger.info(f"Processing document: {pdf_path}")

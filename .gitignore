@@ -39,3 +39,6 @@ api.py
 # Ignore Word2Vec models
 data/word2vec-google-news-300.model
 data/word2vec-google-news-300.model.vectors.npy
+
+# Ignore environment variables
+.env

@@ -18,11 +18,18 @@ class ProcessText:
     Class for text processing with improved cleaning and anonymization.
     """
 
-    def __init__(self, lang=None):
+    def __init__(self, lang='bilingual'):
         logger.info("Initializing text processing...")
         self.lang = lang
         try:
             self.tools = Tools(lang)
+
+            if lang == 'bilingual' or lang == 'fr':
+                self.nlp_fr = spacy.load('fr_core_news_md')
+            if lang == 'bilingual' or lang == 'en':
+                self.nlp_en = spacy.load('en_core_web_md')
+            
+            logger.info("NLP models loaded successfully.")
         except Exception as e:
             logger.error(f"Error initializing tools: {e}")
             raise e
@@ -122,8 +129,6 @@ class ProcessText:
 
         combined_text = '\n'.join(extracted_text)
 
-        self.db.update_document_content(pdf_path, combined_text)
-
         output_txt_path = Path(pdf_path).with_suffix('.txt')
         with open(output_txt_path, 'w', encoding='utf-8') as f:
             f.write(combined_text)
@@ -168,9 +173,6 @@ class ProcessText:
                 cleaned_text = self.clean_french(cleaned_text)
             elif lang == 'en':
                 cleaned_text = self.clean_english(cleaned_text)
-
-            # Light anonymization using NER
-            cleaned_text = self.anonymize(cleaned_text, lang)
 
             logger.debug(f"Cleaned text: {cleaned_text}")
             return cleaned_text
@@ -220,24 +222,3 @@ class ProcessText:
             text = text.replace(contraction, replacement)
 
         return text
-
-    def anonymize(self, text: str, lang: str) -> str:
-        """
-        Perform light anonymization using Named Entity Recognition.
-
-        Args:
-            text: text to anonymize
-            lang: language of the text ('fr' for French, 'en' for English)
-
-        Returns:
-            anonymized text
-        """
-        nlp = self.nlp_fr if lang == 'fr' else self.nlp_en
-        doc = nlp(text)
-
-        anonymized_text = text
-        for ent in doc.ents:
-            if ent.label_ in ['PERSON', 'ORG']:
-                anonymized_text = anonymized_text.replace(ent.text, f"[{ent.label_}]")
-
-        return anonymized_text

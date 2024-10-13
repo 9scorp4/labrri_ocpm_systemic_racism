@@ -7,7 +7,6 @@ mm
 gh
 oui
 hw
-coprésidente
 merci
 od
 ghv
@@ -69,7 +68,8 @@ bien
 canader
 plus
 ca
-émond coprésidente
+emond
+copresidente
 hassaoui
 mulone
 armony
@@ -83,7 +83,7 @@ indeed
 xq
 gdqv
 mmm
-sténo
+steno
 tout
 comme
 autre
@@ -135,7 +135,7 @@ marie
 marie pier
 pier kouassi
 pier
-soirée
+soiree
 vont
 françois
 vais
