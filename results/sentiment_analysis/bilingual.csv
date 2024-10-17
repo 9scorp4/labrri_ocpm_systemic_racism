@@ -1,6 +1,0 @@
-id,organization,document_type,category,clientele,knowledge_type,sentiment
-64,Balarama Holness,Transcription,Personalités et organisations politiques,S.O.,"Citoyen,Municipal",0.9986
-68,Dexter Xurukulasuriya,Transcription,Citoyens et particuliers,Personnes racisées,Citoyen,-0.9987
-76,Thierry Lindor,Transcription,Citoyens et particuliers,Entrepreneurs,Citoyen,0.9998
-103,Conseil national des musulmans canadiens,Transcription,Organismes communautaires et à but non-lucratif,Communautés religieuses,"Communautaire,Citoyen",-0.9993
-105,James Oscar,Mémoire,Citoyens et particuliers,S.O.,Citoyen,0.9901
