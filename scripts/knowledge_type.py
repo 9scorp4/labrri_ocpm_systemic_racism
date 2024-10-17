@@ -1,7 +1,11 @@
-import logging
+from loguru import logger
 import pandas as pd
-from matplotlib import pyplot as plt
-from matplotlib_venn import venn3
+import matplotlib.pyplot as plt
+from matplotlib_venn import venn3, venn2
+import seaborn as sns
+from collections import Counter
+from sqlalchemy import text
+from pathlib import Path
 
 from scripts.database import Database
 
@@ -16,76 +20,86 @@ class KnowledgeType:
         Raises:
             ValueError: If db_path is None.
             ValueError: If the database connection is None.
-
-        Initializes the following instance variables:
-            - db_path (str): The path to the database file.
-            - db (Database): The database object.
-            - conn (Connection): The database connection object.
         """
-        logging.info('Initializing KnowledgeType')
+        logger.info('Initializing KnowledgeType')
         if db_path is None:
             raise ValueError('db_path cannot be None')
+
         self.db_path = db_path
         self.db = Database(self.db_path)
-        self.conn = self.db.conn
-        if self.conn is None:
+        if self.db.engine is None:
             raise ValueError('Database connection is None')
     
     def all_docs(self):
         # Retrieve document content from the database
-        df = self.db.df_from_query("SELECT knowledge_type FROM documents")
+        query = text("SELECT knowledge_type FROM documents")
+        with self.db.engine.connect() as connection:
+            df = pd.read_sql(query, connection)
         
         # Count the frequency of each knowledge type
         df_original = df['knowledge_type'].value_counts().reset_index()
         df_original.columns = ['knowledge_type', 'count']
 
-        # Split the knowledge types values by comma and count the frequency
-        df_split = df['knowledge_type'].str.split(',', expand=True).stack().reset_index(level=1, drop=True)
-        df_split = df_split.value_counts().reset_index()
-        df_split.columns = ['knowledge_type', 'count']
+        # Calculate set sizes for Venn diagram
+        venn_values = self._calculate_venn_values(df)
 
-        # Define the set sizes and overlaps from the df_original dataframe for the venn diagram
-        # Define the set sizes and overlaps from the df_original dataframe for the venn diagram
-        venn_values = {}
-        if not df_original.empty:
-            venn_values = {
-                '100': df_original.loc[df_original['knowledge_type'] == 'Citoyen', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Citoyen', 'count'].empty else 0,
-                '010': df_original.loc[df_original['knowledge_type'] == 'Communautaire', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Communautaire', 'count'].empty else 0,
-                '001': df_original.loc[df_original['knowledge_type'] == 'Municipal', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Municipal', 'count'].empty else 0,
-                '110': df_original.loc[df_original['knowledge_type'] == 'Communautaire,Citoyen', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Communautaire,Citoyen', 'count'].empty else 0,
-                '101': df_original.loc[df_original['knowledge_type'] == 'Citoyen,Municipal', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Citoyen,Municipal', 'count'].empty else 0,
-                '011': df_original.loc[df_original['knowledge_type'] == 'Communautaire,Municipal', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Communautaire,Municipal', 'count'].empty else 0,
-                '111': df_original.loc[df_original['knowledge_type'] == 'Citoyen,Communautaire,Municipal', 'count'].iloc[0] if not df_original.loc[df_original['knowledge_type'] == 'Citoyen,Communautaire,Municipal', 'count'].empty else 0
-            }
+        # Create a figure with three subplots
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 7))
 
-        # Create a figure with two subplots, one for the split dataframe and one for the venn diagram
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-
-        # Create a table for the split dataframe
+        # Create a table for the original dataframe
         ax1.axis('off')
         ax1.axis('tight')
-        ax1.table(cellText=df_split.values, colLabels=df_split.columns, loc='center')
+        ax1.table(cellText=df_original.values, colLabels=df_original.columns, loc='center')
+        ax1.set_title('Knowledge Type Distribution')
 
-        # Plot the venn diagram on the second subplot
-        venn3(subsets=venn_values, set_labels=('Citoyen', 'Communautaire', 'Municipal'), ax=ax2)
+        # Plot the Venn diagram on the second subplot
+        self._plot_venn_diagram(venn_values, ax2)
+
+        # Create a bar chart for the third subplot
+        self._plot_bar_chart(df_original, ax3)
 
         # Set the title of the entire figure
-        fig.suptitle('Types de savoirs concernant les discriminations systémiques à Montréal', fontsize=16)
+        fig.suptitle('Type de savoirs concernant les discrimination systémiques à Montréal', fontsize=16)
 
-        # Adjust the layout
+        # Adjust the layout, save the figure, and show it
         plt.tight_layout()
-
-        # Save the plot to a PNG file
-        plt.savefig('results/knowledge_type/knowledge_types.png')
-
-        # Show the plot
+        plt.savefig('results/knowledge_type/knowledge_type_analysis.png')
         plt.show()
 
-        # Save both dataframes to CSV and XLSX files
-        df_original.to_csv('results/knowledge_type/knowledge_types_original.csv', index=False)
-        df_split.to_csv('results/knowledge_type/knowledge_types_split.csv', index=False)
-        df_original.to_excel('results/knowledge_type/knowledge_types_original.xlsx', index=False)
-        df_split.to_excel('results/knowledge_type/knowledge_types_split.xlsx', index=False)
+        # Save dataframes to CSV and XLSX files
+        df_original.to_csv('results/knowledge_type/knowledge_type_distribution.csv', index=False)
+        df_original.to_excel('results/knowledge_type/knowledge_type_distribution.xlsx', index=False)
+
+    def _calculate_venn_values(self, df):
+        # Split multi-value entries and count occurrences
+        citoyen = set(df[df['knowledge_type'].str.contains('Citoyen', na=False)].index)
+        communautaire = set(df[df['knowledge_type'].str.contains('Communautaire', na=False)].index)
+        municipal = set(df[df['knowledge_type'].str.contains('Municipal', na=False)].index)
+
+        # Calculate intersections
+        c_com = len(citoyen.intersection(communautaire))
+        c_m = len(citoyen.intersection(municipal))
+        com_m = len(communautaire.intersection(municipal))
+        c_com_m = len(citoyen.intersection(communautaire).intersection(municipal))
+
+        # Calculate exclusive sets
+        only_c = len(citoyen) - c_com - c_m + c_com_m
+        only_com = len(communautaire) - c_com - com_m + c_com_m
+        only_m = len(municipal) - c_m - com_m + c_com_m
+
+        # Return the Venn diagram values
+        return (only_c, only_com, only_m, c_com - c_com_m, c_m - c_com_m, com_m - c_com_m, c_com_m)
+
+    def _plot_venn_diagram(self, venn_values, ax):
+        venn3(subsets=venn_values, set_labels=('Citoyen', 'Communautaire', 'Municipal'), ax=ax)
+        ax.set_title('Intersection of Knowledge Types')
+
+    def _plot_bar_chart(self, df, ax):
+        sns.barplot(x='knowledge_type', y='count', data=df, ax=ax, legend=False)
+        ax.set_title('Knowledge Type Distribution')
+        ax.set_xlabel('Knowledge Type')
+        ax.set_ylabel('Count')
+        plt.xticks(rotation=45, ha='right')
 
     def crosstable(self, compare_with=None):
         """
@@ -98,11 +112,13 @@ class KnowledgeType:
             ValueError: If the dataframe is empty or the compare_with column does not exist.
         """
         # Retrieve document content from the database
-        df = self.db.df_from_query("SELECT * FROM documents")
+        query = text("SELECT * FROM documents")
+        with self.db.engine.connect() as connection:
+            df = pd.read_sql(query, connection)
         
         # Check if the dataframe is empty
         if df.empty:
-            logging.error('DataFrame is empty')
+            logger.error('DataFrame is empty')
             raise ValueError('DataFrame is empty')
 
         # Split the knowledge_type column into separate rows
@@ -113,7 +129,7 @@ class KnowledgeType:
 
         # Check if the compare_with column exists in the expanded dataframe
         if compare_with is not None and compare_with not in expanded_df.columns:
-            logging.error(f'Compare with column {compare_with} does not exist in the dataframe')
+            logger.error(f'Compare with column {compare_with} does not exist in the dataframe')
             raise ValueError(f'Compare with column {compare_with} does not exist in the dataframe')
 
         # Create a cross table
@@ -122,14 +138,65 @@ class KnowledgeType:
             crosstable = pd.crosstab(expanded_df[compare_with], expanded_df['knowledge_type'], margins=True, margins_name="Total")
         else:
             # Create a cross table using the knowledge types as the columns
-            crosstable = pd.crosstab(expanded_df['knowledge_type'], margins=True, margins_name="Total")
+            crosstable = pd.crosstab(expanded_df['knowledge_type'], columns='count', margins=True, margins_name="Total")
 
         # Save the cross table to a CSV and XLSX file
         crosstable.to_csv(f'results/knowledge_type/crosstable_knowledge_types_{compare_with}.csv', index=True)
         crosstable.to_excel(f'results/knowledge_type/crosstable_knowledge_types_{compare_with}.xlsx', index=True)
 
+        # Visualize the crosstable
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(crosstable.iloc[:-1, :-1], annot=True, cmap="YlGnBu", fmt='d')
+        plt.title(f'Knowledge Type Distribution by {compare_with if compare_with else "Count"}')
+        plt.tight_layout()
+        plt.savefig(f'results/knowledge_type/crosstable_heatmap_{compare_with}.png')
+        plt.close()
+
         # Print the cross table
         print(crosstable)
+
+    def analyze_intersections(self):
+        """
+        Analyzes the intersections of different knowledge types.
+        """
+        query = text("SELECT knowledge_type FROM documents")
+        with self.db.engine.connect() as connection:
+            df = pd.read_sql(query, connection)
+
+        # Split the knowledge types and create a set for each document
+        knowledge_sets = df['knowledge_type'].str.split(',').apply(set)
+
+        # Count the occurrences of each unique combination
+        intersection_counts = Counter(frozenset(ks) for ks in knowledge_sets)
+
+        # Prepare data for visualization
+        labels = [', '.join(sorted(k)) for k in intersection_counts.keys()]
+        sizes = list(intersection_counts.values())
+
+        # Create a pie chart
+        plt.figure(figsize=(12, 8))
+        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+        plt.axis('equal')
+        plt.title('Intersections of Knowledge Types')
+        plt.tight_layout()
+        plt.savefig('results/knowledge_type/knowledge_type_intersections.png')
+        plt.show()
+
+        # Create a bar chart
+        plt.figure(figsize=(12, 8))
+        plt.bar(labels, sizes)
+        plt.title('Intersections of Knowledge Types')
+        plt.xlabel('Knowledge Type Combinations')
+        plt.ylabel('Count')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.savefig('results/knowledge_type/knowledge_type_intersections_bar.png')
+        plt.show()
+
+        # Save the intersection data
+        intersection_df = pd.DataFrame({'Combination': labels, 'Count': sizes})
+        intersection_df.to_csv('results/knowledge_type/knowledge_type_intersections.csv', index=False)
+        intersection_df.to_excel('results/knowledge_type/knowledge_type_intersections.xlsx', index=False)
 
     def docs_list(self, knowledge_type):
         """
@@ -142,27 +209,21 @@ class KnowledgeType:
             ValueError: If the dataframe is empty or no documents are found with the specified knowledge type.
         """
         # Retrieve document content from the database
-        df = self.db.df_from_query("SELECT * FROM documents")
+        query = text("SELECT * FROM documents WHERE knowledge_type LIKE :kt")
+        with self.db.engine.connect() as connection:
+            df = pd.read_sql(query, connection, params={'kt': f'%{knowledge_type}%'})
 
         # Check if the dataframe is empty
         if df.empty:
-            logging.error('DataFrame is empty')
-            raise ValueError('DataFrame is empty')
-
-        # Filter the dataframe based on the knowledge type
-        filtered_df = df[df['knowledge_type'] == knowledge_type]
-
-        # Check if there are any filtered documents
-        if filtered_df.empty:
-            logging.warning(f'No documents found with knowledge type {knowledge_type}')
+            logger.warning(f'No documents found with knowledge type {knowledge_type}')
             raise ValueError(f'No documents found with knowledge type {knowledge_type}')
 
         # Save the filtered dataframe to a CSV and XLSX file
-        filtered_df.to_csv(f'results/knowledge_type/docs_list_knowledge_type_{knowledge_type}.csv', index=False)
-        filtered_df.to_excel(f'results/knowledge_type/docs_list_knowledge_type_{knowledge_type}.xlsx', index=False)
+        df.to_csv(f'results/knowledge_type/docs_list_knowledge_type_{knowledge_type}.csv', index=False)
+        df.to_excel(f'results/knowledge_type/docs_list_knowledge_type_{knowledge_type}.xlsx', index=False)
 
         # Notify the user
-        print(f"Filtered dataframe saved to 'doc_list_knowledge_type_{knowledge_type}.csv' and 'docs_list_knowledge_type_{knowledge_type}.xlsx'")
+        print(f"Filtered dataframe saved to 'docs_list_knowledge_type_{knowledge_type}.csv' and 'docs_list_knowledge_type_{knowledge_type}.xlsx'")
 
     def __del__(self):
-        self.conn.close()
+        self.db.engine.dispose()
