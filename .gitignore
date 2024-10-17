@@ -2,7 +2,7 @@
 *.log
 
 # Ignore all files in the logs directory
-logs/*.log
+logs/*.*
 
 # Ignore Python-specific log files
 *.pyc

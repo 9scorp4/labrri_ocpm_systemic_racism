@@ -45,18 +45,12 @@ logger.add(
     diagnose=True
 )
 
-class TimeoutError(Exception):
-    pass
-
-def timeout_handler(signum, frame):
-    raise TimeoutError("Function call timed out")
-
 def process_single_document(doc):
     db = Database(DB_PATH)
     analysis = Analysis(db=DB_PATH, lang='bilingual')
     try:
         logger.debug(f"Processing document {doc[0]}")
-        result = analysis.analyze_docs(doc[1], method='lda', num_topics=20)
+        result = analysis.analyze_docs([doc[1]], method='lda', num_topics=10)
         logger.debug(f"Analysis result for document {doc[0]}: {result}")
         return (doc[0], result)
     except (AnalysisError, DatabaseError, VectorizationError) as e:
@@ -65,62 +59,50 @@ def process_single_document(doc):
         logger.error(f"Error processing document {doc[0]}: {str(e)}", exc_info=True)
     return None
 
-def populate_topics():
+def populate_topics(doc_ids='all'):
     logger.info("Starting topic population process")
     
     try:
         db = Database(DB_PATH)
         analysis = Analysis(db=DB_PATH, lang='bilingual')
-        
-        # Get all documents
-        docs = db.fetch_all()
+
+        if doc_ids == 'all':
+            docs = db.fetch_all()
+        elif isinstance(doc_ids, list):
+            docs = [db.fetch_single(doc_id) for doc_id in doc_ids]
+        elif isinstance(doc_ids, int):
+            docs = [db.fetch_single(doc_ids)]
+        else:
+            raise ValueError("Invalid doc_ids argument")
         
         if not docs:
-            logger.error("No documents found in the database.")
+            logger.info("No documents found in the database")
             return
         
-        # Get the last update time
-        last_update = db.get_last_update_time()
-        logger.info(f"Last update time: {last_update}")
-        
-        # Filter documents that need processing
-        docs_to_process = [doc for doc in docs if db.needs_processing(doc[0], last_update)]
-        
-        logger.info(f"Processing {len(docs_to_process)} documents")
-        
-        if docs_to_process:
-            try:
-                all_docs_content = [doc[1] for doc in docs_to_process]
-                results = analysis.analyze_docs(
-                    all_docs_content,
-                    method='lda',
-                    num_topics=100,
-                    coherence_threshold=-3.5,
-                    min_topics=15,
-                    max_topics=35
-                )
-                logger.info(f"Analyzed documents and generated {len(results)} topics")
+        logger.info(f"Processing {len(docs)} documents")
 
-                csv_file = analysis.save_topics_to_csv(results)
-                logger.info(f"Saved topics to {csv_file}")
+        results = []
+        for doc in docs:
+            if doc is not None and len(doc) >= 2:
+                result = process_single_document(doc)
+                if result:
+                    results.append(result)
+            else:
+                logger.warning(f"Skipping invalid document: {doc}")
 
-                updates = []
-                for doc, doc_content in docs_to_process:
-                    doc_topics = [topic for topic in results if any(word in doc_content for word in topic[1])]
-                    updates.append((doc, doc_topics))
-                
-                logger.info(f"Updating topics for {len(updates)} documents")
-                db.batch_update_document_topics(updates)
+        logger.info(f"Processed {len(results)} documents")
 
-                # Update last processing time
-                db.update_last_processing_time(docs_to_process[-1][0], results)
-                logger.info(f"Updated last processing time for document {docs_to_process[-1][0]}")
-            except Exception as e:
-                logger.error(f"Error processing documents: {str(e)}", exc_info=True)
-        else:
-            logger.info("No documents need processing")
+        # Clear existing topics for these documents
+        doc_ids = [doc[0] for doc in results]
+        db.clear_document_topics(doc_ids)
+
+        # Insert new topics
+        for doc_id, topics in results:
+            for topic_label, topic_words, coherence_score in topics:
+                topic_id = db.add_topic(topic_label, ','.join(topic_words), coherence_score)
+                db.add_document_topic(doc_id, topic_id, 1.0)
         
-        logger.info("Topic population process completed")
+        logger.info("Topic population process completed successfully")
     except Exception as e:
         logger.error(f"Error processing documents: {str(e)}", exc_info=True)
     finally:
@@ -128,7 +110,7 @@ def populate_topics():
 
 if __name__ == "__main__":
     try:
-        populate_topics()
+        populate_topics(doc_ids='all')
     except Exception as e:
         logger.error(f"Error processing documents: {str(e)}", exc_info=True)
     finally:

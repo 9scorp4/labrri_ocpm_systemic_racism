@@ -119,21 +119,37 @@ class Analysis:
         if not isinstance(docs, list):
             docs = list(docs)
 
+        # Check document content
+        non_empty_docs = [doc for doc in docs if doc and isinstance(doc, str) and doc.strip()]
+        if not non_empty_docs:
+            logger.error("All documents are empty or non-string")
+            return None
+        
+        # Print some stats about the documents
+        doc_lengths = [len(doc.split()) for doc in non_empty_docs]
+        logger.debug(f"Document length stats: min={min(doc_lengths)}, max={max(doc_lengths)}, avg={np.mean(doc_lengths):.2f}, median={np.median(doc_lengths):.2f}")
+
         if not self.vectorizer:
-            self._initialize_vectorizer(docs)
+            self._initialize_vectorizer(non_empty_docs)
 
         try:
-            if all(isinstance(doc, int) for doc in docs):
-                raise ValueError("All documents appear to be integers. Expected text content.")
-            
-            docs = [str(doc) if not isinstance(doc, str) else doc for doc in docs]
+            tfidf_matrix = self.vectorizer.fit_transform(non_empty_docs)
+            logger.debug(f"Vectorized {tfidf_matrix.shape[0]} documents with {tfidf_matrix.shape[1]} features")
 
-            tfidf_matrix = self.vectorizer.fit_transform(docs)
-            logger.debug(f"Vectorized {tfidf_matrix.shape[0]} doucments with {tfidf_matrix.shape[1]} features")
+            # Print top 10 most common words
+            feature_names = self.vectorizer.get_feature_names_out()
+            if len(feature_names) > 0:
+                word_freq = np.asarray(tfidf_matrix.sum(axis=0)).ravel()
+                top_words = [feature_names[i] for i in word_freq.argsort()[-10:][::-1]]
+                logger.debug(f"Top 10 most common words: {', '.join(top_words)}")
+            else:
+                logger.warning("No features extracted during vectorization")
 
             return tfidf_matrix
-        except Exception as e:
+        except ValueError as e:
             logger.error(f"Error vectorizing documents: {str(e)}")
+            logger.debug(f"Vocabulary sixe: {len(self.vectorizer.vocabulary_)}")
+            logger.error(f"Stopswords: {self.vectorizer.stop_words_}")
             raise VectorizationError("Error vectorizing documents", error=e)
 
     def _label_topics(self, topics, docs):

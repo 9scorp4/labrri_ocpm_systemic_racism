@@ -113,7 +113,7 @@ class Database:
             query = session.query(Document).options(joinedload(Document.content))
             if lang:
                 query = query.filter(Document.language == lang)
-            results = [(doc.id, doc.content.content) for doc in query.all()]
+            results = [(doc.id, doc.content.content) for doc in query.all() if doc.content]
             logger.info(f"Fetched {len(results)} documents from the database.")
             if not results:
                 logger.warning("No documents found in the database.")
@@ -207,14 +207,13 @@ class Database:
         with self.session_scope() as session:
             topic = Topic(label=label, words=words, coherence_score=coherence_score)
             session.add(topic)
-            session.commit()
+            session.flush()
             return topic.id
     
     def add_document_topic(self, doc_id, topic_id, relevance_score):
         with self.session_scope() as session:
             doc_topic = DocumentTopic(doc_id=doc_id, topic_id=topic_id, relevance_score=relevance_score)
             session.add(doc_topic)
-            session.commit()
     
     def get_document_topics(self, doc_id):
         with self.session_scope() as session:
@@ -272,6 +271,11 @@ class Database:
                 logger.warning(f"Document with id {doc_id} not found in the database.")
             
             logger.info(f"Updated topics for document {doc_id}.")
+        
+    def clear_document_topics(self, doc_ids):
+        with self.session_scope() as session:
+            session.query(DocumentTopic).filter(DocumentTopic.doc_id.in_(doc_ids)).delete(synchronize_session=False)
+            logger.info(f"Cleared existing topics for {len(doc_ids)} documents.")
 
     def __del__(self):
         if hasattr(self, 'engine'):
