@@ -42,3 +42,7 @@ data/word2vec-google-news-300.model.vectors.npy
 
 # Ignore environment variables
 .env
+
+# Ignore conda files
+.conda/
+environment.yml

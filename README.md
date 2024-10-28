@@ -8,8 +8,10 @@ Welcome to Projet "OCPM: Racisme systémique", by Nicolas Arias Garcia (9scorp4)
 
 - [About](#about)
 - [Features](#features)
+- [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Data Processing Pipelines](#data-processing-pipelines)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -19,43 +21,90 @@ Welcome to Projet "OCPM: Racisme systémique", by Nicolas Arias Garcia (9scorp4)
 
 This repository is the result of the author's master's degree research on municipal knowledge concerning systemic discriminations in Montreal. It contains a series of scripts and tools used to process and analyze data from the Office de Consultation Publique de Montréal's Commission on Systemic Racism and Discrimination.
 
-The 'data' folder contains raw, pre-selected data (PDF documents from the Commission), the database to store the processed data, the list of PDF files to retrieve content from (pdf_list.csv and pdf_list.xlsx) and the database schema (db_schema.pdf).
-
-The 'scripts' folder contains all scripts used for general document and data operations. The scripts at the root folder execute their respective pipeline.
-
-Results from all pipelines must be stored in the 'results' folder. For debugging, consult the 'logs' folder.
-
 ## Features
 
-- Database creation and population.
-- PDF Text processing.
-- OCR Recognition.
-- Word Frequency Analysis.
-- Language Distribution Analysis.
-- Topic Analysis By Language (IN DEVELOPMENT).
-- Sentiment Analysis (IN DEVELOPMENT).
+- Database creation and management using PostgreSQL
+- PDF text extraction and processing
+- OCR (Optimal Character Recognition) for image-based PDFs
+- Word frequency analysis
+- Language distribution analysis
+- Knowledge type analysis
+- Topic analysis
+- Sentiment analysis
+- Multilingual support (French and English)
+
+## Project Structure
+
+```
+.
+├── data                    # Raw data and database files
+├── documentation           # Project documentation
+├── logs                    # Log files
+├── results                 # Analysis results
+├── scripts                 # Main scripts for data processing and analysis
+│   ├── topic_analysis      # Scripts specific to topic analysis
+├── static                  # Static files for web interface (if applicable)
+├── CONTRIBUTING.md         # Contribution guidelines
+├── LICENSE                 # Project license
+├── README.md               # This file
+├── api.py                  # API for the project (if applicable)
+├── environment.yml         # Conda environment file
+├── exceptions.py           # Custom exception classes
+├── *.ipynb                 # Jupyter notebooks for various analyses
+├── populate_topics.py      # Script to populate topics in the database
+├── requirements.txt        # Python dependencies
+└── update_database.py      # Script to update the database
+```
 
 ## Installation
 
-Just download it as a ZIP file, extract and explore with your preferred IDE (Maybe we can improve this?)
+1. Clone the repository
+```
+git clone https://github.com/9scorp4/labrri_ocpm_systemic_racism.git
+cd labrri_ocpm_systemic_racism
+```
+2. Set up a PostgreSQL database and update the connection details in `scripts/database.py`
+3. Create a virtual environment and install dependencies
+```
+python -m venv venv
+source venv/bin/activate    # On Windows, use `venv\Scripts\activate`
+pip install -r requirements.txt
+```
+OR
+```
+conda create -n labrri_ocpm_systemic_racism python=3.11
+conda activate labrri_ocpm_systemic_racism
+pip install -r requirements.txt
+```
+4. Set up environment variables for database connection
+```
+export DB_USER=your_username
+export DB_PASSWORD=your_password
+```
 
 ## Usage
 
-This repository is composed of seven pipelines, which are:
+1. Populate or update the database
+```
+python update_database.py
+```
+2. Interact with specific analysis pipelines using their respective Jupyter notebooks
 
-- 'update_database.py' pipeline: Populate database using fetched data.
-- 'general_analysis.ipynb' pipeline: Perform a general data analysis.
-- 'word_frequency.ipynb' pipeline: Analyze by word frequency.
-- 'language_distribution.ipynb' pipeline: Analyze by language distribution.
-- 'knowledge_type.ipynb' pipeline: Analyze by knowledge types.
-- 'topic_analysis.ipynb' pipeline: Tokenize text by language and compared analysis by topics.
-- 'sentiment_analysis.ipynb' pipeline: Analyze by sentiment level.
+## Data Processing Pipelines
 
-Please read the [pipeline blueprints](documentation/pipelines.md) for more details on how to use each pipeline.
+1. `update_database.py`: Populate or update the database
+2. `general_analysis_pipeline_dashboard.py`: Perform a general data analysis
+3. `word_frequency_pipeline_dashboard.py`: Analyze by word frequency
+4. `language_distribution.ipynb`: Analyze by language distribution
+5. `knowledge_type.ipynb`: Analyze by knowledge types
+6. `topic_analysis.ipynb`: Tokenize text by language and compare analysis by topics
+7. `sentiment_analysis.ipynb`: Analyze by sentiment level
+
+For more details on each pipeline, refer to the [pipeline blueprints](https://github.com/9scorp4/labrri_ocpm_systemic_racism/tree/main/documentation/pipelines.md).
 
 ## Contributing
 
-This repository is open for contributions. Please read the [contribution guidelines](CONTRIBUTING.md) for more information.
+We welcome contributions for this project. Please read the [contribution guidelines](CONTRIBUTING.md) for more information on how to get started.
 
 ## License
 
@@ -87,13 +136,13 @@ I want to thank my colleagues at the Laboratoire de recherche en relations inter
 * Roxane Archambault
 * Fritz Gerald Louis
 
-Special thanks to the contributors to this repository as well:
-* (ADD CONTRIBUTORS)
+Special thanks to the contributors to this repository as well.
 
 ## Contact
 
 ### Nicolas Arias Garcia
 - Email: ariasg.nicolas@gmail.com  •  nicolas.arias.garcia@umontreal.ca
-- Web portfolio: IN CONSTRUCTION
 - GitHub: [9scorp4](https://github.com/9scorp4)
 - LinkedIn: [nicag](https://www.linkedin.com/in/nicag/)
+
+For any questions or feedback, please open an issue on this repository or contact the maintainers directly.
