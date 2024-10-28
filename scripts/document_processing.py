@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import csv
 from loguru import logger
@@ -20,7 +21,7 @@ class ProcessDocuments:
         if min_concatenated_length is None:
             raise ValueError("min_concatenated_length cannot be None")
 
-        self.db = Database(r"postgresql://postgres:nicar941105@localhost:5432/labrri_ocpm_systemic_racism")
+        self.db = Database(f"postgresql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@localhost:5432/labrri_ocpm_systemic_racism")
         self.pdf_list_path = Path(pdf_list_path)
         self.min_content_length = min_content_length
         self.min_concatenated_length = min_concatenated_length
