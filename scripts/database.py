@@ -1,8 +1,9 @@
+import os
 from loguru import logger
 from pathlib import Path
-from sqlalchemy import create_engine, text, func
+from sqlalchemy import create_engine, text, func, select, join
 from sqlalchemy.pool import QueuePool
-from sqlalchemy.orm import sessionmaker, joinedload
+from sqlalchemy.orm import sessionmaker, joinedload, aliased
 from sqlalchemy.exc import SQLAlchemyError
 from tenacity import retry, stop_after_attempt, wait_exponential
 import pandas as pd
@@ -14,23 +15,59 @@ from datetime import datetime
 from .models import Base, Document, Content, DatabaseUpdate, DocumentTopic, Topic
 
 class Database:
-    def __init__(self, db_url):
+    def __init__(self, db_url=None):
+        """Initialize database connection with PostgreSQL.
+        
+        Args:
+            db_url (str, optional): Database URL. If not provided, constructs from environment variables.
+        """
         if not db_url:
-            raise ValueError("db_path must be a non-empty string")
+            # Construct database URL from environment variables
+            db_user = os.getenv('DB_USER')
+            db_password = os.getenv('DB_PASSWORD')
+            db_host = os.getenv('DB_HOST', 'localhost')
+            db_port = os.getenv('DB_PORT', '5432')
+            db_name = os.getenv('DB_NAME', 'labrri_ocpm_systemic_racism')
+            
+            if not all([db_user, db_password]):
+                raise ValueError("Database credentials must be provided in environment variables")
+            
+            db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
         try:
-            self.engine = create_engine(db_url,
-                                       poolclass=QueuePool,
-                                       pool_size=20,
-                                       max_overflow=30,
-                                       pool_timeout=60)
+            # Configure PostgreSQL-specific engine parameters
+            self.engine = create_engine(
+                db_url,
+                poolclass=QueuePool,
+                pool_size=20,
+                max_overflow=30,
+                pool_timeout=60,
+                pool_pre_ping=True,  # Enable connection health checks
+                connect_args={
+                    "keepalives": 1,
+                    "keepalives_idle": 30,
+                    "keepalives_interval": 10,
+                    "keepalives_count": 5
+                }
+            )
             self.Session = sessionmaker(bind=self.engine)
-            Base.metadata.create_all(self.engine)
-            self.Document = Document
-            self.Content = Content
-            logger.info("Database connection successful.")
+            logger.info("PostgreSQL database connection successful")
+            
+            # Test the connection
+            self.test_connection()
+            
         except SQLAlchemyError as e:
-            logger.error(f"Database connection failed. Error: {e}")
+            logger.error(f"Database connection failed: {str(e)}")
+            raise
+
+    def test_connection(self):
+        """Test the database connection by executing a simple query."""
+        try:
+            with self.session_scope() as session:
+                session.execute(text("SELECT 1"))
+            logger.info("Database connection test successful")
+        except SQLAlchemyError as e:
+            logger.error(f"Database connection test failed: {str(e)}")
             raise
 
     @contextmanager
@@ -40,7 +77,8 @@ class Database:
         try:
             yield session
             session.commit()
-        except:
+        except Exception as e:
+            logger.error(f"Session error: {str(e)}")
             session.rollback()
             raise
         finally:
@@ -109,6 +147,14 @@ class Database:
             return [doc.filepath for doc in query.all()]
 
     def fetch_all(self, lang=None):
+        """Fetch all documents from the database.
+
+        Args:
+            lang (str, optional): Filter documents by language. Defaults to None.
+
+        Returns:
+            list: List of tuples containing the document id and content.
+        """
         with self.session_scope() as session:
             query = session.query(Document).options(joinedload(Document.content))
             if lang:
@@ -118,8 +164,59 @@ class Database:
             if not results:
                 logger.warning("No documents found in the database.")
             return results
+    
+    def fetch_all_docs_with_metadata(self):
+        doc = aliased(Document)
+        content = aliased(Content)
+
+        query = (
+            select(
+                doc.id,
+                doc.filepath,
+                doc.organization,
+                doc.document_type,
+                doc.category,
+                doc.clientele,
+                doc.knowledge_type,
+                doc.language,
+                content.content,
+            )
+            .select_from(
+                join(doc, content, doc.id == content.doc_id)
+            )
+            .order_by(doc.id)
+        )
+
+        with self.session_scope() as session:
+            result = session.execute(query).all()
+
+        documents = {}
+        for row in result:
+            for row in result:
+                doc_id = row.id
+                if doc_id not in documents:
+                    documents[doc_id] = {
+                        'id': doc_id,
+                        'filepath': row.filepath,
+                        'organization': row.organization,
+                        'document_type': row.document_type,
+                        'category': row.category,
+                        'clientele': row.clientele,
+                        'knowledge_type': row.knowledge_type,
+                        'language': row.language,
+                        'content': row.content
+                    }
+        return list(documents.values())
 
     def fetch_single(self, doc_id):
+        """Fetch a single document from the database.
+
+        Args:
+            doc_id (int or tuple): The document id to fetch. If a tuple is provided, the first element of the tuple will be used.
+
+        Returns:
+            tuple or None: A tuple containing the document id and content, or None if the document is not found.
+        """
         with self.session_scope() as session:
             logger.debug(f"Fetching document with id {doc_id}")
             if isinstance(doc_id, tuple):
@@ -271,13 +368,34 @@ class Database:
                 logger.warning(f"Document with id {doc_id} not found in the database.")
             
             logger.info(f"Updated topics for document {doc_id}.")
-        
+
+    def get_document_topics(self, doc_id):
+        with self.session_scope() as session:
+            topics = session.query(Topic).join(DocumentTopic).filter(DocumentTopic.doc_id == doc_id).all()
+            # Detach the topics from the session
+            return [
+                {
+                    'id': topic.id,
+                    'label': topic.label,
+                    'words': topic.words,
+                    'coherence_score': topic.coherence_score
+                } for topic in topics
+            ]
+
     def clear_document_topics(self, doc_ids):
         with self.session_scope() as session:
             session.query(DocumentTopic).filter(DocumentTopic.doc_id.in_(doc_ids)).delete(synchronize_session=False)
             logger.info(f"Cleared existing topics for {len(doc_ids)} documents.")
 
+    def get_unique_categories(self):
+        query = "SELECT DISTINCT category FROM documents ORDER BY category"
+        with self.engine.connect() as connection:
+            result = connection.execute(text(query))
+            categories = [row[0] for row in result]
+        return categories
+
     def __del__(self):
+        """Cleanup database resources."""
         if hasattr(self, 'engine'):
             self.engine.dispose()
-        logger.info("Database connection closed.")
+            logger.info("Database connection closed")

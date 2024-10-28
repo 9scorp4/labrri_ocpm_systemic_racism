@@ -1,3 +1,4 @@
+import os
 from loguru import logger
 import pandas as pd
 import nltk
@@ -8,6 +9,7 @@ from collections import Counter
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scripts.database import Database
+import seaborn as sns
 
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
@@ -23,18 +25,8 @@ class WordFrequencyChart:
         self.en_stopwords = set(stopwords.words('english'))
         self.fr_stopwords = set(stopwords.words('french'))
 
-        self.custom_stopwords = {
-            'entre', 'ainsi', 'leurs', 'beaucoup', 'souvent', 'dire', 'plus', 'cette', 'fait', 'faire', 'donc',
-            'aussi', 'parce', 'peut', 'avoir', 'autres', 'sténo', 'tout', 'alors', 'vraiment', 'bien', 'être',
-            'quand', 'puis', 'très', 'faut', 'comme', 'ariane', 'émond', 'a', 'plus', 'comme', 'cette', 'ça', 'fait',
-            'être', 'faire', 'mme', 'donc', 'aussi', 'autres', 'si', 'entre', 'bien', 'tout', 'g', 'peut', 'leurs',
-            'o', 'gh', 'avoir', 'non', 'the', 'de', 'la', 'et', 'des', 'le', 'les', 'l', 'may', 'would', 'also', 'see',
-            'one', 'http', 'à', 'du', 'like', 'coprésidente', 'well', 'non', 'think', 'see', 'xurukulasuriya', 'dexter',
-            'plus', 'aussi', 'très', 'get', 'mme', 'novembre', 'séance', 'sténo', 'mmm', 'commissaire', 'coprésidente',
-            'know', 'sarah', 'soirée', 'go', 'oui', 'holness', 'ça', 'émond', 'thierry', 'thuot', 'lindor', 'merci',
-            'would', 'balarama', 'ariane', 'like', 'lot', 'donc', 'fait', 'si', 'comme', 'judy', 'ouellet', 'one',
-            'years', 'parce', 'going', 'pinet', 'monsieur', 'avoir', 'dit'
-        }
+        with open(r'scripts\topic_analysis\stopwords.txt', 'r', encoding='utf-8') as f:
+            self.custom_stopwords = set(line.strip().lower() for line in f if line.strip())
 
         self.all_stopwords = self.en_stopwords.union(self.fr_stopwords, self.custom_stopwords)
 
@@ -76,76 +68,83 @@ class WordFrequencyChart:
         words, frequencies = zip(*most_common)
         words = [' '.join(word) for word in words]
 
-        plt.figure(figsize=(12, 6))
-        plt.bar(words, frequencies)
-        plt.title(f"Top {n} {ngram}-grams in {'category: ' + where if lang is None else 'language: ' + lang}")
-        plt.xlabel("Words")
-        plt.ylabel("Frequency")
-        plt.xticks(rotation=45, ha='right')
-        plt.tight_layout()
-        plt.savefig(f'results/word_frequency/top_{n}_{ngram}grams_{"category_" + where if lang is None else "lang_" + lang}.png')
-        plt.close()
-
         df_result = pd.DataFrame(most_common, columns=[f'{ngram}-gram', 'Frequency'])
         df_result[f'{ngram}-gram'] = df_result[f'{ngram}-gram'].apply(lambda x: ' '.join(x))
-        df_result.to_csv(f'results/word_frequency/top_{n}_{ngram}grams_{"category_" + where if lang is None else "lang_" + lang}.csv', index=False)
+
+        # Create a valid filename
+        filename = f"top_{n}_{ngram}grams_{'category_' + where if lang is None else 'lang_' + lang}.png"
+        save_path = os.path.join('results', 'word_frequency', filename)
+
+        # Use the plot_word_frequency function
+        self.plot_word_frequency(df_result.set_index(f'{ngram}-gram'), 
+                                 f"Top {n} {ngram}-grams in {'category: ' + where if lang is None else 'language: ' + lang}",
+                                 save_path=save_path)
+
+        df_result.to_csv(save_path.replace('.png', '.csv'), index=False)
 
         logger.info(f'Analysis complete for {"category: " + where if lang is None else "language: " + lang}')
         return df_result
 
-    def compare_categories(self, categories, n=20, ngram=1):
-        logger.info(f'Comparing top {n} {ngram}-grams across categories: {categories}')
-        results = {}
-        for category in categories:
-            results[category] = self.top_n_words(category, n, ngram)
-
-        plt.figure(figsize=(15, 8))
-        x = list(range(n))
-        width = 0.8 / len(categories)
+    @staticmethod
+    def plot_word_frequency(data, title, save_path=None):
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x='Frequency', y=data.index, data=data)
+        plt.title(title)
+        plt.xlabel('Frequency')
+        plt.ylabel('Words/N-grams')
         
-        for i, (category, df) in enumerate(results.items()):
-            if df is not None:
-                plt.bar([xi + i * width for xi in x], df['Frequency'], width, label=category)
-
-        plt.xlabel(f'{ngram}-grams')
-        plt.ylabel('Frequency')
-        plt.title(f'Top {n} {ngram}-grams Comparison Across Categories')
-        plt.legend()
-        plt.xticks([xi + width * (len(categories) - 1) / 2 for xi in x], 
-                   results[categories[0]][f'{ngram}-gram'] if results[categories[0]] is not None else [], 
-                   rotation=45, ha='right')
-        plt.tight_layout()
-        plt.savefig(f'results/word_frequency/category_comparison_{ngram}grams.png')
-        plt.close()
-
-        logger.info('Category comparison complete')
+        if save_path:
+            # Create the directory if it doesn't exist
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            plt.savefig(save_path, bbox_inches='tight')
+            plt.close()
+            logger.info(f"Plot saved to: {save_path}")
+        else:
+            plt.show()
 
     def compare_languages(self, n=20, ngram=1):
+        """Compare top n words across languages, return processed data."""
         logger.info(f'Comparing top {n} {ngram}-grams across languages')
         results = {}
-        for lang in ['fr', 'en']:
-            results[lang] = self.top_n_words(lang, n, ngram, lang=lang)
-
-        plt.figure(figsize=(15, 8))
-        x = list(range(n))
-        width = 0.35
         
-        for i, (lang, df) in enumerate(results.items()):
-            if df is not None:
-                plt.bar([xi + i * width for xi in x], df['Frequency'], width, label=lang)
+        for lang in ['fr', 'en']:
+            df_result = self.top_n_words(lang, n=n, ngram=ngram, lang=lang)
+            if df_result is not None:
+                # Always ensure we have the correct column names from top_n_words
+                df_result = df_result.rename(columns={
+                    f'{ngram}-gram': 'word',  # Standardize to 'word' column
+                    'Frequency': 'frequency'  # Standardize to lowercase
+                })
+                
+                results[lang] = {
+                    'words': df_result['word'].tolist(),
+                    'frequencies': df_result['frequency'].tolist()
+                }
+        
+        logger.debug(f"Compare languages results: {results}")  # Debug log
+        return results
 
-        plt.xlabel(f'{ngram}-grams')
-        plt.ylabel('Frequency')
-        plt.title(f'Top {n} {ngram}-grams Comparison Across Languages')
-        plt.legend()
-        plt.xticks([xi + width / 2 for xi in x], 
-                   results['fr'][f'{ngram}-gram'] if results['fr'] is not None else [], 
-                   rotation=45, ha='right')
-        plt.tight_layout()
-        plt.savefig(f'results/word_frequency/language_comparison_{ngram}grams.png')
-        plt.close()
-
-        logger.info('Language comparison complete')
+    def compare_categories(self, categories, n=20, ngram=1):
+        """Compare top n words across categories, return processed data."""
+        logger.info(f'Comparing top {n} {ngram}-grams across categories: {categories}')
+        results = {}
+        
+        for category in categories:
+            df_result = self.top_n_words(category, n=n, ngram=ngram)
+            if df_result is not None:
+                # Always ensure we have the correct column names from top_n_words
+                df_result = df_result.rename(columns={
+                    f'{ngram}-gram': 'word',  # Standardize to 'word' column
+                    'Frequency': 'frequency'  # Standardize to lowercase
+                })
+                
+                results[category] = {
+                    'words': df_result['word'].tolist(),
+                    'frequencies': df_result['frequency'].tolist()
+                }
+        
+        logger.debug(f"Compare categories results: {results}")  # Debug log
+        return results
 
     def tfidf_analysis(self, where, lang=None):
         logger.info(f'Performing TF-IDF analysis for {"category: " + where if lang is None else "language: " + lang}')
