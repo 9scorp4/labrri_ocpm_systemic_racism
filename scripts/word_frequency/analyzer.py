@@ -1,5 +1,3 @@
-# word_frequency.py - Analysis Logic
-import os
 from loguru import logger
 import pandas as pd
 from sqlalchemy import text
