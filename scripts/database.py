@@ -1,18 +1,22 @@
 import os
 from loguru import logger
+from typing import List, Optional, Tuple, Union, Any, Dict
+import asyncio
 from pathlib import Path
-from sqlalchemy import create_engine, text, func, select, join
+from sqlalchemy import create_engine, text, func, select, delete, join
 from sqlalchemy.pool import QueuePool
 from sqlalchemy.orm import sessionmaker, joinedload, aliased
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from tenacity import retry, stop_after_attempt, wait_exponential
 import pandas as pd
 from alembic import command
 from alembic.config import Config
-from contextlib import contextmanager
+from contextlib import contextmanager, asynccontextmanager
 from datetime import datetime
 
-from .models import Base, Document, Content, DatabaseUpdate, DocumentTopic, Topic
+from .models import Document, Content, DatabaseUpdate, DocumentTopic, Topic
+from .topic_analysis.query_validator import TopicQueryValidator
 
 class Database:
     def __init__(self, db_url=None):
@@ -50,8 +54,25 @@ class Database:
                     "keepalives_count": 5
                 }
             )
+
+            # Create database session
             self.Session = sessionmaker(bind=self.engine)
             logger.info("PostgreSQL database connection successful")
+
+            self.async_engine = create_async_engine(
+                db_url.replace("postgresql://", "postgresql+asyncpg://"),
+                pool_size=20,
+                max_overflow=30,
+                pool_timeout=60,
+                echo=False  # Set to True for debugging SQL
+            )
+
+            # Create async database session
+            self.AsyncSession = sessionmaker(
+                bind=self.async_engine,
+                class_=AsyncSession,
+                expire_on_commit=False
+            )
             
             # Test the connection
             self.test_connection()
@@ -83,6 +104,19 @@ class Database:
             raise
         finally:
             session.close()
+
+    @asynccontextmanager
+    async def async_session_scope(self):
+        """Provide an asynchronous transactional scope."""
+        session = self.AsyncSession()
+        try:
+            yield session
+            await session.commit()
+        except Exception as e:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
     def execute_with_retry(self, operation):
@@ -229,13 +263,36 @@ class Database:
                 logger.warning(f"Document {doc_id} not found in the database.")
                 return None
 
-    def df_from_query(self, query):
+    def df_from_query(self, query, params=None):
+        """
+        Execute a query and return results as a pandas DataFrame.
+        
+        Args:
+            query (str or SQLAlchemy Text): The SQL query to execute
+            params (dict, optional): Parameters for the query
+            
+        Returns:
+            pandas.DataFrame: Query results as a DataFrame
+            
+        Raises:
+            SQLAlchemyError: If there's an error executing the query
+        """
         try:
-            return pd.read_sql(query, self.engine)
-        except SQLAlchemyError as e:
-            logger.error(f"Error executing query: {e}")
-            raise
-
+            if params is None:
+                return pd.read_sql(query, self.engine)
+                
+            # If query is a string, convert it to SQLAlchemy text object
+            if isinstance(query, str):
+                from sqlalchemy import text
+                query = text(query)
+                
+            return pd.read_sql(query, self.engine, params=params)
+        except Exception as e:
+            logger.error(f"Error executing query: {str(e)}")
+            logger.debug(f"Query: {query}")
+            logger.debug(f"Parameters: {params}")
+            return pd.DataFrame()  # Return empty DataFrame instead of raising
+        
     def clear_previous_data(self):
         with self.session_scope() as session:
             session.query(Content).delete()
@@ -394,8 +451,115 @@ class Database:
             categories = [row[0] for row in result]
         return categories
 
+    async def fetch_all_async(self) -> List[Tuple[int, str]]:
+        """Fetch all documents asynchronously."""
+        try:
+            async with self.AsyncSession() as session:
+                # Create query using select
+                query = select(Document.id, Content.content).join(
+                    Content, Document.id == Content.doc_id
+                ).where(Content.content.isnot(None))
+
+                # Execute query
+                result = await session.execute(query)
+                
+                # Fetch all results
+                rows = await result.fetchall()
+
+                if not rows:
+                    logger.warning("No documents found in database")
+                    return []
+
+                # Process results
+                docs = []
+                for row in rows:
+                    try:
+                        # Access results using array indexing since row is a tuple
+                        doc_id, content = row[0], row[1]
+                        if content and isinstance(content, str) and content.strip():
+                            docs.append((doc_id, content))
+                    except Exception as e:
+                        logger.warning(f"Invalid document data: {row}, Error: {e}")
+                        continue
+
+                logger.info(f"Successfully fetched {len(docs)} documents")
+                return docs
+
+        except Exception as e:
+            logger.error(f"Error fetching documents: {e}")
+            return []
+
+    async def fetch_single_async(self, doc_id: int) -> Optional[Tuple[int, str]]:
+        """Fetch a single document asynchronously."""
+        try:
+            async with self.AsyncSession() as session:
+                query = select(Document.id, Content.content).join(
+                    Content, Document.id == Content.doc_id
+                ).where(
+                    Document.id == doc_id,
+                    Content.content.isnot(None)
+                )
+
+                result = await session.execute(query)
+                row = await result.first()
+
+                if not row:
+                    logger.debug(f"Document {doc_id} not found")
+                    return None
+
+                # Access results using array indexing
+                doc_id, content = row[0], row[1]
+                if not content or not isinstance(content, str) or not content.strip():
+                    logger.warning(f"Invalid content for document {doc_id}")
+                    return None
+
+                return (doc_id, content)
+
+        except Exception as e:
+            logger.error(f"Error fetching document {doc_id}: {e}")
+            return None
+
+    async def df_from_query_async(self, query: str, params: Optional[Dict] = None) -> pd.DataFrame:
+        """Execute a query and return results as DataFrame asynchronously."""
+        try:
+            async with self.AsyncSession() as session:
+                # Validate and prepare query
+                if isinstance(query, str):
+                    query = text(query)
+
+                result = await session.execute(query, params)
+                rows = await result.fetchall()
+                
+                if not rows:
+                    return pd.DataFrame()
+                    
+                return pd.DataFrame(rows, columns=result.keys())
+                
+        except Exception as e:
+            logger.error(f"Error executing async query: {e}")
+            return pd.DataFrame()
+
+    async def clear_document_topics_async(self, doc_ids):
+        """Clear document topics asynchronously."""
+        async with self.async_session_scope() as session:
+            await session.execute(
+                delete(DocumentTopic).where(DocumentTopic.doc_id.in_(doc_ids))
+            )
+
+    async def add_document_topic_async(self, doc_id, topic_id, relevance_score):
+        """Add document topic asynchronously."""
+        async with self.async_session_scope() as session:
+            doc_topic = DocumentTopic(
+                doc_id=doc_id,
+                topic_id=topic_id,
+                relevance_score=relevance_score
+            )
+            session.add(doc_topic)
+
     def __del__(self):
         """Cleanup database resources."""
         if hasattr(self, 'engine'):
             self.engine.dispose()
-            logger.info("Database connection closed")
+        if hasattr(self, 'async_engine'):
+            asyncio.run(self.async_engine.dispose())
+        logger.info("Database connections closed")

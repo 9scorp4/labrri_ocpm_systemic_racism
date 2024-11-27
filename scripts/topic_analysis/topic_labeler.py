@@ -1,308 +1,350 @@
+"""Topic labeling functionality with async support."""
+import os
 from loguru import logger
-from collections import Counter
-from itertools import chain
-import spacy
-import nltk
-from nltk.corpus import wordnet, stopwords
-from nltk.util import ngrams
+from typing import List, Dict, Optional, Set, Any
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-
-nltk.download('wordnet', quiet=True)
-nltk.download('stopwords', quiet=True)
+from gensim.models import Word2Vec
+import spacy
+from collections import Counter
+from pathlib import Path
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+import aiofiles
 
 class TopicLabeler:
-    def __init__(self, vectorizer, domain_terms, lang):
+    """Handles topic labeling with domain awareness and async support."""
+    
+    def __init__(self, vectorizer: Any, domain_terms_dir: List[str], lang: str):
+        """Initialize topic labeler.
+        
+        Args:
+            vectorizer: Fitted TF-IDF vectorizer
+            domain_terms: List of domain-specific terms
+            lang: Language ('en', 'fr', or 'bilingual')
+        """
         self.vectorizer = vectorizer
-        self.domain_terms = domain_terms
         self.lang = lang
-        self.stopwords = set(stopwords.words('english') + stopwords.words('french'))
+        self.domain_terms_dir = domain_terms_dir or Path('scripts/topic_analysis/domain_terms')
+        self._executor = ThreadPoolExecutor()
+        self._initialization_lock = asyncio.Lock()
+        self._initialized = False
+        self._cache = {}
+        self._cache_lock = asyncio.Lock()
+        
+        # Initialize domain terms storage
+        self.domain_terms: Dict[str, Set[str]] = {
+            'en': set(),
+            'fr': set()
+        }
+        self.nlp = None
 
-        if lang == 'fr':
-            self.nlp = spacy.load('fr_core_news_md')
-        elif lang == 'en':
-            self.nlp = spacy.load('en_core_web_md')
-        else:
-            self.nlp = {
-                'fr': spacy.load('fr_core_news_md'),
-                'en': spacy.load('en_core_web_md')
-            }
-
-    def initialize_related_terms(self, doc_texts):
-        """
-        Initialize the term similarity matrix and feature names.
-
-        Args:
-            doc_texts (list): List of document texts.
-        """
-        if not hasattr(self.vectorizer, 'vocabulary_'):
-            self.vectorizer.fit(doc_texts)
-
-        self.feature_names = self.vectorizer.get_feature_names_out()
-        tfidf_matrix = self.vectorizer.transform(doc_texts)
-
-        # Calculate the cosine similarity between all terms
-        term_similarity = cosine_similarity(tfidf_matrix.T)
-
-        # Store the term similarity matrix
-        self.term_similarity_matrix = term_similarity
-
-    def label_topics(self, topics, doc_texts):
-        """
-        Label the topics by finding representative words in the documents.
-
-        Args:
-            topics (list): List of topics, where each topic is a list of words.
-            doc_texts (list): List of document texts.
-
+    async def _load_domain_terms(self) -> Dict[str, Set[str]]:
+        """Load language-specific domain terms.
+        
         Returns:
-            list: List of labeled topics, where each topic is a tuple of (label, topic words).
+            Dictionary mapping language codes to sets of domain terms
         """
-        labeled_topics = []
-        all_topic_words = set(word for topic in topics for word in (topic if isinstance(topic, (list, tuple)) else [str(topic)]))
-
-        for i, topic in enumerate(topics):
-            if isinstance(topic, (list, tuple)):
-                words = topic
-            elif isinstance(topic, int):
-                words = [str(topic)]
-            else:
-                words = list(topic)
-
-            unique_words = [word for word in words if word not in self.stopwords and sum(word in t for t in topics) == 1]
-            common_words = [word for word in words if word not in unique_words and word not in self.stopwords]
-
-            if unique_words:
-                main_theme = unique_words[0]
-            elif common_words:
-                main_theme = common_words[0]
-            else:
-                main_theme = words[0]
-
-            additional_words = unique_words[1:3] if len(unique_words) > 1 else common_words[:2]
-            label = f"Topic {i+1}: {main_theme.capitalize()}"
-            if additional_words:
-                label += f" ({', '.join(additional_words)})"
+        try:
+            terms = {'en': set(), 'fr': set()}
             
-            labeled_topics.append((label, words))
-        
-        return labeled_topics
+            # Ensure directory exists
+            if not self.domain_terms_dir.exists():
+                logger.warning(f"Domain terms directory not found at {self.domain_terms_dir}")
+                return terms
 
-    def _generate_topic_label(self, topic_words, doc_texts, num_words=5, used_terms=None, topic_index=0, all_topics=None):
-        if used_terms is None:
-            used_terms = set()
+            # Load terms for each language
+            for lang in ['en', 'fr']:
+                if self.lang != 'bilingual' and self.lang != lang:
+                    continue
+                    
+                file_path = self.domain_terms_dir / f"domain_terms_{lang}.txt"
+                if not file_path.exists():
+                    logger.warning(f"Domain terms file not found: {file_path}")
+                    continue
 
-        # Get top n-grams
-        top_ngrams = self._get_top_ngrams(topic_words, num_words * 3)
-        
-        # Use TF-IDF scores to get important words from the documents
-        tfidf_matrix = self.vectorizer.fit_transform(doc_texts)
-        feature_names = self.vectorizer.get_feature_names_out()
-        tfidf_scores = tfidf_matrix.sum(axis=0).A1
-        important_words = [feature_names[i] for i in tfidf_scores.argsort()[::-1][:num_words * 3]]
-        
-        # Combine and prioritize domain-specific terms
-        label_candidates = list(set(top_ngrams + important_words))
-        domain_specific = [word for word in label_candidates
-                            if any(term.lower() in word.lower() for term in self.domain_terms)]
-        if not domain_specific:
-            domain_specific = label_candidates
+                try:
+                    async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                        content = await f.read()
+                        # Process lines, skip comments and empty lines
+                        terms[lang] = {
+                            line.strip().lower()
+                            for line in content.splitlines()
+                            if line.strip() and not line.startswith('#')
+                        }
+                        logger.info(f"Loaded {len(terms[lang])} {lang} domain terms from {file_path}")
+                except Exception as e:
+                    logger.error(f"Error loading domain terms for {lang}: {e}")
 
-        # Calculate term frequencies
-        term_freq = Counter(domain_specific)
-        if all_topics:
-            other_topics = [t for i, t in enumerate(all_topics) if i != topic_index]
-            other_topics_words = set(chain(*other_topics))
-            uniqueness_score = {term: term_freq[term] / (1 + sum(term in topic for topic in other_topics_words))
-                                for term in domain_specific}
-            sorted_terms = sorted(uniqueness_score.items(), key=lambda x: x[1], reverse=True)
-        else:
-            sorted_terms = sorted(term_freq.items(), key=lambda x: x[1], reverse=True)
+            # Validate loaded terms
+            total_terms = sum(len(terms[lang]) for lang in terms)
+            if total_terms == 0:
+                logger.warning("No domain terms loaded")
+            else:
+                logger.info(
+                    f"Loaded domain terms - "
+                    f"EN: {len(terms['en'])}, FR: {len(terms['fr'])}"
+                )
 
-        # Generate label
-        key_terms = []
-        other_terms = []
+            return terms
 
-        for term, score in sorted_terms:
-            lower_term = term.lower()
-            if len(key_terms) < 2 and lower_term not in used_terms and lower_term in self.domain_terms:
-                key_terms.append(term)
-                used_terms.add(lower_term)
-                related_terms = self._find_related_terms(term)
-                other_terms.extend([t for t in related_terms if t.lower() not in used_terms])
-                used_terms.update([t.lower() for t in related_terms])
-            elif len(other_terms) < num_words - 2 and lower_term not in used_terms:
-                other_terms.append(term)
-                used_terms.add(lower_term)
+        except Exception as e:
+            logger.error(f"Error loading domain terms: {e}")
+            return {'en': set(), 'fr': set()}
 
-            if len(key_terms) + len(other_terms) >= num_words:
-                break
+    async def initialize(self):
+        """Initialize components asynchronously."""
+        if self._initialized:
+            return
             
-        while len(key_terms) + len(other_terms) < min(num_words, len(sorted_terms)):
-            for term, _ in sorted_terms:
-                if term not in key_terms and term not in other_terms:
-                    if len(key_terms) > 2:
-                        key_terms.append(term)
-                    else:
-                        other_terms.append(term)
-                    break
-        
-        if key_terms:
-            main_theme = ' '.join(key_terms).capitalize()
-            if other_terms:
-                sub_themes = ', '.join(other_terms)
-                label = f"Topic {topic_index + 1}: {main_theme} - {sub_themes}"
+        async with self._initialization_lock:
+            if self._initialized:
+                return
+                
+            try:
+                # Load domain terms
+                self.domain_terms = await self._load_domain_terms()
+                
+                # Initialize NLP components
+                await self._initialize_nlp()
+                
+                self._initialized = True
+                logger.info(f"Topic labeler initialized with domain terms")
+                
+            except Exception as e:
+                logger.error(f"Error initializing topic labeler: {e}")
+                raise
+
+    async def _initialize_nlp(self):
+        """Initialize NLP components asynchronously."""
+        try:
+            if self.lang == 'bilingual':
+                self.nlp = {
+                    'fr': await self._load_spacy_model('fr_core_news_md'),
+                    'en': await self._load_spacy_model('en_core_web_md')
+                }
             else:
-                label = f"Topic {topic_index + 1}: {main_theme}"
-        else:
-            label = f"Topic {topic_index + 1}: " + ', '.join(other_terms) if other_terms else f"Miscellaneous topic {topic_index + 1}"
+                model = 'fr_core_news_md' if self.lang == 'fr' else 'en_core_web_md'
+                self.nlp = await self._load_spacy_model(model)
+                
+            logger.info(f"Initialized NLP models for {self.lang}")
+            
+        except Exception as e:
+            logger.error(f"Error initializing NLP components: {e}")
+            raise
 
-        return label, used_terms
+    async def _load_spacy_model(self, model_name: str) -> Any:
+        """Load spaCy model asynchronously."""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(self._executor, spacy.load, model_name)
 
-    def generate_label(self, top_words, docs):
-        # Use NLP techniques to generate a more meaningful label
-        combined_words = ' '.join(top_words)
-        
-        if isinstance(self.nlp, dict):
-            en_doc = self.nlp['en'](combined_words)
-            fr_doc = self.nlp['fr'](combined_words)
-
-            if len(en_doc.ents) + len(list(en_doc.noun_chunks)) > len(fr_doc.ents) + len(list(fr_doc.noun_chunks)):
-                doc = en_doc
-                lang = 'en'
-            else:
-                doc = fr_doc
-                lang = 'fr'
-        else:
-            doc = self.nlp(combined_words)
-            lang = self.lang
-        
-        noun_phrases = [chunk.text for chunk in doc.noun_chunks]
-
-        if noun_phrases:
-            label = noun_phrases[0].capitalize()
-        else:
-            label = top_words[0].capitalize()
-
-        domain_context = next((term for term in self.domain_terms if term.lower() in combined_words.lower()), '')
-
-        if domain_context:
-            label += f" ({domain_context})"
-
-        if isinstance(self.nlp, dict):
-            label += f" [{lang.upper()}]"
-
-        return label
-
-    def _calculate_term_score(self, term, topic_freq, all_topics_freq):
-        tf = topic_freq[term]
-        df = sum(1 for topic in all_topics_freq if term in topic)
-        tfidf = tf * (np.log(len(all_topics_freq) / df) + 1)
-        domain_relevance = 2 if term in self.domain_terms else 1
-        return tfidf * domain_relevance
-
-    def _get_top_ngrams(self, topic_words, n=5):
-        preprocessed_words = self._preprocess_for_labeling(topic_words)
-        if not preprocessed_words:
-            return []
-        
-        unigrams = preprocessed_words
-        bigrams = [' '.join(gram) for gram in ngrams(preprocessed_words, 2)]
-        trigrams = [' '.join(gram) for gram in ngrams(preprocessed_words, 3)]
-
-        all_ngrams = unigrams + bigrams + trigrams
-        ngram_freq = Counter(all_ngrams)
-
-        return [ngram for ngram, _ in ngram_freq.most_common(n)]
-
-    def _find_related_terms(self, term, n=5):
-        """
-        Find related terms to the given term in the corpus.
-
-        Args:
-            term (str): The term to find related terms for.
-            n (int): The number of related terms to find (default is 5).
-
-        Returns:
-            list: A list of related terms to the given term. If the term is not found in the corpus, an empty list is returned.
-        """
-        if self.term_similarity_matrix is None:
-            logger.warning("Related term have not been initialized. Call initialize_related_terms() first.")
-            return []
+    async def generate_label(self, topic_words: List[str]) -> str:
+        """Generate descriptive label for topic using domain terms."""
+        if not self._initialized:
+            await self.initialize()
 
         try:
-            # Find the index of the given term in the feature names
-            term_index = np.where(self.feature_names == term)[0][0]
-
-            # Get the similarity scores of the given term with all other terms in the corpus
-            term_similarities = self.term_similarity_matrix[term_index]
-
-            # Sort the indices of the similarity scores in descending order
-            similar_indices = term_similarities.argsort()[::-1]
-
-            # Get the top n related terms (excluding the given term itself)
-            similar_terms = [self.feature_names[i] for i in similar_indices[1:n+1]]
-            return similar_terms
-        except IndexError:
-            logger.warning(f"Term '{term}' not found in the corpus.")
-            return []
-        
-    def _ensure_label_diversity(self, labeled_topics):
-        logger.info(f"Ensuring label diversity for {len(labeled_topics)} topics...")
-        
-        # Step 1: Extract main themes from labels
-        main_themes = [label.split(':')[1].strip().split('-')[0].strip() for label, _ in labeled_topics]
-
-        # Step 2: Check for duplicates
-        if len(set(main_themes)) == len(main_themes):
-            logger.info("Labels are already diverse.")
-            return labeled_topics
-        
-        # Step 3: Initialize NLTK's WordNet
-
-        # Step 4: Function to get synonyms
-        def get_synonyms(word):
-            synonyms = set()
-            for syn in wordnet.synsets(word):
-                for lemma in syn.lemmas():
-                    synonyms.add(lemma.name().replace('_', ' '))
-            return list(synonyms)
-        
-        # Step 5: Generate alternative labels
-        diverse_labels = []
-        used_words = set()
-
-        for i, (label, topic_words) in enumerate(labeled_topics):
-            main_theme = main_themes[1]
-            words = main_theme.split()
-
-            # Try to fin alternative words for the main theme
-            alternative_words = []
-            for word in words:
-                for word in used_words:
-                    synonyms = get_synonyms(word)
-                    alternative = next((s for s in synonyms if s not in used_words), word)
-                else:
-                    alternative = word
-                alternative_words.append(alternative)
-                used_words.add(alternative)
+            # Detect language
+            detected_lang = await self._detect_language(' '.join(topic_words))
             
-            new_main_theme = ' '.join(alternative_words)
-            new_label = f"Topic {i+1}: {new_main_theme} - {', '.join(topic_words[:5])}"
-            diverse_labels.append((new_label, topic_words))
+            # Get domain-specific terms for detected language
+            domain_terms = self.domain_terms.get(detected_lang, set())
+            
+            # Find domain terms in topic words
+            topic_domain_terms = [
+                word for word in topic_words 
+                if word.lower() in domain_terms
+            ]
+            
+            if topic_domain_terms:
+                # Use domain terms in label if found
+                primary_terms = topic_domain_terms[:2]
+                other_terms = [w for w in topic_words[:3] if w not in primary_terms]
+                
+                label_parts = []
+                if primary_terms:
+                    label_parts.append(' '.join(primary_terms).title())
+                if other_terms:
+                    label_parts.append(f"({', '.join(other_terms)})")
+                
+                # Add language tag for bilingual
+                if self.lang == 'bilingual':
+                    label_parts.append(f"[{detected_lang.upper()}]")
+                    
+                return ' '.join(label_parts)
+            else:
+                # Fallback labeling without domain terms
+                return await self._create_fallback_label(topic_words, detected_lang)
+                
+        except Exception as e:
+            logger.error(f"Error generating label: {e}")
+            return self._create_generic_label(topic_words)
 
-        # Step 6: Check if we've improved diversity
-        new_main_themes = [label.split(':')[1].strip().split('-')[0].strip() for label, _ in diverse_labels]
-        if len(set(new_main_themes)) > len(set(main_themes)):
-            logger.info("Successfully diversified labels.")
-            return diverse_labels
-        else:
-            logger.warning("Unable to diverse labels further.")
-            return labeled_topics
+    def _create_generic_label(self, words: List[str]) -> str:
+        """Create a generic label when all else fails."""
+        return f"Topic: {', '.join(words[:3])}"
 
-    def _preprocess_for_labeling(self, words):
-        if not isinstance(words, list):
-            words = [words]
-        return [word.lower() for item in words
-                for word in (item if isinstance(item, tuple) else [item])
-                if isinstance(word, str) and word.isalpha()]
+    async def _extract_key_terms(self, words: List[str], detected_lang: str) -> List[str]:
+        """Extract key terms from topic words asynchronously."""
+        try:
+            # Process with appropriate NLP model
+            if isinstance(self.nlp, dict):
+                nlp = self.nlp.get(detected_lang, self.nlp['en'])
+            else:
+                nlp = self.nlp
+                
+            # Process text using executor
+            text = ' '.join(words)
+            doc = await asyncio.get_event_loop().run_in_executor(
+                self._executor,
+                nlp,
+                text
+            )
+            
+            # Collect terms
+            terms = []
+            seen = set()
+            
+            # Add noun chunks
+            for chunk in doc.noun_chunks:
+                if chunk.text.lower() not in seen:
+                    terms.append(chunk.text.lower())
+                    seen.add(chunk.text.lower())
+            
+            # Add named entities
+            for ent in doc.ents:
+                if ent.text.lower() not in seen:
+                    terms.append(ent.text.lower())
+                    seen.add(ent.text.lower())
+            
+            # Add remaining important words
+            for token in doc:
+                if (token.pos_ in {'NOUN', 'PROPN'} and 
+                    token.text.lower() not in seen):
+                    terms.append(token.text.lower())
+                    seen.add(token.text.lower())
+            
+            return terms
+
+        except Exception as e:
+            logger.error(f"Error extracting key terms: {e}")
+            return words[:3]
+
+    async def _get_domain_terms(self, terms: List[str], lang: str) -> List[str]:
+        """Identify domain-specific terms asynchronously."""
+        try:
+            domain_terms = self.domain_terms.get(lang, set())
+            return [term for term in terms 
+                   if any(domain_term in term 
+                         for domain_term in domain_terms)]
+        except Exception as e:
+            logger.error(f"Error getting domain terms: {e}")
+            return []
+
+    async def _detect_language(self, text: str) -> str:
+        """Detect language of text asynchronously."""
+        try:
+            if not isinstance(self.nlp, dict):
+                return self.lang
+                
+            # Process with both models using executor
+            loop = asyncio.get_event_loop()
+            doc_fr = await loop.run_in_executor(
+                self._executor,
+                self.nlp['fr'],
+                text
+            )
+            doc_en = await loop.run_in_executor(
+                self._executor,
+                self.nlp['en'],
+                text
+            )
+            
+            # Count tokens recognized by each model
+            fr_count = sum(1 for token in doc_fr if token.is_alpha)
+            en_count = sum(1 for token in doc_en if token.is_alpha)
+            
+            return 'fr' if fr_count >= en_count else 'en'
+            
+        except Exception as e:
+            logger.error(f"Error detecting language: {e}")
+            return self.lang
+
+    async def _create_fallback_label(self, words: List[str], lang: str) -> str:
+        """Create fallback label when normal labeling fails."""
+        try:
+            prefix = "Sujet:" if lang == 'fr' else "Topic:"
+            return f"{prefix} {', '.join(words[:3])}"
+        except Exception as e:
+            logger.error(f"Error creating fallback label: {e}")
+            return "Unlabeled Topic"
+
+    async def _cache_label(self, key: str, label: str):
+        """Cache generated label."""
+        async with self._cache_lock:
+            self._cache[key] = label
+
+    async def calculate_label_quality(
+        self,
+        label: str,
+        topic_words: List[str]
+    ) -> float:
+        """Calculate quality score for generated label asynchronously."""
+        try:
+            quality_scores = []
+            
+            # Detect language
+            detected_lang = await self._detect_language(label)
+            
+            # Check domain term coverage
+            label_terms = set(label.lower().split())
+            domain_terms = self.domain_terms.get(detected_lang, set())
+            domain_coverage = len(label_terms & domain_terms) / max(1, len(domain_terms))
+            quality_scores.append(domain_coverage)
+            
+            # Check topic word representation
+            topic_word_set = set(word.lower() for word in topic_words)
+            topic_coverage = len(label_terms & topic_word_set) / len(topic_word_set)
+            quality_scores.append(topic_coverage)
+            
+            # Calculate coherence
+            if isinstance(self.nlp, dict):
+                doc = await asyncio.get_event_loop().run_in_executor(
+                    self._executor,
+                    self.nlp[detected_lang],
+                    label
+                )
+            else:
+                doc = await asyncio.get_event_loop().run_in_executor(
+                    self._executor,
+                    self.nlp,
+                    label
+                )
+                
+            coherence = len(list(doc.noun_chunks)) / max(1, len(label.split()))
+            quality_scores.append(coherence)
+            
+            # Return weighted average
+            weights = [0.4, 0.4, 0.2]  # Prioritize domain and topic coverage
+            return sum(score * weight for score, weight in zip(quality_scores, weights))
+            
+        except Exception as e:
+            logger.error(f"Error calculating label quality: {e}")
+            return 0.0
+
+    async def cleanup(self):
+        """Clean up resources."""
+        try:
+            self._executor.shutdown(wait=False)
+            self._cache.clear()
+            self._initialized = False
+            logger.info("Topic labeler resources cleaned up")
+        except Exception as e:
+            logger.error(f"Error during cleanup: {e}")
+
+    async def __aenter__(self):
+        await self.initialize()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.cleanup()

@@ -1,11 +1,25 @@
 # Pipeline Blueprints
 
-This document provides an overview of the different pipelines used in this project. Each pipeline corresponds to a specific analysis task and is associated with one or more Python scripts or Jupyter notebooks.
+This document provides detailed specifications for each analysis pipeline in the project. Each pipeline is designed to examine specific aspects of the OCPM documentation on systemic racism and discrimination.
 
 ## Table of Contents
 
 1. [Update Database](#1-update-database)
-2. [General Analysis](#2-general-analysis)
+2. [General Analysis Dashboard](#2-general-analysis-dashboard)
+3. [Word Frequency Analysis](#3-word-frequency-analysis)
+4. [Language Distribution Analysis](#4-language-distribution-analysis)
+5. [Knowledge Type Analysis](#5-knowledge-type-analysis)
+6. [Topic Analysis](#6-topic-analysis)
+7. [Sentiment Analysis](#7-sentiment-analysis)
+
+# Pipeline Blueprints
+
+This document provides detailed specifications for each analysis pipeline in the project. Each component is designed to examine specific aspects of the OCPM documentation on systemic racism and discrimination.
+
+## Table of Contents
+
+1. [Update Database](#1-update-database)
+2. [General Analysis Dashboard](#2-general-analysis-dashboard)
 3. [Word Frequency Analysis](#3-word-frequency-analysis)
 4. [Language Distribution Analysis](#4-language-distribution-analysis)
 5. [Knowledge Type Analysis](#5-knowledge-type-analysis)
@@ -14,177 +28,314 @@ This document provides an overview of the different pipelines used in this proje
 
 ## 1. Update Database
 
-**Main Script:** update_database.py
+**Main Script:** update_database.py  
+**Purpose:** Database population and maintenance
 
-This pipeline is responsible for populating the PostgreSQL database with fetched data from the OCPM documentation.
+### Components
 
-### Key Components
+#### Classes
+- `Database` (scripts.database)
+  - Database connection management
+  - Data persistence operations
+  - Migration handling
 
-- `Database` class from scripts.database
-    - Uses `csv_to_xlsx` method from class
-- `ProcessDocuments` class from scripts.document_processing
-    - Uses `pdf_batch` method from class
+- `ProcessDocuments` (scripts.document_processing)
+  - PDF processing
+  - OCR handling
+  - Text extraction
 
-### Process
+### Process Flow
 
-1. Initializes logging
-2. Reads data from 'data/pdf_list.csv'
-3. Converts CSV to XLSX for handling in Nvivo software (not in this repo)
-4. Processes PDF documents using `pdf_batch` method
-5. Applies OCR to documents with missing or incomplete content
-6. Updates the PostgreSQL database with new and modified documents
+1. **Initialization**
+   - Configure logging
+   - Establish database connection
+   - Validate input files
 
-## 2. General Analysis
+2. **Document Processing**
+   - Read CSV metadata
+   - Process PDF documents
+   - Apply OCR when needed
 
-**Main Notebook:** general_analysis.ipynb
+3. **Database Operations**
+   - Update existing records
+   - Insert new documents
+   - Maintain data integrity
 
-This pipeline performs a general analysis on the connected data.
+## 2. General Analysis Dashboard
 
-### Key Components
+**Main Component:** general_analysis_pipeline_dashboard.py
+**Purpose:** Standalone dashboard for general document analysis and visualization
 
-- `Database` class from scripts.database
-    - Used for connection to PostgreSQL database
+### Features
 
-### Process
+#### Document Analysis
+- Total document count
+- Document distribution by:
+  - Organization
+  - Document type
+  - Category
+  - Language
+  - Clientele
+  - Knowledge type
 
-1. Connects to the PostgreSQL database
-2. Performs data analysis using pandas:
-   - Organization category count
-   - Crosstables:
-     - Organization Category and Document Type
-     - Organization Category and Clientele
-3. Generates tables and visualizations
-4. Saves results to Word and Excel files in the 'results/general/' directory
+#### Cross-Analysis
+- Organization vs Document Type
+- Organization vs Category
+- Document Type vs Language
+- Category vs Clientele
+
+#### Visualization Types
+- Bar charts
+- Pie charts
+- Cross tables
+- Heatmaps
+
+### Dashboard Components
+
+```python
+class AnalysisDashboardApp:
+    def __init__(self):
+        self.columns = {
+            'document_type': 'Document Type',
+            'language': 'Language',
+            'category': 'Category',
+            'clientele': 'Clientele',
+            'knowledge_type': 'Knowledge Type',
+            'organization': 'Organization'
+        }
+        self.viz_types = ['Bar Chart', 'Pie Chart', 'Crosstable', 'Heatmap']
+```
+
+### Analysis Options
+
+- **Single Distribution Analysis**
+  - Select single variable
+  - Choose visualization type
+  - Apply filters
+
+- **Cross Analysis**
+  - Select primary and secondary variables
+  - Generate contingency tables
+  - Create comparative visualizations
+
+### Data Export
+- CSV export
+- Excel export with formatting
+- Interactive visualization export (HTML)
+- PNG export for static visualizations
 
 ## 3. Word Frequency Analysis
 
-**Main Notebook:** word_frequency.ipynb
+**Main Components:**
+- Dashboard: word_frequency_pipeline_dashboard.py
+- Core Module: scripts/word_frequency/
 
-This pipeline analyzes the frequency of words in the collected documents.
+### Components
 
-### Key Components
+#### Classes
+- `WordFrequencyAnalyzer`
+  - Term frequency calculation
+  - TF-IDF analysis
+  - Category comparisons
 
-- `Database` class from scripts.database
-    - Used for connection to PostgreSQL database
-- `WordFrequencyChart` class from scripts.word_frequency
-    - Methods:
-        - `top_n_words`: Returns the top N most used words by category or language
-        - `compare_categories`: Compares word frequency across categories
-        - `compare_languages`: Compares word frequency across languages
-        - `tfidf_analysis`: Performs TF-IDF analysis
+- `WordFrequencyVisualizer`
+  - Frequency distribution plots
+  - Comparison visualizations
+  - Interactive word clouds
 
-### Process
+### Features
 
-1. Initializes logging
-2. Connects to the PostgreSQL database
-3. Performs word frequency analysis for different categories and languages
-4. Generates tables and visualizations
-5. Saves results to PNG, CSV, and XLSX files in the 'results/word_frequency' directory
+- Word frequency counting
+- TF-IDF analysis
+- Cross-category comparison
+- Language-specific analysis
 
 ## 4. Language Distribution Analysis
 
-**Main Notebook:** language_distribution.ipynb
+**Main Components:**
+- Dashboard: language_distribution_pipeline_dashboard.py
+- Core Module: scripts/language_distribution/
 
-This pipeline analyzes the distribution of both French and English languages in the collected documents.
+### Components
 
-### Key Components
+#### Classes
+- `LanguageDistributionAnalyzer`
+  - Language detection
+  - Code-switching analysis
+  - Distribution calculation
 
-- `Database` class from scripts.database
-    - Used for connection to PostgreSQL database
-- `LanguageDistributionChart` class from scripts.language_distribution
-    - Methods:
-        - `count_graph`: Returns the number of documents distributed by language tag
-        - `language_percentage_distribution`: Returns the distribution of French and English words inside each document
-        - `analyze_code_switching`: Analyzes code-switching between languages
+- `LanguageDistributionVisualizer`
+  - Distribution plots
+  - Code-switching visualization
+  - Comparative analysis plots
 
-### Process
+### Features
 
-1. Initializes logging
-2. Connects to the PostgreSQL database
-3. Performs language distribution analysis
-4. Creates tables and visualizations
-5. Saves results to CSV, XLSX, and PNG files in the 'results/language_distribution' directory
+- Language detection
+- Bilingual content analysis
+- Code-switching patterns
+- Distribution visualization
 
 ## 5. Knowledge Type Analysis
 
-**Main Notebook:** knowledge_type.ipynb
+**Main Components:**
+- Dashboard: knowledge_type_pipeline_dashboard.py
+- Core Module: scripts/knowledge_type/
 
-This pipeline analyzes the types of municipal knowledge mobilized by the collected documents.
+### Components
 
-### Key Components
+#### Classes
+- `KnowledgeTypeAnalyzer`
+  - Type classification
+  - Intersection analysis
+  - Distribution calculation
 
-- `Database` class from scripts.database
-    - Used for connection to PostgreSQL database
-- `KnowledgeType` class from scripts.knowledge_type
-    - Methods:
-        - `all_docs`: Returns a Venn diagram depicting the distribution of documents by knowledge type
-        - `crosstable`: Returns a crosstable counting the number of documents of a determined data column by their respective knowledge type
-        - `analyze_intersections`: Analyzes intersections of different knowledge types
+- `KnowledgeTypeVisualizer`
+  - Venn diagrams
+  - Distribution plots
+  - Interactive visualizations
 
-### Process
+### Features
 
-1. Initializes logging
-2. Connects to the PostgreSQL database
-3. Performs knowledge type analysis
-4. Generates tables and visualizations
-5. Saves results to CSV, XLSX, and PNG files in the 'results/knowledge_type' directory
+- Knowledge type classification
+- Intersection analysis
+- Cross-categorical distribution
+- Pattern visualization
 
 ## 6. Topic Analysis
 
-**Main Script:** populate_topics.py
-**Main Notebook:** topic_analysis.ipynb
+**Main Components:**
+- Dashboard: topic_analysis_pipeline_dashboard.py
+- Core Module: scripts/topic_analysis/
 
-This pipeline tokenizes text by language and performs comparative analysis by topics.
+### Architecture
 
-### Key Components
+#### Manager Component (`TopicAnalysisManager`)
+- Coordinates asynchronous operations
+- Manages background processing thread
+- Handles resource cleanup
+- Provides async API for topic analysis operations
 
-- `Database` class from scripts.database
-    - Used for connection to PostgreSQL database
-- `Analysis` class from scripts.topic_analysis.analysis
-    - Methods:
-        - `analyze_docs`: Processes documents and performs topic analysis
-        - `vectorize`: Vectorizes documents using TF-IDF
-        - `_perform_topic_modeling`: Performs topic modeling using LDA, NMF, or LSA
-- `TopicLabeler` class from scripts.topic_analysis.topic_labeler
-    - Used for labeling topics
+#### Analysis Component (`Analysis`)
+- Performs topic modeling computations
+- Supports multiple modeling approaches (LDA, NMF, LSA)
+- Provides both synchronous and asynchronous interfaces
+- Handles document preprocessing and vectorization
 
-### Process
+#### Topic Handler (`TopicHandler`)
+- Manages topic persistence
+- Provides async operations for topic management
+- Handles topic similarity and updates
 
-1. Initializes logging
-2. Connects to the PostgreSQL database
-3. Fetches documents from the database
-4. Performs topic analysis using LDA, NMF, or LSA
-5. Labels topics using the TopicLabeler
-6. Calculates topic coherence scores
-7. Filters topics based on coherence scores
-8. Saves results to CSV and XLSX files in the 'results/topic_analysis' directory
+### Asynchronous Features
+- Background event loop for non-blocking operations
+- Parallel document processing
+- Async database operations
+- Resource management and cleanup
+- Progress tracking and callback support
+
+### Key Features
+- Multiple modeling approaches
+  - Latent Dirichlet Allocation (LDA)
+  - Non-negative Matrix Factorization (NMF)
+  - Latent Semantic Analysis (LSA)
+- Topic coherence analysis
+- Dynamic visualization
+- Interactive exploration
+- Asynchronous processing for large document sets
+
+### Process Flow
+1. Document preprocessing (async)
+2. Vectorization (parallel)
+3. Topic modeling (CPU-bound)
+4. Coherence calculation
+5. Topic filtering and labeling
+6. Result persistence
+
+### Usage Example
+```python
+# Initialize manager
+manager = TopicAnalysisManager(db_path)
+
+# Perform async analysis
+topics_df = await manager.analyze_topics_async(
+    doc_ids='all',
+    method='lda',
+    num_topics=20,
+    coherence_threshold=-5.0
+)
+
+# Save results
+saved_files = await manager.save_topics_async(topics_df)
+```
 
 ## 7. Sentiment Analysis
 
-**Main Notebook:** sentiment_analysis.ipynb
+**Main Components:**
+- Dashboard: sentiment_analysis_pipeline_dashboard.py
+- Core Module: scripts/sentiment_analysis/
 
-This pipeline applies sentiment analysis to the collected documents.
+### Components
 
-### Key Components
+#### Classes
+- `SentimentAnalyzer`
+  - Sentiment scoring
+  - Aspect detection
+  - Pattern analysis
 
-- `Database` class from scripts.database
-    - Used for connection to PostgreSQL database
-- `SentimentAnalysis` class from scripts.sentiment_analysis
-    - Methods:
-        - `analyze_sentiment`: Analyzes sentiment of a given text
-        - `aspect_based_sentiment`: Performs aspect-based sentiment analysis
-        - `analyze_docs_by_language`: Analyzes documents organized by language
-        - `analyze_all_docs`: Analyzes all documents for sentiment analysis
+- `SentimentVisualizer`
+  - Sentiment distribution plots
+  - Aspect-based visualization
+  - Comparative analysis plots
 
-### Process
+### Features
 
-1. Initializes logging
-2. Connects to the PostgreSQL database
-3. Performs sentiment analysis on documents
-4. Conducts aspect-based sentiment analysis
-5. Generates tables and visualizations
-6. Saves results to CSV and XLSX files in the 'results/sentiment_analysis' directory
+- Document sentiment scoring
+- Aspect-based analysis
+- Cross-category comparison
+- Pattern visualization
+
+## Common Pipeline Features
+
+### Error Handling
+```python
+try:
+    # Pipeline operations
+    pass
+except DatabaseError:
+    logger.error("Database operation failed")
+    self._handle_db_error()
+except ProcessingError:
+    logger.error("Processing operation failed")
+    self._handle_processing_error()
+```
+
+### Results Storage
+```python
+def save_results(self, results, pipeline_name):
+    """Save pipeline results with consistent formatting."""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    save_path = Path(f'results/{pipeline_name}/{timestamp}/')
+    save_path.mkdir(parents=True, exist_ok=True)
+    
+    # Save results in appropriate formats
+    self._save_data(results, save_path)
+    self._save_visualizations(results, save_path)
+    self._save_summary(results, save_path)
+```
+
+### Configuration
+```python
+PIPELINE_CONFIG = {
+    'batch_size': 1000,
+    'timeout': 3600,
+    'workers': 3,
+    'cache_results': True
+}
+```
+
+Each pipeline maintains its own configuration while sharing common infrastructure for database access, logging, and result storage.
 
 ---
 
-Note: This document reflects the current state of the project, including the transition from SQLite to PostgreSQL. Some pipelines may still be in development or undergoing refinement. For more detailed information about each pipeline or script, please refer to the inline documentation within each file.
+**Note:** This documentation reflects the current state of the project. For the most up-to-date information about each pipeline or script, please refer to the inline documentation within each file.

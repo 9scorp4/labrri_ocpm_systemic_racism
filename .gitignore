@@ -3,6 +3,7 @@
 
 # Ignore all files in the logs directory
 logs/*.*
+logs/*
 
 # Ignore Python-specific log files
 *.pyc
@@ -46,3 +47,6 @@ data/word2vec-google-news-300.model.vectors.npy
 # Ignore conda files
 .conda/
 environment.yml
+
+# Data folder
+data/**/

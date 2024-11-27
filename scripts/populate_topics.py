@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import datetime
 
 from scripts.database import Database
-from scripts.topic_analysis.analysis import Analysis
+from scripts.topic_analysis.analyzer import Analysis
 from exceptions import AnalysisError, DatabaseError, VectorizationError
 
 # Define constants
